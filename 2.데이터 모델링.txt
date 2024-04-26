@@ -47,6 +47,20 @@
  - 첨부파일은 UUID를 지닌다.
  - 첨부파일은 파일명을 지닌다.
  
+ 
+개념적 모델링 [ 회원 등급 ]
+ - 회원 등급은 여러 권한들을 부여하기 쉽게 도와주는 역할이다.
+ - 회원 등급은 식별자를 지닌다.
+ - 회원 등급은 등급 명을 지닌다.
+ - 회원 등급은 등급 설명을 지닌다.
+
+
+
+개념적 모델링 [ 회원 권한 ]
+ - 회원 권한은 실제적으로 유저에게 부여되는 권한에 대한 정보이다.
+ - 회원 권한은 식별자를 지닌다.
+ - 회원 권한은 권한 명을 지닌다.
+ - 회원 권한은 권한 설명을 지닌다. 
 
 ================================================================
 
@@ -81,25 +95,88 @@
  - 회원 프로필은 회원 플랫폼 정보와 OneToOne 관계를 지닌다.
  - 회원 프로필은 고유한 닉네임을 지닌다.
 
-
-
+논리적 모델링 [ 회원 등급 ]
+ - 회원 등급 자체로는 다른 Table과 관계를 맺지 않는다.
+ - 회원 권한과 ManyToMany 관계를 맺는 중계 Table이 존재한다.
+	-> 단 ManyToMany Annotation 을 적용하지 않고 별개 Table로 직접 생성한다.
+논리적 모델링 [ 회원 권한 ]
+ - 회원 권한 자체로는 다른 Table과 관계를 맺지 않는다.
+ - 회원 등급과 ManyToMany 관계를 맺는 중계 Table이 존재한다.
+	-> 단 ManyToMany Annotation 을 적용하지 않고 별개 Table로 직접 생성한다.
+	
 ===================================================================
 
-물리적 모델링 [ 게시글 ]
+물리적 모델링 [ 게시판 ] - Board
+ - Id								[PK, BIGINT]
+ - Title							[varchar(50)]
+ - Desc								[TEXT(200)]
+ - Writer							[varchar(50)]	
+ - CDate							[Timestamp]
+ - MDate							[Timestamp]
+ 
+
+물리적 모델링 [ 게시글 ] - Post
+ - Id								[PK, BIGINT]
+ - BoardId							[FK, BIGINT]
+ - Title							[varchar(50)]
+ - Content							[Text(2000)]
+ - Writer							[varchar(50)]
+ - CDate							[Timestamp]
+ - MDate							[Timestamp]
 
 
-물리적 모델링 [ 게시판 ]
+
+물리적 모델링 [ 댓글 ] - Reply
+ - Id								[PK, BIGINT]
+ - PostId							[FK, BIGINT]
+ - Content							[TEXT(200)]
+ - Writer							[varchar(50)]
+ - CDate							[Timestamp]
+ - MDate							[Timestamp]
 
 
-물리적 모델링 [ 댓글 ]
+
+물리적 모델링 [ 첨부파일 ] - PostFile
+ - Id								[PK, BIGINT]
+ - PostId							[FK, BIGINT]
+ - UUID								[varchar(128)]
+ - FileName							[varchar(100)]	
+ - Order							[Int]
 
 
-물리적 모델링 [ 첨부파일 ]
-
-
-물리적 모델링 [ 회원 플랫폼 정보 ]
-
+물리적 모델링 [ 회원 플랫폼 정보 ] - AccountPlatform
+ - Id								[PK, BIGINT]
+ - email							[varchar(100)]
+ - PlatformType						[Int]
+ 
 
 물리적 모델링 [ 회원 프로필 ]
+ - Id								[PK, BIGINT]
+ - AccountPlatformId				[FK, BIGINT]
+ - Nickname							[varchar(50)]
+ - CDate							[Timestamp]
+ - MDate							[Timestamp]
+
+물리적 모델링 [ 회원 등급 ] - Role
+ - Id								[PK, BIGINT]
+ - Name								[varchar(50)]
+ - Desc								[varchar(200)]
+ 
+
+물리적 모델링 [ 회원 권한 ] - Grant
+ - Id								[PK, BIGINT]
+ - Name								[varchar(50)]
+ - Desc								[varchar(200)]	
+
+물리적 모델 [ 회원 등급 별 회원 권한]
+ - RoleId							[FK, BIGINT]
+ - GrantId							[FK, BIGINt]
 
 
+물리적 모델 [ 회원 별 회원 등급 ]
+ - ProfileId						[FK, BIGINT]
+ - RoleId							[FK, BIGINT]
+
+물리적 모델 [ 회원 별 회원 권한 ]
+ - ProfileId						[FK, BIGINT]
+ - GrantId							[FK, BIGINT]

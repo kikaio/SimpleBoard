@@ -1,0 +1,121 @@
+API 설계
+
+
+게시판 관련
+ - 기본적인 URL RequestMapping : RequestMapping("/board")
+ - 게시판 목록 화면
+	-> GET : 
+ - 게시판 생성 화면
+	-> GET : /create
+ - 게시판 수정 화면
+	-> GET : /modify/{id}
+ - 게시판 상세 화면
+	-> GET : /detail/{id}
+ - 게시판 조회 상세 화면
+	-> GET : /{boardId}
+ - 게시판 생성
+	-> POST : 
+ - 게시판 수정
+	-> PUT : 
+ - 게시판 삭제
+	-> DELETE : 
+  
+게시글 관련
+ - 기본적인 URL RequestMapping : RequestMapping("/post : ")
+ - 게시글 목록 화면
+	-> GET : 
+ - 게시글 생성 화면
+	-> GET : 
+ - 게시글 수정 화면
+	-> GET : 
+ - 게시글 조회 상세 화면
+	-> GET : 
+ - 게시글 생성
+	-> POST : 
+ - 게시글 수정
+	-> PUT : 
+ - 게시글 삭제
+	-> DELETE : 
+ 
+댓글 관련
+ - 기본적인 URL RequestMapping : RequestMapping("/comment")
+ - 댓글 목록 조회?
+	-> GET : 
+ - 댓글 생성
+	-> POST : 
+ - 댓글 수정
+	-> PUT : 
+ - 댓글 삭제
+	-> DELETE : 
+
+파일 첨조 관련
+ - 기본적인 URL RequestMapping : RequestMApping("/upload")
+ - 첨부 파일 등록
+	-> POST : 
+ - 첨부 파일 삭제
+	-> DELETE : 
+
+
+회원 등급 관련
+ - 기본적인 URL RequestMapping : RequestMapping("/account/role")
+ - 회원 등급 조회 화면 
+	-> GET : 
+ - 회원 등급 생성 화면
+	-> GET : 
+ - 회원 등급 수정 화면
+	-> GET : 
+
+ - 회원 등급 생성
+	-> POST : 
+ - 회원 등급 수정
+	-> PUT : 
+ - 회원 등급 삭제
+	-> DELETE : 
+
+ - 회원 등급 조회 상세 화면
+	-> GET :  
+ - 회원 등급 별 권한 생성
+	-> POST : 
+ - 회원 등급 별 권한 삭제
+	-> DELETE : 
+
+ - 회원 별 등급 목록 조회
+	-> GET : 
+ - 회원 별 등급 부여
+	-> POST : 
+ - 회원 별 등급 삭제
+	-> DELETE : 
+
+회원 권한 관련
+ - 기본적인 URL RequestMapping : RequestMapping("/account/grant")
+ - 회원 권한 조회 화면
+	-> GET : 
+ - 회원 권한 생성 화면
+	-> GET : 
+ - 회원 권한 수정 화면
+	-> GET : 
+
+ - 회원 권한 생성
+	-> POST : 
+ - 회원 권한 수정
+	-> PUT : 
+ - 회원 권한 삭제
+	-> DELETE : 
+ - 회원 별 권한 부여 화면
+	-> GET : 
+ - 회원 별 권한 부여
+	-> POST : 
+ - 회원 별 권한 삭제
+	-> DELETE : 
+
+회원 프로필 관련
+ - 기본적인 URL RequestMapping : RequestMapping("/account/profile")
+ - 회원 프로필 상세 화면
+	-> GET : 
+ - 회원 프로필 생성?
+	-> POST : 
+ - 회원 프로필 수정
+	-> PUT : 
+ - 회원 프로필 삭제?
+	-> DELETE : 
+ 

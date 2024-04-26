@@ -1,0 +1,28 @@
+SimpleBoard 관련 기술 스택
+
+IDE
+ - Intellij
+ 
+Project
+ - Language : JAVA 17
+ - SpringVersion : SpringBoot 3.2.5
+ - Build : Gradle
+
+DEVELOPER TOOLS
+ - Lombok
+ - SpringBoot Dev Tools
+
+WEB
+ - SpringWeb
+
+Template Engine
+ - Thymeleaf
+
+Security
+ - SpringSecurity
+ - OAuth2 Client
+
+SQL
+ - SpringData JPA
+ - MySQL Driver
+
