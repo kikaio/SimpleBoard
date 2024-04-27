@@ -1,2 +1,4 @@
 simpleboard/src/main/resources/application_dev.properties
 simpleboard/src/main/resources/application_local.properties
+simpleboard/src/main/resources/application-dev.properties
+simpleboard/src/main/resources/application-local.properties
