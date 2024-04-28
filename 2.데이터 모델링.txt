@@ -110,7 +110,6 @@
  - Id								[PK, BIGINT]
  - Title							[varchar(50)]
  - Desc								[TEXT(200)]
- - Writer							[varchar(50)]	
  - CDate							[Timestamp]
  - MDate							[Timestamp]
  
@@ -140,17 +139,17 @@
  - Id								[PK, BIGINT]
  - PostId							[FK, BIGINT]
  - UUID								[varchar(128)]
- - FileName							[varchar(100)]	
+ - FileName							[varchar(100)]
  - Order							[Int]
 
 
 물리적 모델링 [ 회원 플랫폼 정보 ] - AccountPlatform
  - Id								[PK, BIGINT]
  - email							[varchar(100)]
- - PlatformType						[Int]
+ - PlatformType						[varchar(50)]
  
 
-물리적 모델링 [ 회원 프로필 ]
+물리적 모델링 [ 회원 프로필 ] - Profile
  - Id								[PK, BIGINT]
  - AccountPlatformId				[FK, BIGINT]
  - Nickname							[varchar(50)]
