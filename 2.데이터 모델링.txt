@@ -109,14 +109,14 @@
 물리적 모델링 [ 게시판 ] - Board
  - Id								[PK, BIGINT]
  - Title							[varchar(50)]
- - Desc								[TEXT(200)]
+ - Description								[TEXT(200)]
  - CDate							[Timestamp]
  - MDate							[Timestamp]
  
 
 물리적 모델링 [ 게시글 ] - Post
  - Id								[PK, BIGINT]
- - BoardId							[FK, BIGINT]
+ - BoardId							[FK, BIGINT] - fk_board_for_post
  - Title							[varchar(50)]
  - Content							[Text(2000)]
  - Writer							[varchar(50)]
@@ -127,7 +127,7 @@
 
 물리적 모델링 [ 댓글 ] - Reply
  - Id								[PK, BIGINT]
- - PostId							[FK, BIGINT]
+ - PostId							[FK, BIGINT] - fk_post_for_reply
  - Content							[TEXT(200)]
  - Writer							[varchar(50)]
  - CDate							[Timestamp]
@@ -137,10 +137,10 @@
 
 물리적 모델링 [ 첨부파일 ] - PostFile
  - Id								[PK, BIGINT]
- - PostId							[FK, BIGINT]
+ - PostId							[FK, BIGINT] - fk_post_for_post_file
  - UUID								[varchar(128)]
  - FileName							[varchar(100)]
- - Order							[Int]
+ - Ord								[Int]
 
 
 물리적 모델링 [ 회원 플랫폼 정보 ] - AccountPlatform
@@ -151,7 +151,7 @@
 
 물리적 모델링 [ 회원 프로필 ] - Profile
  - Id								[PK, BIGINT]
- - AccountPlatformId				[FK, BIGINT]
+ - AccountPlatformId				[FK, BIGINT] - fk_accoutn_platform_for_member_profile
  - Nickname							[varchar(50)]
  - CDate							[Timestamp]
  - MDate							[Timestamp]
@@ -159,23 +159,23 @@
 물리적 모델링 [ 회원 등급 ] - Role
  - Id								[PK, BIGINT]
  - Name								[varchar(50)]
- - Desc								[varchar(200)]
+ - Description								[varchar(200)]
  
 
 물리적 모델링 [ 회원 권한 ] - Grant
  - Id								[PK, BIGINT]
  - Name								[varchar(50)]
- - Desc								[varchar(200)]	
+ - Description								[varchar(200)]	
 
-물리적 모델 [ 회원 등급 별 회원 권한]
- - RoleId							[FK, BIGINT]
- - GrantId							[FK, BIGINt]
+물리적 모델 [ 회원 등급 별 회원 권한] - RoleOwnGrant
+ - RoleId							[PK, BIGINT]
+ - GrantId							[PK, BIGINt]
 
 
 물리적 모델 [ 회원 별 회원 등급 ]
- - ProfileId						[FK, BIGINT]
- - RoleId							[FK, BIGINT]
+ - ProfileId						[PK, BIGINT]
+ - RoleId							[PK, BIGINT]
 
-물리적 모델 [ 회원 별 회원 권한 ]
- - ProfileId						[FK, BIGINT]
- - GrantId							[FK, BIGINT]
+물리적 모델 [ 회원 별 회원 권한 ] 
+ - ProfileId						[PK, BIGINT]
+ - GrantId							[PK, BIGINT]
