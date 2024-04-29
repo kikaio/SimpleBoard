@@ -1,27 +1,30 @@
 package com.portfolio.simpleboard.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Embeddable;
-import jakarta.persistence.EmbeddedId;
-import jakarta.persistence.Entity;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.io.Serializable;
 
 @Entity
 @Getter
 @Builder
-public class MemberOwnRole {
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@ToString
+public class MemberOwnRole implements Serializable {
 
     @Embeddable
-    @Getter
+    @Setter
+    @EqualsAndHashCode
     @AllArgsConstructor
-    public class MemberOwnRoleId {
+    @NoArgsConstructor
+    @ToString
+    public class MemberOwnRoleId implements Serializable{
 
-        @Column
-        private Profile profile;
+        @Column(nullable = false)
+        private MemberProfile memberProfile;
 
-        @Column
+        @Column(nullable = false)
         private MemberRole memberRole;
     }
 

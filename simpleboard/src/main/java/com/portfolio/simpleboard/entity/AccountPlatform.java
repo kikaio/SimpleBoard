@@ -2,13 +2,17 @@ package com.portfolio.simpleboard.entity;
 
 import com.portfolio.simpleboard.enums.OAuthPlatform;
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
+
+import java.io.Serializable;
 
 @Entity
 @Getter
 @Builder
-public class AccountPlatform {
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@ToString
+public class AccountPlatform implements Serializable {
 
     @Id
     @Column

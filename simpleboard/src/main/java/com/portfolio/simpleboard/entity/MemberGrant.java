@@ -1,9 +1,17 @@
 package com.portfolio.simpleboard.entity;
 
 import jakarta.persistence.*;
+import lombok.*;
+
+import java.io.Serializable;
 
 @Entity
-public class MemberGrant {
+@Getter
+@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@ToString
+public class MemberGrant implements Serializable {
 
     @Id
     @Column
@@ -14,5 +22,5 @@ public class MemberGrant {
     private String name;
 
     @Column
-    private String desc;
+    private String description;
 }

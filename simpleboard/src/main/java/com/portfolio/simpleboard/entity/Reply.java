@@ -3,13 +3,17 @@ package com.portfolio.simpleboard.entity;
 
 import com.portfolio.simpleboard.entity.base.DateEntity;
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
+
+import java.io.Serializable;
 
 @Entity
 @Getter
 @Builder
-public class Reply extends DateEntity {
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@ToString
+public class Reply extends DateEntity implements Serializable{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,7 +27,10 @@ public class Reply extends DateEntity {
     private String writer;
 
     @ManyToOne
-    @Column
+    @JoinColumn(
+            referencedColumnName = "id"
+            , foreignKey = @ForeignKey(name = "fk_post_for_reply")
+    )
     private Post post;
 }
 

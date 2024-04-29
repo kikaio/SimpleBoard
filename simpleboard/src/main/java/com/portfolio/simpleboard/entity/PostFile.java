@@ -1,13 +1,17 @@
 package com.portfolio.simpleboard.entity;
 
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
+
+import java.io.Serializable;
 
 @Entity
 @Getter
 @Builder
-public class PostFile {
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@ToString
+public class PostFile implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -15,7 +19,7 @@ public class PostFile {
     private Long id;
 
     @Column
-    private Integer order;
+    private Integer ord;
 
     @Column
     private String uuid;
@@ -24,6 +28,9 @@ public class PostFile {
     private String fileName;
 
     @ManyToOne
-    @Column
+    @JoinColumn(
+            referencedColumnName = "id"
+            , foreignKey = @ForeignKey(name = "fk_post_for_post_file")
+    )
     private Post post;
 }
