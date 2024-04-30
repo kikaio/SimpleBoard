@@ -12,6 +12,11 @@ public class BoardDTO {
 
     private Long id;
     private String title;
-    private String desc;
+    private String description;
+
+    public void change(String title, String description) {
+        this.title = title;
+        this.description = description;
+    }
 
 }
