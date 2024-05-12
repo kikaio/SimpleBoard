@@ -1,6 +1,8 @@
 package com.portfolio.simpleboard.service;
 
 import com.portfolio.simpleboard.dto.BoardDTO;
+import com.portfolio.simpleboard.dto.PageRequestDTO;
+import com.portfolio.simpleboard.dto.PageResponseDTO;
 import com.portfolio.simpleboard.entity.Board;
 import com.portfolio.simpleboard.repository.BoardRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,19 +22,16 @@ public class BoardService {
     public BoardDTO readOne(Long id) {
         var board = boardRepository.findById(id).orElseThrow();
 
-        return toBoardDTO(board);
+        return BoardDTO.fromEntity(board);
     }
 
-    public List<BoardDTO> getBoards() {
-        var boards = boardRepository.findAll();
-        List<BoardDTO> dtoList = boards.stream()
-                .map(x->toBoardDTO(x))
-                .collect(Collectors.toList());
-        return dtoList;
+    public PageResponseDTO<BoardDTO> getBoards(PageRequestDTO pageRequestDTO) {
+        PageResponseDTO<BoardDTO> boardSearch = boardRepository.boardSearch(pageRequestDTO);
+        return boardSearch;
     }
 
     public Long insert(BoardDTO boardDTO) {
-        var newBoard = boardRepository.save(fromBoardDTo(boardDTO));
+        var newBoard = boardRepository.save(BoardDTO.toEntity(boardDTO));
         return boardDTO.getId();
     }
 
@@ -42,25 +41,9 @@ public class BoardService {
     }
 
     public Long modifyBoard(BoardDTO boardDTO) {
-        var board = fromBoardDTo(boardDTO);
+        var board = BoardDTO.toEntity(boardDTO);
         Long id = boardRepository.save(board).getId();
         return id;
     }
 
-    private Board fromBoardDTo(BoardDTO boardDTO) {
-        return Board.builder()
-                .id(boardDTO.getId())
-                .title(boardDTO.getTitle())
-                .description(boardDTO.getDescription())
-                .build();
-    }
-
-    private BoardDTO toBoardDTO(Board board) {
-        BoardDTO boardDTO = BoardDTO.builder()
-                .id(board.getId())
-                .title(board.getTitle())
-                .description(board.getDescription())
-                .build();
-        return boardDTO;
-    }
 }

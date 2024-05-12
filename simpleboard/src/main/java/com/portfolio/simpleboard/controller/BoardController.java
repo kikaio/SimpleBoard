@@ -1,8 +1,11 @@
 package com.portfolio.simpleboard.controller;
 
 import com.portfolio.simpleboard.dto.BoardDTO;
+import com.portfolio.simpleboard.dto.PageRequestDTO;
+import com.portfolio.simpleboard.dto.PageResponseDTO;
 import com.portfolio.simpleboard.service.BoardService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -18,9 +21,12 @@ public class BoardController {
     private final BoardService boardService;
 
     @GetMapping("")
-    public String getBoardListPage(Model model) {
-        List<BoardDTO> dtoList = boardService.getBoards();
-        model.addAttribute("boardDTOList", dtoList);
+    public String getBoardListPage(PageRequestDTO pageRequestDTO, Model model) {
+        PageResponseDTO<BoardDTO> boards = boardService.getBoards(pageRequestDTO);
+
+        model.addAttribute("pageResponseDTO", boards);
+        model.addAttribute("pageRequestDTO", pageRequestDTO);
+
         return "/boards/list";
     }
 

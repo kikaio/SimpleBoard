@@ -2,6 +2,8 @@ package com.portfolio.simpleboard;
 
 
 import com.portfolio.simpleboard.dto.BoardDTO;
+import com.portfolio.simpleboard.dto.PageRequestDTO;
+import com.portfolio.simpleboard.dto.PageResponseDTO;
 import com.portfolio.simpleboard.repository.BoardRepository;
 import com.portfolio.simpleboard.service.BoardService;
 import jakarta.transaction.Transactional;
@@ -36,24 +38,35 @@ public class BoardServiceTest{
     }
 
     @Test
-    @Disabled
+//    @Disabled
     @DisplayName("select all boards")
     public void getBoards()
     {
-        var dtoList = boardService.getBoards();
-        dtoList.forEach(dto->{
+        PageRequestDTO pageRequestDTO = PageRequestDTO.builder()
+                .pageNumber(1)
+                .pageSize(8)
+                .type("d")
+                .keyword("changed")
+                .build();
+        PageResponseDTO<BoardDTO> boards = boardService.getBoards(pageRequestDTO);
+        boards.getDtoList().forEach(dto->{
             log.info("%s".formatted(dto));
         });
-
     }
 
     @Test
     @Disabled
     @DisplayName("delete target Board")
     public void deleteBoardTest() {
-        var dtoList = boardService.getBoards();
-        if(dtoList.size() > 0) {
-            Long targetId = dtoList.get(0).getId();
+        PageRequestDTO pageRequestDTO = PageRequestDTO.builder()
+                .pageNumber(1)
+                .pageSize(8)
+                .type("")
+                .keyword("")
+                .build();
+        PageResponseDTO<BoardDTO> boards = boardService.getBoards(pageRequestDTO);
+        if(boards.getDtoList().size() > 0) {
+            Long targetId = boards.getDtoList().get(0).getId();
             boardService.deleteBoardById(targetId);
             log.info("target board deleted. this board id is %d".formatted(targetId));
         }
@@ -63,12 +76,18 @@ public class BoardServiceTest{
     }
 
     @Test
-//    @Disabled
+    @Disabled
     @DisplayName("modify board test")
     public void modifyBaordTest(){
-        var dtoList = boardService.getBoards();
-        if(dtoList.size() > 0) {
-            var dtoTarget = dtoList.get(0);
+        PageRequestDTO pageRequestDTO = PageRequestDTO.builder()
+                .pageNumber(1)
+                .pageSize(8)
+                .type("")
+                .keyword("")
+                .build();
+        PageResponseDTO<BoardDTO> boards = boardService.getBoards(pageRequestDTO);
+        if(boards.getDtoList().size() > 0) {
+            var dtoTarget = boards.getDtoList().get(0);
             dtoTarget.change(dtoTarget.getTitle(), "changed desc that board id[%d]".formatted(dtoTarget.getId()));
             Long id = boardService.modifyBoard(dtoTarget);
             log.info("board[%d] was changed.".formatted(id));
