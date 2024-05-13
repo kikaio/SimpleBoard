@@ -4,3 +4,4 @@ simpleboard/src/main/resources/application-dev.properties
 simpleboard/src/main/resources/application-local.properties
 simpleboard/src/main/resources/properties/dev/db.properties
 simpleboard/src/main/resources/properties/local/db.properties
+.idea/

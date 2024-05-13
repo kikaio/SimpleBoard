@@ -26,8 +26,8 @@
                         <input type="text" class="form-control" name="keyword" th:value="${pageRequestDTO.keyword}">
                         <div class="input-group-append">
                             <button class="btn btn-outline-secondary searchBtn" type="submit">Search</button>
-                            <button class="btn btn-outline-secondary clearBtn">Clear</button>
-                            <button class="btn btn-outline-secondary createBtn">Create</button>
+                            <button type="button" class="btn btn-outline-secondary clearBtn">Clear</button>
+                            <button type="button" class="btn btn-outline-secondary createBtn" th:onclick="|location.href='@{/boards/insert}'|">Create</button>
                         </div>
                     </div><!-- end of input group div-->
                     <br>
@@ -105,16 +105,10 @@
             self.location = '/boards';
         }, false);
 
-        document.querySelector(.createBtn).addEventListener("click", function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            self.location.href = '/boards/insert';
-        }, false);
-
         function deleteBoardClick(boardId, title) {
             e.preventDefault();
             e.stopPropagation();
-            if(confirm(title+" 게시판을 삭제하시겠습니까?") ==false) {
+            if(confirm(title+" 게시판을 삭제하시겠습니까?") == false) {
                 return ;
             }
             console.log("delete requested title:"+title + " boardId : "+ boardId);

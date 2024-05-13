@@ -29,6 +29,7 @@ public class BoardController {
 
     @GetMapping("/insert")
     public String getBoardInsertPage() {
+
         return "/boards/insert";
     }
 
