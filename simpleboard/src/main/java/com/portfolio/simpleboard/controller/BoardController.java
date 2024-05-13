@@ -1,17 +1,15 @@
 package com.portfolio.simpleboard.controller;
 
 import com.portfolio.simpleboard.dto.BoardDTO;
-import com.portfolio.simpleboard.dto.PageRequestDTO;
-import com.portfolio.simpleboard.dto.PageResponseDTO;
+import com.portfolio.simpleboard.dto.pager.PageRequestDTO;
+import com.portfolio.simpleboard.dto.pager.PageResponseDTO;
 import com.portfolio.simpleboard.service.BoardService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -26,7 +24,6 @@ public class BoardController {
 
         model.addAttribute("pageResponseDTO", boards);
         model.addAttribute("pageRequestDTO", pageRequestDTO);
-
         return "/boards/list";
     }
 

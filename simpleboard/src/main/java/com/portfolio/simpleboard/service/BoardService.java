@@ -1,17 +1,11 @@
 package com.portfolio.simpleboard.service;
 
 import com.portfolio.simpleboard.dto.BoardDTO;
-import com.portfolio.simpleboard.dto.PageRequestDTO;
-import com.portfolio.simpleboard.dto.PageResponseDTO;
-import com.portfolio.simpleboard.entity.Board;
+import com.portfolio.simpleboard.dto.pager.PageRequestDTO;
+import com.portfolio.simpleboard.dto.pager.PageResponseDTO;
 import com.portfolio.simpleboard.repository.BoardRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.AbstractList;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor

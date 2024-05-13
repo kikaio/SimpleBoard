@@ -8,15 +8,40 @@
 
 <!-- Section-->
 <section layout:fragment="content" class="py-5">
+
     <div class="container px-4 px-lg-5 mt-5">
+        <div class="row mt-3">
+            <form action="/boards" method="get">
+                <div class="col">
+                    <input type="hidden" name="pageSize" th:value="${pageRequestDTO.pageSize}" >
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <select class="form-select" name="type">
+                                <option value=''>---</option>
+                                <option value='t' th:selected="${pageRequestDTO.type=='t'}">title</option>
+                                <option value='d' th:selected="${pageRequestDTO.type=='d'}">description</option>
+                                <option value='td' th:selected="${pageRequestDTO.type=='td'}">title and description</option>
+                            </select>
+                        </div>
+                        <input type="text" class="form-control" name="keyword" th:value="${pageRequestDTO.keyword}">
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary searchBtn" type="submit">Search</button>
+                            <button class="btn btn-outline-secondary clearBtn">Clear</button>
+                            <button class="btn btn-outline-secondary createBtn">Create</button>
+                        </div>
+                    </div><!-- end of input group div-->
+                    <br>
+                </div><!-- end of col div-->
+            </form><!-- end of form-->
+        </div>
         <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
 
-            <div class="col mb-5" th:each="boardDTO : ${boardDTOList}">
+            <div class="col mb-5" th:each="boardDTO : ${pageResponseDTO.dtoList}">
                 <div class="card h-100">
                     <!-- Product image-->
                     <img class="card-img-top" src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="..." />
                     <!-- Product details-->
-                    <div class="card-body p-4">
+                    <div class="card-body p-5">
                         <div class="text-center">
                             <!-- Product name-->
                             <h5 class="fw-bolder" th:text="${boardDTO.title}"></h5>
@@ -25,22 +50,77 @@
                         </div>
                     </div>
                     <!-- Product actions-->
-                    <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                    <div class="card-footer p-3 pt-0 border-top-0 bg-transparent">
                         <div class="text-center">
-                            <a class="btn btn-outline-dark mt-auto" th:href="@{/boards/detail/${boardDTO.id}}">Enter</a>
+                            <a class="btn btn-outline-dark mt-auto" th:href="@{/boards/${boardDTO.id}/posts}">Enter</a>
+                            <a class="btn btn-outline-dark mt-auto" th:href="@{/boards/detail/${boardDTO.id}}">Edit</a>
+                            <a class="btn btn-outline-dark mt-auto" onclick="deleteBoardClick(${boardDTO.id}, ${boardDTO.title})">Delete</a>
                         </div>
                     </div>
                 </div> <!--end of board card -->
             </div> <!--end of boards -->
-            <div class="paging">
-
-            </div>
         </div> <!-- -->
     </div> <!--end container -->
+    <div class="d-flex justify-content-center">
+        <div class="container">
+            <ul class="pagination">
+                <li class="page-item" th:if="${pageResponseDTO.prev}">
+                    <a class="page-link" th:data-num="${pageResponseDTO.start-1}" aria-label="Previous">&laquo;</a>
+                </li>
+                <th:block th:each="i:${#numbers.sequence(pageResponseDTO.start, pageResponseDTO.end)}">
+                    <li th:class="${pageResponseDTO.page==i}?'page-item active':'page-item'">
+                        <a class="page-link" th:data-num="${i}">[[${i}]]</a>
+                    </li>
+                </th:block>
+                <li class="page-item" th:if="${pageResponseDTO.next}" aria-label="Next">
+                    <a class="page-link" th:data-num="${pageResponseDTO.end+1}">&raquo;</a>
+                </li>
+            </ul><!--end page ul -->
+        </div><!--end container -->
+    </div><!--end container -->
 </section> <!-- end section py-5-->
 
 <!-- Core theme JS-->
-<script src="js/scripts.js"></script>
+
+    <script layout:fragment="script" th:inline="javascript">
+        document.querySelector(".pagination").addEventListener("click", function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            const target = e.target;
+            if(target.tagName !== 'A'){
+                return ;
+            }
+
+            const num = target.getAttribute("data-num");
+            const formObj = document.querySelector("form");
+            formObj.innerHTML += `<input type='hidden' name='page' value='${num}'>`;
+            formObj.submit();
+        }, false);
+
+        document.querySelector(".clearBtn").addEventListener("click", function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            self.location = '/boards';
+        }, false);
+
+        document.querySelector(.createBtn).addEventListener("click", function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            self.location.href = '/boards/insert';
+        }, false);
+
+        function deleteBoardClick(boardId, title) {
+            e.preventDefault();
+            e.stopPropagation();
+            if(confirm(title+" 게시판을 삭제하시겠습니까?") ==false) {
+                return ;
+            }
+            console.log("delete requested title:"+title + " boardId : "+ boardId);
+        };
+
+    </script>
 
 </body>
 </html>

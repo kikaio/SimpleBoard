@@ -1,14 +1,12 @@
 package com.portfolio.simpleboard.repository.search;
 
 import com.portfolio.simpleboard.dto.BoardDTO;
-import com.portfolio.simpleboard.dto.PageRequestDTO;
-import com.portfolio.simpleboard.dto.PageResponseDTO;
+import com.portfolio.simpleboard.dto.pager.PageRequestDTO;
+import com.portfolio.simpleboard.dto.pager.PageResponseDTO;
 import com.portfolio.simpleboard.entity.Board;
 import com.portfolio.simpleboard.entity.QBoard;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.JPQLQuery;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 

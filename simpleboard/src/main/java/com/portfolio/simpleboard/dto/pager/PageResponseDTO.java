@@ -1,4 +1,4 @@
-package com.portfolio.simpleboard.dto;
+package com.portfolio.simpleboard.dto.pager;
 
 import lombok.*;
 
@@ -28,12 +28,12 @@ public class PageResponseDTO<E> {
 
         this.dtoList = dtoList;
 
-        this.page = pageRequestDTO.getPageNumber();
+        this.page = pageRequestDTO.getPage();
         this.size = pageRequestDTO.getPageSize();
         this.total = total;
 
-        this.start = ( ( this.page + pageCnt-1 ) / pageCnt ) * pageCnt;
-        this.end = this.start + pageCnt - 1;
+        this.end = (int)( this.page/pageCnt + 1) * pageCnt;
+        this.start = this.end - pageCnt + 1;
         if(this.end * this.size > this.total) {
             this.end = ( (this.total + this.size-1) / this.size);
         }
