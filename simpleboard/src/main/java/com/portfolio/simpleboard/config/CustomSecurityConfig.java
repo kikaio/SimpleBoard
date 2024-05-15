@@ -31,6 +31,10 @@ public class CustomSecurityConfig {
                     .requestMatchers(signPath).permitAll()
                     .anyRequest().permitAll();
         });
+
+        http.csrf(custom->{
+            custom.disable();
+        });
         return http.build();
     }
 }

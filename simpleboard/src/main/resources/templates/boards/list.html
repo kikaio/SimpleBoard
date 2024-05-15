@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en"
-      xmlns:th="http.thymeleaf.org"
+      xmlns:th="http://thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layouts/layout_board_list.html}"
 >
@@ -52,9 +52,9 @@
                     <!-- Product actions-->
                     <div class="card-footer p-3 pt-0 border-top-0 bg-transparent">
                         <div class="text-center">
-                            <a class="btn btn-outline-dark mt-auto" th:href="@{/boards/${boardDTO.id}/posts}">Enter</a>
-                            <a class="btn btn-outline-dark mt-auto" th:href="@{/boards/detail/${boardDTO.id}}">Edit</a>
-                            <a class="btn btn-outline-dark mt-auto" onclick="deleteBoardClick(${boardDTO.id}, ${boardDTO.title})">Delete</a>
+                            <a class="btn btn-outline-dark mt-auto" th:href="@{/boards/{id}(id=${boardDTO.id})/posts}">Enter</a>
+                            <a class="btn btn-outline-dark mt-auto" th:href="@{/boards/detail/{id}(id=${boardDTO.id})}">Edit</a>
+                            <button type="button" class="btn btn-outline-dark mt-auto" th:onclick="deleteBoardClick([[${boardDTO.id}]], [[${boardDTO.title}]])">Delete</button>
                         </div>
                     </div>
                 </div> <!--end of board card -->
@@ -107,14 +107,16 @@
         }, false);
 
         function deleteBoardClick(boardId, title) {
-            e.preventDefault();
-            e.stopPropagation();
+            console.log("delete requested title:"+title + " boardId : "+ boardId);
             if(confirm(title+" 게시판을 삭제하시겠습니까?") == false) {
                 return ;
             }
-            console.log("delete requested title:"+title + " boardId : "+ boardId);
+            axios.delete("/boards/"+boardId
+            ).then(res=>{
+                console.log("delete successed");
+            }).catch(err=>{
+            });
         };
-
     </script>
 
 </body>

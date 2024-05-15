@@ -2,17 +2,28 @@ package com.portfolio.simpleboard.dto;
 
 
 import com.portfolio.simpleboard.entity.Board;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
-@Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
-@ToString
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Getter
+@Setter
+@ToString
 public class BoardDTO {
 
     private Long id;
+    @NotNull
+    @NotBlank
+    @Size(min=3, max=20)
     private String title;
+
+    @NotNull
+    @NotBlank
+    @Size(min=5, max=50)
     private String description;
 
     public void change(String title, String description) {

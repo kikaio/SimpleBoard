@@ -24,26 +24,28 @@
         <div class="card" style="width: 24rem;">
             <div class="card-header">게시판 생성</div>
             <div class="card-body">
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item">
-                        <div>
-                            <label>Title : </label>
-                            <input type="text" name="title" placeholder="board's title">
-                        </div>
-                    </li>
-                    <li class="list-group-item" >
-                        <div>
-                            <label>description : </label>
-                            <input type="text" name="description" placeholder="board's description">
-                        </div>
-                    </li>
-                    <li class="list-group-item">
-                        <div>
-                            <button type="button" class="btn btn-primary createBtn">Do Create</button>
-                            <button type="button" class="btn btn-primary" onclick="location.href='/boards'">Go Back</button>
-                        </div>
-                    </li>
-                </ul>
+                <form action="/boards" method="post">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            <div>
+                                <label>Title : </label>
+                                <input type="text" name="title" placeholder="board's title">
+                            </div>
+                        </li>
+                        <li class="list-group-item" >
+                            <div>
+                                <label>description : </label>
+                                <input type="text" name="description" placeholder="board's description">
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div>
+                                <button type="submit" class="btn btn-primary createBtn">Do Create</button>
+                                <button type="button" class="btn btn-primary" onclick="location.href='/boards'">Go Back</button>
+                            </div>
+                        </li>
+                    </ul>
+                </form>
             </div>
         </div> <!--end of card div-->
     </div>
@@ -68,14 +70,12 @@
         const title = document.querySelector("input[name='title']").value;
         const description = document.querySelector("input[name='description']").value;
         console.log("createBtn clicked, title:", title, ", desc:", description);
-        axios({
-            method : "post"
-            , url : "/boards"
-            , data : {
+        axios.post("/boards",
+            {
                 title : title
                 , description : description
             }
-        }).then(res=>{
+        ).then(res=>{
             console.log("res", res);
         }).catch(e=>{
             console.log("err", e);
@@ -85,12 +85,12 @@
         //todo : send request for insert new board
     }
 
-    document.querySelector(".createBtn").addEventListener("click", function(e) {
-        e.stopPropagation();
-        e.preventDefault();
-        doInsertBoard();
+<!--    document.querySelector(".createBtn").addEventListener("click", function(e) {-->
+<!--        e.stopPropagation();-->
+<!--        e.preventDefault();-->
+<!--        doInsertBoard();-->
 
-    }, false);
+<!--    }, false);-->
 
 </script>
 </body>

@@ -4,10 +4,12 @@ import com.portfolio.simpleboard.dto.BoardDTO;
 import com.portfolio.simpleboard.dto.pager.PageRequestDTO;
 import com.portfolio.simpleboard.dto.pager.PageResponseDTO;
 import com.portfolio.simpleboard.service.BoardService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -43,8 +45,12 @@ public class BoardController {
         return "boards/modify";
     }
 
-    @PostMapping(value="", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public String boardInsert(@RequestBody BoardDTO boardDTO, RedirectAttributes redirectAttributes) {
+    @PostMapping(value="")
+    public String boardInsert(@Valid BoardDTO boardDTO, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+        if(bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("errors", bindingResult.getAllErrors());
+            return "redirect:/boards/insert";
+        }
         Long id = boardService.insert(boardDTO);
         redirectAttributes.addFlashAttribute("newBoardId", id);
         return "redirect:/boards";
