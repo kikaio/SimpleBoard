@@ -43,8 +43,8 @@ public class BoardController {
         return "boards/modify";
     }
 
-    @PostMapping("")
-    public String boardInsert(BoardDTO boardDTO, RedirectAttributes redirectAttributes) {
+    @PostMapping(value="", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public String boardInsert(@RequestBody BoardDTO boardDTO, RedirectAttributes redirectAttributes) {
         Long id = boardService.insert(boardDTO);
         redirectAttributes.addFlashAttribute("newBoardId", id);
         return "redirect:/boards";

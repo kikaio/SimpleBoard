@@ -1,14 +1,97 @@
 <!DOCTYPE html>
 <html lang="en"
-      xmlns:th="http.thymeleaf.org"
+      xmlns:th="http://thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 >
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <!-- Favicon-->
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+    <!-- Bootstrap icons-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <link th:href="@{/css/styles.css}" rel="stylesheet" />
+
+    <title>SimpleBoard</title>
 </head>
+
 <body>
-    <div>
+<section class="vw-100 vh-100" style="background-color: #eee;">
+    <div class="vw-100 vh-100 justify-content-center d-flex align-items-center container">
+        <div class="card" style="width: 24rem;">
+            <div class="card-header">게시판 생성</div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <div>
+                            <label>Title : </label>
+                            <input type="text" name="title" placeholder="board's title">
+                        </div>
+                    </li>
+                    <li class="list-group-item" >
+                        <div>
+                            <label>description : </label>
+                            <input type="text" name="description" placeholder="board's description">
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        <div>
+                            <button type="button" class="btn btn-primary createBtn">Do Create</button>
+                            <button type="button" class="btn btn-primary" onclick="location.href='/boards'">Go Back</button>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div> <!--end of card div-->
     </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="/js/scripts.js"></script>
+<script th:inline="javascript">
+
+    //var imgPath=
+
+    function doUploadBannerImg() {
+        return ;
+    };
+
+    function doClearBannerImg() {
+        return ;
+    };
+
+    function doInsertBoard() {
+        const title = document.querySelector("input[name='title']").value;
+        const description = document.querySelector("input[name='description']").value;
+        console.log("createBtn clicked, title:", title, ", desc:", description);
+        axios({
+            method : "post"
+            , url : "/boards"
+            , data : {
+                title : title
+                , description : description
+            }
+        }).then(res=>{
+            console.log("res", res);
+        }).catch(e=>{
+            console.log("err", e);
+        });
+        //todo : check title is null or over max len
+        //todo : check description is null or over max len
+        //todo : send request for insert new board
+    }
+
+    document.querySelector(".createBtn").addEventListener("click", function(e) {
+        e.stopPropagation();
+        e.preventDefault();
+        doInsertBoard();
+
+    }, false);
+
+</script>
 </body>
 </html>

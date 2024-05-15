@@ -7,11 +7,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@ToString
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
+@ToString
 public class PageRequestDTO {
 
     @Builder.Default
@@ -21,14 +22,11 @@ public class PageRequestDTO {
     private int pageSize = 10;
 
     //type의 경우 검색 대상에 대합 값으로 알팝벳 1글자로 구성된다.
-    @Builder.Default
-    private String type = "";
+    private String type;
 
-    @Builder.Default
-    private String keyword = "";
+    private String keyword;
 
-    @Builder.Default
-    private String link = "";
+    private String link;
 
     public String[] getTypes() {
         if(type == null || type.length() == 0)
