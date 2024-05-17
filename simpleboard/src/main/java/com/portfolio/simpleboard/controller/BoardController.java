@@ -6,12 +6,17 @@ import com.portfolio.simpleboard.dto.pager.PageResponseDTO;
 import com.portfolio.simpleboard.service.BoardService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.Objects;
 
 @Controller
 @RequiredArgsConstructor
@@ -74,16 +79,20 @@ public class BoardController {
     }
 
     @DeleteMapping("/{id}")
-    public String boardDelete(@PathVariable(name = "id")Long id, PageRequestDTO pageRequestDTO
+    public ModelAndView boardDelete(@PathVariable(name = "id")Long id, PageRequestDTO pageRequestDTO
             , @RequestBody BoardDTO boardDTO, RedirectAttributes redirectAttributes
     ) {
         String link = pageRequestDTO.getLink() == null ? "" : pageRequestDTO.getLink();
-        if(id != boardDTO.getId()){
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setStatus(HttpStatus.SEE_OTHER);
+        if(!Objects.equals(id, boardDTO.getId())){
             //return error
             redirectAttributes.addFlashAttribute("error", "invalid request");
-            return "redirect:/boards?%s".formatted(link);
+            modelAndView.setViewName("redirect:/boards?%s".formatted(link));
+            return modelAndView;
         }
         boardService.deleteBoardById(id);
-        return "redirect:/boards?%s".formatted(link);
+        modelAndView.setViewName("redirect:/boards?%s".formatted(link));
+        return modelAndView;
     }
 }
