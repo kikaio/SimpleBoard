@@ -40,23 +40,22 @@ public class PageRequestDTO {
     }
 
     public String getLink() {
-        if(link != null || link.length() > 0)
-            return link;
+        if(link == null || link.length() < 1)
+        {
+            StringBuffer sb = new StringBuffer();
+            sb.append("page=%d".formatted(page));
+            sb.append("&size=%d".formatted(pageSize));
 
-        StringBuffer sb = new StringBuffer();
-        sb.append("page=%d".formatted(page));
-        sb.append("&size=%d".formatted(pageSize));
+            if (type != null && type.length() > 0) {
+                sb.append("&type=%s".formatted(type));
+            }
 
-        if(type != null && type.length() > 0) {
-            sb.append("&type=%s".formatted(type));
+            if (keyword != null && keyword.length() > 0) {
+                sb.append("&keyword=%s".formatted(keyword));
+            }
+
+            link = sb.toString();
         }
-
-        if(keyword != null && keyword.length() > 0) {
-            sb.append("&keyword=%s".formatted(keyword));
-        }
-
-        link = sb.toString();
-
         return link;
     }
 }

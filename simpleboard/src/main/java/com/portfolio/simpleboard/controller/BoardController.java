@@ -41,8 +41,14 @@ public class BoardController {
     }
 
     @GetMapping("/modify/{id}")
-    public String getBoardModifyPage(@PathVariable(required = true, name = "id") Long id) {
-        return "boards/modify";
+    public String getBoardModifyPage(@PathVariable(required = true, name = "id") Long id, PageRequestDTO pageRequestDTO, Model model) {
+        var dto = boardService.readOne(id);
+        model.addAttribute("dto", dto);
+        String link = pageRequestDTO.getLink();
+        if(link == null)
+            link = "";
+        model.addAttribute("link", link);
+        return "/boards/modify";
     }
 
     @PostMapping(value="")
@@ -57,21 +63,27 @@ public class BoardController {
     }
 
     @PutMapping("/{id}")
-    public String boardUpdate(@PathVariable(name = "id") Long id, BoardDTO boardDTO) {
+    public String boardUpdate(@PathVariable(name = "id") Long id, @RequestBody BoardDTO boardDTO, RedirectAttributes redirectAttributes) {
         if(id != boardDTO.getId()) {
             //return error
+            redirectAttributes.addFlashAttribute("error", "invalid request");
+            return "redirect:/boards/modify/%d".formatted(id);
         }
         Long newBoardId = boardService.modifyBoard(boardDTO);
-        return "redirect:/boards/detail/%d".formatted(id);
+        return "redirect:/boards/modify/%d".formatted(id);
     }
 
     @DeleteMapping("/{id}")
-    public String boardDelete(@PathVariable(name = "id")Long id, BoardDTO boardDTO) {
+    public String boardDelete(@PathVariable(name = "id")Long id, PageRequestDTO pageRequestDTO
+            , @RequestBody BoardDTO boardDTO, RedirectAttributes redirectAttributes
+    ) {
+        String link = pageRequestDTO.getLink() == null ? "" : pageRequestDTO.getLink();
         if(id != boardDTO.getId()){
             //return error
-
+            redirectAttributes.addFlashAttribute("error", "invalid request");
+            return "redirect:/boards?%s".formatted(link);
         }
         boardService.deleteBoardById(id);
-        return "redirect:/boards";
+        return "redirect:/boards?%s".formatted(link);
     }
 }

@@ -52,8 +52,8 @@
                     <!-- Product actions-->
                     <div class="card-footer p-3 pt-0 border-top-0 bg-transparent">
                         <div class="text-center">
-                            <a class="btn btn-outline-dark mt-auto" th:href="@{/boards/{id}(id=${boardDTO.id})/posts}">Enter</a>
-                            <a class="btn btn-outline-dark mt-auto" th:href="@{/boards/detail/{id}(id=${boardDTO.id})}">Edit</a>
+                            <a class="btn btn-outline-dark mt-auto" th:href="@{/boards/{id}/posts(id=${boardDTO.id})}">Enter</a>
+                            <a class="btn btn-outline-dark mt-auto" th:href="@{/boards/modify/{id}(id=${boardDTO.id})}">Edit</a>
                             <button type="button" class="btn btn-outline-dark mt-auto" th:onclick="deleteBoardClick([[${boardDTO.id}]], [[${boardDTO.title}]])">Delete</button>
                         </div>
                     </div>
@@ -106,15 +106,25 @@
             self.location = '/boards';
         }, false);
 
-        function deleteBoardClick(boardId, title) {
-            console.log("delete requested title:"+title + " boardId : "+ boardId);
+        function deleteBoardClick(id, title) {
+            console.log("delete requested title:"+title + " boardId : "+ id);
             if(confirm(title+" 게시판을 삭제하시겠습니까?") == false) {
                 return ;
             }
-            axios.delete("/boards/"+boardId
-            ).then(res=>{
-                console.log("delete successed");
+            console.log("/boards/"+id+" delete try");
+
+            axios.delete("/boards/"+id,
+                {
+                    headers: {
+                        'Content-Type': `application/json`,
+                    },
+                    data : {
+                        id : id
+                    }
+            }).then(res=>{
+                console.log("delete success");
             }).catch(err=>{
+                console.log(err);
             });
         };
     </script>
