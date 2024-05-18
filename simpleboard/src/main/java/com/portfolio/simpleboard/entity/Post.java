@@ -29,7 +29,7 @@ public class Post extends DateEntity implements Serializable {
     @Column
     private String writer;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(
             referencedColumnName = "id"
             , foreignKey = @ForeignKey(name = "fk_board_for_post")

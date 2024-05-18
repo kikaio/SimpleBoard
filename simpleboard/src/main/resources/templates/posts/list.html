@@ -6,7 +6,7 @@
 >
 <body>
     <section layout:fragment="content" class="py-5">
-        <input type="hidden" th:value="${boardId}">
+        <input type="hidden" th:value="${boardId}" name="boardId">
         <div class="container px-4 px-lg-5 mt-5">
             <div class="row mt-3">
                 <form action="/boards" method="get">
@@ -25,7 +25,7 @@
                             <div class="input-group-append">
                                 <button class="btn btn-outline-secondary searchBtn" type="submit">Search</button>
                                 <button type="button" class="btn btn-outline-secondary clearBtn">Clear</button>
-                                <button type="button" class="btn btn-outline-secondary createBtn" th:onclick="|location.href='@{/posts/insert}'|">Create</button>
+                                <button type="button" class="btn btn-outline-secondary createBtn" th:onclick="|location.href='@{/posts/insert?(boardId=${boardId}, link=${pageRequestDTO.link})}'|">Create</button>
                             </div>
                         </div><!-- end of input group div-->
                         <br>
@@ -93,13 +93,13 @@
             console.log("target no : ", num);
         }, false);
 
-        const boardId = document.querySelector(".boardId").value;
+        const boardId = document.querySelector("input[name='boardId']").value;
 
         document.querySelector(".clearBtn").addEventListener("click", function(e) {
            e.preventDefault();
            e.stopPropagation();
 
-           self.location = '/boards/${id}/posts';
+           self.location = '/boards/${boardId}/posts';
         }, false);
 
         function deleteBoardClick(id, title) {
@@ -124,6 +124,7 @@
                 console.log(err);
             });
         };
+
     </script>
 
 </body>

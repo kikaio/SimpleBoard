@@ -1,4 +1,4 @@
-package com.portfolio.simpleboard.repository.search;
+package com.portfolio.simpleboard.repository.board.search;
 
 import com.portfolio.simpleboard.dto.BoardDTO;
 import com.portfolio.simpleboard.dto.pager.PageRequestDTO;

@@ -3,7 +3,7 @@ package com.portfolio.simpleboard.service;
 import com.portfolio.simpleboard.dto.BoardDTO;
 import com.portfolio.simpleboard.dto.pager.PageRequestDTO;
 import com.portfolio.simpleboard.dto.pager.PageResponseDTO;
-import com.portfolio.simpleboard.repository.BoardRepository;
+import com.portfolio.simpleboard.repository.board.BoardRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

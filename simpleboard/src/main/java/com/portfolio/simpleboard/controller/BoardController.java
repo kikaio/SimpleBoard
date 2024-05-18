@@ -4,6 +4,7 @@ import com.portfolio.simpleboard.dto.BoardDTO;
 import com.portfolio.simpleboard.dto.pager.PageRequestDTO;
 import com.portfolio.simpleboard.dto.pager.PageResponseDTO;
 import com.portfolio.simpleboard.service.BoardService;
+import com.portfolio.simpleboard.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -24,6 +25,8 @@ import java.util.Objects;
 public class BoardController {
 
     private final BoardService boardService;
+
+    private final PostService postService;
 
     @GetMapping("")
     public String getBoardListPage(PageRequestDTO pageRequestDTO, Model model) {
@@ -94,5 +97,19 @@ public class BoardController {
         boardService.deleteBoardById(id);
         modelAndView.setViewName("redirect:/boards?%s".formatted(link));
         return modelAndView;
+    }
+
+    @GetMapping("/{boardId}/posts")
+    public String getPostList(@PathVariable(name="boardId") Long boardId, PageRequestDTO pageRequestDTO, Model model){
+        String link = "";
+        if(pageRequestDTO != null && pageRequestDTO.getLink() != null)
+            link = pageRequestDTO.getLink();
+
+        PageResponseDTO pageResponseDTO = postService.getOnlyPostDTOs(pageRequestDTO, boardId);
+
+        model.addAttribute("boardId", boardId);
+        model.addAttribute("pageRequestDTO", pageRequestDTO);
+        model.addAttribute("pageResponseDTO", pageResponseDTO);
+        return "/posts/list";
     }
 }
