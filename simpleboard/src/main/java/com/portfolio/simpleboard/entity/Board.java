@@ -25,4 +25,7 @@ public class Board extends DateEntity implements Serializable {
 
     @Column
     private String description;
+
+    @Column
+    private Boolean isDeleted;
 }

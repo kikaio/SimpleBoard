@@ -31,4 +31,14 @@ public class PostService {
         postRepository.save(post);
         return ;
     }
+
+    public PostDTO readOne(Long postId) {
+        var post = postRepository.findById(postId).orElseThrow();
+        var postDTO = PostDTO.fromEntity(post);
+        return postDTO;
+    }
+
+    public void deletePost(Long postId) {
+        postRepository.deleteById(postId);
+    }
 }

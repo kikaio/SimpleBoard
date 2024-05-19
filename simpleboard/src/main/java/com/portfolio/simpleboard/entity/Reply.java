@@ -32,5 +32,8 @@ public class Reply extends DateEntity implements Serializable{
             , foreignKey = @ForeignKey(name = "fk_post_for_reply")
     )
     private Post post;
+
+    @Column
+    private Boolean isDeleted;
 }
 

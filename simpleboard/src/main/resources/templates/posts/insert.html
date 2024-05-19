@@ -24,8 +24,8 @@
             <div class="card-header">게시글 생성</div>
             <div class="card-body">
                 <form action="/posts" method="post">
-                    <input type="hidden" th:value="${link}">
-                    <input type="hidden" th:value="${boardId}">
+                    <input type="hidden" th:value="${link}" name="link">
+                    <input type="hidden" th:value="${boardId}" name="boardId">
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item">
                             <div>
