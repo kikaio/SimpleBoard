@@ -35,5 +35,9 @@ public class Reply extends DateEntity implements Serializable{
 
     @Column
     private Boolean isDeleted;
+
+    public void doDelete() {
+        this.isDeleted = true;
+    }
 }
 

@@ -38,4 +38,8 @@ public class Post extends DateEntity implements Serializable {
 
     @Column
     private Boolean isDeleted;
+
+    public void doDelete() {
+        this.isDeleted = true;
+    }
 }
