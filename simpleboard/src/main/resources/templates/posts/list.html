@@ -49,8 +49,6 @@
                         <div class="card-footer p-3 pt-0 border-top-0 bg-transparent">
                             <div class="text-center">
                                 <a class="btn btn-outline-dark mt-auto" th:href="@{/posts/{id}(id=${postDTO.id})}">Enter</a>
-                                <a class="btn btn-outline-dark mt-auto" th:href="@{/posts/modify/{id}(id=${postDTO.id})}">Edit</a>
-                                <button type="button" class="btn btn-outline-dark mt-auto" th:onclick="deletePostClick([[${postDTO.id}]], [[${postDTO.boardId}]], [[${pageRequestDTO.link}]])">Delete</button>
                             </div>
                         </div>
                     </div> <!--end of board card -->
@@ -102,30 +100,5 @@
            self.location = '/boards/${boardId}/posts';
         }, false);
 
-        function deletePostClick(postId, boardId, link) {
-            console.log("delete requested boardId:" + boardId + " postId : "+ postId);
-            if(confirm("게시글을 삭제하시겠습니까?") == false) {
-                return ;
-            }
-            console.log("/posts/"+postId+" delete try");
-
-            axios.delete("/posts/"+postId,
-                {
-                    headers: {
-                        'Content-Type': `application/json`,
-                    },
-                    data : {
-                        postId : postId
-                        , boardId : boardId
-                        , link : link
-                    }
-            }).then(res=>{
-                alert("delete success postId : " + postId);
-                console.log("delete success");
-                location.reload();
-            }).catch(err=>{
-                console.log(err);
-            });
-        };
     </script>
 </body>

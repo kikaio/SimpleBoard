@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @ToString
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
 public class PostDTO {
@@ -46,6 +46,7 @@ public class PostDTO {
     }
 
     static public Post toEntityWithBoard(Board board, PostDTO postDTO) {
+
         return Post.builder()
                 .id(postDTO.getId())
                 .board(board)

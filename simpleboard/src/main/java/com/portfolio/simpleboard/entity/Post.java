@@ -4,6 +4,7 @@ package com.portfolio.simpleboard.entity;
 import com.portfolio.simpleboard.entity.base.DateEntity;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.io.Serializable;
 
@@ -11,7 +12,7 @@ import java.io.Serializable;
 @Getter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString
 public class Post extends DateEntity implements Serializable {
 
@@ -41,5 +42,14 @@ public class Post extends DateEntity implements Serializable {
 
     public void doDelete() {
         this.isDeleted = true;
+    }
+
+    public void updatePost(String title, String content) {
+        this.title = title;
+        this.content = content;
+    }
+
+    public void updateBoard(Board board) {
+        this.board = board;
     }
 }

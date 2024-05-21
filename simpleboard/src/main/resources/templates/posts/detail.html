@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <!-- Favicon-->
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+    <!-- Bootstrap icons-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <link th:href="@{/css/styles.css}" rel="stylesheet" />
+
+    <title>SimpleBoard</title>
+</head>
+<body>
+<section class="vw-100 vh-100" style="background-color: #eee;">
+    <div class="vw-100 vh-100 justify-content-center d-flex align-items-center container">
+        <div class="card" style="width: 24rem;">
+            <div class="card-header">게시글 정보</div>
+            <div class="card-body">
+                <form th:action="@{/posts/modify/{id}(id=${postDTO.id})}" method="get">
+                    <input type="hidden" th:value="${link}" name="link">
+                    <input type="hidden" th:value="${boardId}" name="boardId">
+                    <input type="hidden" th:value="${id}" name="id">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            <div>
+                                <label>Title : </label>
+                                <label name="title" value="${postDTO.title}">[[${postDTO.title}]]</label>
+                            </div>
+                        </li>
+                        <li class="list-group-item" >
+                            <div>
+                                <label>Writer : </label>
+                                <label name="writer" value="${postDTO.writer}">[[${postDTO.writer}]]</label>
+                            </div>
+                        </li>
+                        <li class="list-group-item" >
+                            <div>
+                                <label>Content : </label>
+                                <label name="content" value="${postDTO.content}">[[${postDTO.content}]]</label>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div>
+                                <button type="submit" class="btn btn-outline-dark mt-auto" >Edit</button>
+<!--                                <button type="button" class="btn btn-outline-dark mt-auto" th:href="@{/posts/modify/{id}?{link}&boardId(id=${postDTO.id})}">Edit</button>-->
+                                <button type="button" class="btn btn-primary deleteBtn">Delete</button>
+                                <button type="button" class="btn btn-primary" th:onclick="location.href='/boards/[[${boardId}]]/posts?[[${link}]]'">Go Back</button>
+                            </div>
+                        </li>
+                    </ul>
+                </form>
+            </div>
+        </div> <!--end of card div-->
+    </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="/js/scripts.js"></script>
+<script th:inline="javascript">
+    document.querySelector(".deleteBtn").addEventListener("click", function(e) {
+        e.stopPropagation();
+        e.preventDefault();
+        axios.delete("/posts/+[[${postDTO.getId()}]]", {
+            headers: {
+                'Content-Type': `application/json`,
+            },
+            data : {
+                postId : postId
+                , boardId : boardId
+                , link : link
+            }
+        }).then(res => {
+            console.log(res);
+        }).catch(err => {
+            console.log(err);
+        });
+    }, false);
+</script>
+</body>
+</html>

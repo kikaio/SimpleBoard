@@ -38,7 +38,24 @@ public class PostService {
         return postDTO;
     }
 
+    @Transactional
     public void deletePost(Long postId) {
         postRepository.deleteById(postId);
+        return ;
+    }
+
+    @Transactional
+    public void modifyPost(PostDTO postDTO) {
+        long boardId = postDTO.getBoardId();
+        var post = postRepository.findById(postDTO.getId()).orElseThrow();
+        if(boardId != post.getBoard().getId()) {
+            //todo : error logging
+            return ;
+        }
+
+        post.updatePost(postDTO.getTitle(), postDTO.getContent());
+
+        postRepository.save(post);
+        return ;
     }
 }
