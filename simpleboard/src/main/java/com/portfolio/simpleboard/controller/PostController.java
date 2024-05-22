@@ -1,6 +1,7 @@
 package com.portfolio.simpleboard.controller;
 
 
+import com.portfolio.simpleboard.dto.BoardDTO;
 import com.portfolio.simpleboard.dto.pager.PageRequestDTO;
 import com.portfolio.simpleboard.dto.posts.PostDTO;
 import com.portfolio.simpleboard.service.PostService;
@@ -79,9 +80,27 @@ public class PostController {
 //    }
 
     @PutMapping("/{postId}")
-    public String modifyPost(@PathVariable Long postId, @RequestBody PostDTO data, @RequestBody String link) {
+    public ModelAndView modifyPost(@PathVariable Long postId, @RequestBody Map<String, Object> data) {
         log.info("data : %s".formatted(data));
-        return "";
+        String link = data.get("link").toString();
+        Long id = Long.parseLong(data.get("id").toString());
+        Long boardId = Long.parseLong(data.get("boardId").toString());
+        String title = data.get("title").toString();
+        String writer = data.get("writer").toString();
+        String content = data.get("content").toString();
+
+        var postDTO = PostDTO.builder()
+                .id(id)
+                .boardId(boardId)
+                .title(title)
+                .writer(writer)
+                .content(content)
+                .build()
+        ;
+        postService.modifyPost(postDTO);
+        var modelAndView = new ModelAndView("redirect:/posts/%d?$s".formatted(id, link));
+        modelAndView.setStatus(HttpStatus.);
+        return modelAndView;
     }
     @DeleteMapping("/{id}")
     public ModelAndView deletePostInList(@PathVariable Long id, @RequestBody Map<String, Object> paramMap, RedirectAttributes redirectAttributes) {
