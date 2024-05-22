@@ -51,7 +51,7 @@
                                 <button type="submit" class="btn btn-outline-dark mt-auto" >Edit</button>
 <!--                                <button type="button" class="btn btn-outline-dark mt-auto" th:href="@{/posts/modify/{id}?{link}&boardId(id=${postDTO.id})}">Edit</button>-->
                                 <button type="button" class="btn btn-primary deleteBtn">Delete</button>
-                                <button type="button" class="btn btn-primary" th:onclick="location.href='/boards/[[${boardId}]]/posts?[[${link}]]'">Go Back</button>
+                                <button type="button" class="btn btn-primary" th:onclick="|location.href='@{/boards/{id}/posts?{link}(id=${boardId}, link=${link})}'|">Go Back</button>
                             </div>
                         </li>
                     </ul>
@@ -68,17 +68,18 @@
     document.querySelector(".deleteBtn").addEventListener("click", function(e) {
         e.stopPropagation();
         e.preventDefault();
-        axios.delete("/posts/+[[${postDTO.getId()}]]", {
+        axios.delete("/posts/+[[${postDTO.id}]]", {
             headers: {
                 'Content-Type': `application/json`,
             },
             data : {
-                postId : postId
-                , boardId : boardId
-                , link : link
+                postId : [[${postDTO.id}]]
+                , boardId : [[${boardId}]]
+                , link : [[${link}]]
             }
         }).then(res => {
             console.log(res);
+            location.href=[[@{/boards/{bId}/posts?{link}(bId=${boardId}, link=${link})}]];
         }).catch(err => {
             console.log(err);
         });

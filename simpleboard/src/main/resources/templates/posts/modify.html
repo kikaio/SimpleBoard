@@ -50,7 +50,7 @@
                         <li class="list-group-item">
                             <div>
                                 <button type="button" class="btn btn-primary modifyBtn">Do Modify</button>
-                                <button type="button" class="btn btn-primary" th:onclick="location.href=[[|@{/posts/${id}}?${link}|]]">Go Back</button>
+                                <button type="button" class="btn btn-primary" th:onclick="|location.href='@{/posts/{id}?{link}(id=${postDTO.id}, link=${link})}'|">Go Back</button>
                             </div>
                         </li>
                     </ul>
@@ -97,6 +97,7 @@
                 , link : link
         }).then(res=>{
             console.log("res", res);
+            alert("수정되었습니다.");
         }).catch(e=>{
             console.log("err", e);
         });

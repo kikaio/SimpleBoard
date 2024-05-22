@@ -98,33 +98,32 @@ public class PostController {
                 .build()
         ;
         postService.modifyPost(postDTO);
-        var modelAndView = new ModelAndView("redirect:/posts/%d?$s".formatted(id, link));
-        modelAndView.setStatus(HttpStatus.);
+        var modelAndView = new ModelAndView("redirect:/posts/modify/%d?link=%s&boardId=%d&id=%d".formatted(id, link, boardId, postId));
+        modelAndView.setStatus(HttpStatus.SEE_OTHER);
         return modelAndView;
     }
+
+    @ResponseStatus(HttpStatus.SEE_OTHER)
     @DeleteMapping("/{id}")
-    public ModelAndView deletePostInList(@PathVariable Long id, @RequestBody Map<String, Object> paramMap, RedirectAttributes redirectAttributes) {
+    public String deletePostInList(@PathVariable Long id, @RequestBody Map<String, Object> paramMap, RedirectAttributes redirectAttributes) {
 
         Long postId = Long.parseLong(paramMap.get("postId").toString());
         Long boardId = Long.parseLong(paramMap.get("boardId").toString());
         String link = paramMap.get("link").toString();
 
-        ModelAndView modelAndView = new ModelAndView("redirect:/boards/%d/posts?%s".formatted(boardId, link));
         if(id != postId) {
-            modelAndView.setStatus(HttpStatus.BAD_REQUEST);
-            return modelAndView;
+            redirectAttributes.addFlashAttribute("error", "bad request");
+            return "redirect:/boards/%d/posts?%s".formatted(boardId, link);
         }
 
         var postDTO = postService.readOne(postId);
         if(postDTO.getBoardId() != boardId) {
-            modelAndView.setStatus(HttpStatus.BAD_REQUEST);
-            return modelAndView;
+            redirectAttributes.addFlashAttribute("error", "bad request");
+            return "redirect:/boards/%d/posts?%s".formatted(boardId, link);
         }
 
         postService.deletePost(postId);
-
-        modelAndView.setStatus(HttpStatus.SEE_OTHER);
-        return modelAndView;
+        return "redirect:/boards/%d/posts?%s".formatted(boardId, link);
     }
 
 }
