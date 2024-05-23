@@ -19,17 +19,17 @@ API 설계
 	-> PUT : 
  - 게시판 삭제
 	-> DELETE : 
+ - 게시글 목록 화면
+	-> GET : /baords/{boardId}/posts
   
 게시글 관련
  - 기본적인 URL RequestMapping : RequestMapping("/post : ")
- - 게시글 목록 화면
-	-> GET : 
  - 게시글 생성 화면
-	-> GET : 
+	-> GET : /insert
  - 게시글 수정 화면
-	-> GET : 
+	-> GET : /modify/{postId}
  - 게시글 조회 상세 화면
-	-> GET : 
+	-> GET : /{postId}
  - 게시글 생성
 	-> POST : 
  - 게시글 수정
