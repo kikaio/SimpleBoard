@@ -7,5 +7,5 @@ import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport
 
 public interface ReplySearch {
 
-    PageResponseDTO<ReplyDTO> getOnlyReplies(Long postId, PageRequestDTO pageRequestDTO);
+    PageResponseDTO<ReplyDTO> getOnlyReplies(Long postId, PageRequestDTO pageRequestDTO, boolean isDelete);
 }

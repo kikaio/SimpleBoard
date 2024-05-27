@@ -27,7 +27,7 @@ public class ReplyDTO {
 
     private Long postId;
 
-    public ReplyDTO fromEntity(Reply reply) {
+    public static ReplyDTO fromEntity(Reply reply) {
         return ReplyDTO.builder()
                 .id(reply.getId())
                 .writer(reply.getWriter())
@@ -39,7 +39,7 @@ public class ReplyDTO {
         ;
     }
 
-    public Reply toEntity(Post post, ReplyDTO replyDTO) {
+    public static Reply toEntity(Post post, ReplyDTO replyDTO) {
         return Reply.builder()
                 .id(replyDTO.getId())
                 .writer(replyDTO.getWriter())

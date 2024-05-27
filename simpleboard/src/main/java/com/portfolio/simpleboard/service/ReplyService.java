@@ -5,6 +5,7 @@ import com.portfolio.simpleboard.dto.pager.PageResponseDTO;
 import com.portfolio.simpleboard.dto.replies.ReplyDTO;
 import com.portfolio.simpleboard.repository.post.PostRepository;
 import com.portfolio.simpleboard.repository.reply.ReplyRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
@@ -15,14 +16,17 @@ import org.springframework.stereotype.Service;
 public class ReplyService {
 
     private ReplyRepository replyRepository;
+    private PostRepository postRepository;
 
-    public PageResponseDTO<ReplyDTO> getReplies(Long postId, PageRequestDTO pageRequestDTO) {
-        PageResponseDTO<ReplyDTO> pageResponseDTO = replyRepository.getOnlyReplies(postId, pageRequestDTO);
-        return null;
+    public PageResponseDTO<ReplyDTO> getRepliesNotDelete(Long postId, PageRequestDTO pageRequestDTO) {
+        PageResponseDTO<ReplyDTO> pageResponseDTO = replyRepository.getOnlyReplies(postId, pageRequestDTO, false);
+        return pageResponseDTO;
     }
-
-    public void insertReply(Long postId, ReplyDTO replyDTO) {
-        //todo : insert reply to db
+    @Transactional
+    public void insertReply(ReplyDTO replyDTO) {
+        var post = postRepository.findById(replyDTO.getPostId()).orElseThrow();
+        var reply = ReplyDTO.toEntity(post, replyDTO);
+        replyRepository.save(reply);
         return ;
     }
 
@@ -33,6 +37,10 @@ public class ReplyService {
 
     public void modifyReply(ReplyDTO replyDTO) {
         //todo : modify reply in db
+
+        var reply = replyRepository.findById(replyDTO.getId()).orElseThrow();
+        reply.
+
         return ;
     }
 
