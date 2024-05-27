@@ -23,7 +23,7 @@ public class ReplyController {
     public ResponseEntity<PageResponseDTO<ReplyDTO>> getReplies(@RequestParam Long postId, @RequestParam PageRequestDTO pageRequestDTO) {
         //todo : search replies using pager
         PageResponseDTO<ReplyDTO> pageResponseDTO = replyService.getRepliesNotDelete(postId, pageRequestDTO);
-        return ResponseEntity.ok(null);
+        return ResponseEntity.ok(pageResponseDTO);
     }
 
     @PostMapping("")
@@ -49,6 +49,10 @@ public class ReplyController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Boolean> deleteReply(@PathVariable Long id, ReplyDTO replyDTO) {
         //todo : delete reply and sub replies.
+        if(id != replyDTO.getId()){
+            return ResponseEntity.badRequest().body(false);
+        }
+        replyService.deleteReply(replyDTO);
         return ResponseEntity.ok(true);
     }
 }

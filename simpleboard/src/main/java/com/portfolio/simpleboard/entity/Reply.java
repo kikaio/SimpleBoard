@@ -39,5 +39,9 @@ public class Reply extends DateEntity implements Serializable{
     public void doDelete() {
         this.isDeleted = true;
     }
+
+    public void modify(String content){
+        this.content = content;
+    }
 }
 

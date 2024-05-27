@@ -32,6 +32,7 @@ public class ReplyService {
 
     public void deleteReply(ReplyDTO replyDTO) {
         //todo : delete reply from db
+        replyRepository.deleteById(replyDTO.getId());
         return ;
     }
 
@@ -39,8 +40,8 @@ public class ReplyService {
         //todo : modify reply in db
 
         var reply = replyRepository.findById(replyDTO.getId()).orElseThrow();
-        reply.
-
+        reply.modify(replyDTO.getContent());
+        replyRepository.save(reply);
         return ;
     }
 
