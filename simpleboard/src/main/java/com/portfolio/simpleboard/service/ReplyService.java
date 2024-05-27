@@ -23,11 +23,11 @@ public class ReplyService {
         return pageResponseDTO;
     }
     @Transactional
-    public void insertReply(ReplyDTO replyDTO) {
+    public ReplyDTO insertReply(ReplyDTO replyDTO) {
         var post = postRepository.findById(replyDTO.getPostId()).orElseThrow();
         var reply = ReplyDTO.toEntity(post, replyDTO);
-        replyRepository.save(reply);
-        return ;
+        reply = replyRepository.save(reply);
+        return ReplyDTO.fromEntity(reply);
     }
 
     public void deleteReply(ReplyDTO replyDTO) {
@@ -36,13 +36,13 @@ public class ReplyService {
         return ;
     }
 
-    public void modifyReply(ReplyDTO replyDTO) {
+    public ReplyDTO modifyReply(ReplyDTO replyDTO) {
         //todo : modify reply in db
 
         var reply = replyRepository.findById(replyDTO.getId()).orElseThrow();
         reply.modify(replyDTO.getContent());
-        replyRepository.save(reply);
-        return ;
+        reply = replyRepository.save(reply);
+        return ReplyDTO.fromEntity(reply);
     }
 
 }

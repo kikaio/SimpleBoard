@@ -3,9 +3,12 @@ package com.portfolio.simpleboard.repository.post.search;
 import com.portfolio.simpleboard.dto.pager.PageRequestDTO;
 import com.portfolio.simpleboard.dto.pager.PageResponseDTO;
 import com.portfolio.simpleboard.dto.posts.PostDTO;
+import com.portfolio.simpleboard.dto.posts.PostWithReplyCntDTO;
 import com.portfolio.simpleboard.entity.Post;
 import com.portfolio.simpleboard.entity.QPost;
+import com.portfolio.simpleboard.entity.QReply;
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPQLQuery;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
@@ -62,6 +65,63 @@ public class PostSearchImpl extends QuerydslRepositorySupport implements PostSea
                 .total(total)
                 .build()
         ;
+    }
+    public PageResponseDTO<PostWithReplyCntDTO> getPostsWithReplyCnt(PageRequestDTO pageRequestDTO, long boardId){
+        QPost post = QPost.post;
+        QReply reply = QReply.reply;
+
+        JPQLQuery jpqlQuery = from(post);
+
+        getQuerydsl().applyPagination(pageRequestDTO.getPageable(), jpqlQuery);
+
+/*
+    select P.*, COUNT(P) from Post P Inner JOIN Reply AS R ON P.id = R.post_id
+    GROUP BY R.postId
+*/
+        jpqlQuery.leftJoin(reply).on(reply.post.eq(post));
+        jpqlQuery.groupBy(post);
+
+        String types = pageRequestDTO.getType();
+        if(types != null && types.length() > 0) {
+
+            String[] type = types.split("");
+            BooleanBuilder bb = new BooleanBuilder();
+            for(String val : type) {
+                switch(val) {
+                    case "t":
+                        bb.or(post.title.contains(val));
+                        break;
+                    case "c":
+                        bb.or(post.content.contains(val));
+                        break;
+                    case "w":
+                        bb.or(post.writer.contains(val));
+                        break;
+                }
+            }
+            jpqlQuery.where(bb);
+        }
+        jpqlQuery.where(post.id.gt(0L));
+
+        JPQLQuery<PostWithReplyCntDTO> dtoQuery = jpqlQuery.select(
+                Projections.bean(PostWithReplyCntDTO.class
+                        , post.id
+                        , post.title
+                        , post.writer
+                        , post.cDate
+                        , reply.count().as("replyCount")
+                )
+        );
+        getQuerydsl().applyPagination(pageRequestDTO.getPageable(), dtoQuery);
+        var dtoList = dtoQuery.fetch();
+        int total = (int)dtoQuery.fetchCount();
+
+
+        return PageResponseDTO.<PostWithReplyCntDTO>builder()
+                .pageRequestDTO(pageRequestDTO)
+                .dtoList(dtoList)
+                .total(total)
+                .build();
     }
 
 }

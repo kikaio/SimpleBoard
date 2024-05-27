@@ -13,6 +13,12 @@ import java.io.Serializable;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @ToString
+@Table(
+        name="reply"
+        , indexes = {
+                @Index(name = "idx_post_id_for_reply", columnList = "post_id")
+        }
+)
 public class Reply extends DateEntity implements Serializable{
 
     @Id
@@ -31,6 +37,7 @@ public class Reply extends DateEntity implements Serializable{
             referencedColumnName = "id"
             , foreignKey = @ForeignKey(name = "fk_post_for_reply")
     )
+    @ToString.Exclude
     private Post post;
 
     @Column

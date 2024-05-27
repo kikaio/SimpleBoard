@@ -2,6 +2,8 @@ package com.portfolio.simpleboard.dto.replies;
 
 import com.portfolio.simpleboard.entity.Post;
 import com.portfolio.simpleboard.entity.Reply;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -16,16 +18,20 @@ public class ReplyDTO {
 
     private Long id;
 
+    @NotNull
     private String writer;
 
     @Builder.Default
+    @NotEmpty
     private String content = "";
+
+    @NotNull
+    private Long postId;
 
     private LocalDateTime cDate;
 
     private LocalDateTime mDate;
 
-    private Long postId;
 
     public static ReplyDTO fromEntity(Reply reply) {
         return ReplyDTO.builder()

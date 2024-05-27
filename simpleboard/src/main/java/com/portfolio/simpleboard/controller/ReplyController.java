@@ -5,13 +5,18 @@ import com.portfolio.simpleboard.dto.pager.PageRequestDTO;
 import com.portfolio.simpleboard.dto.pager.PageResponseDTO;
 import com.portfolio.simpleboard.dto.replies.ReplyDTO;
 import com.portfolio.simpleboard.service.ReplyService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.Value;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindException;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-@Controller
+@RestController
 @RequestMapping("/replies")
 @RequiredArgsConstructor
 public class ReplyController {
@@ -19,40 +24,45 @@ public class ReplyController {
     private final ReplyService replyService;
 
 
-    @GetMapping("")
-    public ResponseEntity<PageResponseDTO<ReplyDTO>> getReplies(@RequestParam Long postId, @RequestParam PageRequestDTO pageRequestDTO) {
+    @GetMapping(value = "")
+    public PageResponseDTO<ReplyDTO> getReplies(@RequestParam Long postId, @RequestParam PageRequestDTO pageRequestDTO) {
         //todo : search replies using pager
         PageResponseDTO<ReplyDTO> pageResponseDTO = replyService.getRepliesNotDelete(postId, pageRequestDTO);
-        return ResponseEntity.ok(pageResponseDTO);
+        return pageResponseDTO;
     }
 
-    @PostMapping("")
-    public ResponseEntity<Boolean> insertReply(ReplyDTO replyDTO) {
+    @PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ReplyDTO insertReply(@Valid @RequestBody ReplyDTO replyDTO, BindingResult bindingResult) throws BindException {
+        if(bindingResult.hasErrors()) {
+            throw new BindException(bindingResult);
+        }
         //todo : insert reply to db
-        replyService.insertReply(replyDTO);
-        return ResponseEntity.ok(true);
+        ReplyDTO ret = replyService.insertReply(replyDTO);
+        return ret;
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Boolean> modifyReply(@PathVariable Long id, ReplyDTO replyDTO) {
+    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ReplyDTO modifyReply(@PathVariable(required = true) Long id, @Valid @RequestBody ReplyDTO replyDTO,  BindingResult bindingResult) throws BindException {
         //todo : modify reply using id
-        if(id != replyDTO.getId())
-        {
-            return ResponseEntity.badRequest().body(false);
+        if(bindingResult.hasErrors()) {
+            throw new BindException(bindingResult);
+        }
+        if(id != replyDTO.getId()) {
+            id = replyDTO.getId();
         }
 
-        replyService.modifyReply(replyDTO);
+        ReplyDTO ret = replyService.modifyReply(replyDTO);
 
-        return ResponseEntity.ok(true);
+        return ret;
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Boolean> deleteReply(@PathVariable Long id, ReplyDTO replyDTO) {
+    @DeleteMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ReplyDTO deleteReply(@PathVariable(required = true) Long id, @RequestBody ReplyDTO replyDTO) {
         //todo : delete reply and sub replies.
         if(id != replyDTO.getId()){
-            return ResponseEntity.badRequest().body(false);
+            id = replyDTO.getId();
         }
         replyService.deleteReply(replyDTO);
-        return ResponseEntity.ok(true);
+        return replyDTO;
     }
 }

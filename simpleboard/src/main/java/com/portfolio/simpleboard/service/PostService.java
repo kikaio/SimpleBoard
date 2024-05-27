@@ -3,6 +3,7 @@ package com.portfolio.simpleboard.service;
 import com.portfolio.simpleboard.dto.pager.PageRequestDTO;
 import com.portfolio.simpleboard.dto.pager.PageResponseDTO;
 import com.portfolio.simpleboard.dto.posts.PostDTO;
+import com.portfolio.simpleboard.dto.posts.PostWithReplyCntDTO;
 import com.portfolio.simpleboard.repository.board.BoardRepository;
 import com.portfolio.simpleboard.repository.post.PostRepository;
 import jakarta.transaction.Transactional;
@@ -21,6 +22,11 @@ public class PostService {
     public PageResponseDTO<PostDTO> getOnlyPostDTOs(PageRequestDTO pageRequestDTO, long boardId) {
         PageResponseDTO<PostDTO> pageResponseDTO = postRepository.getOnlyPosts(pageRequestDTO, boardId);
         return pageResponseDTO;
+    }
+
+    public PageResponseDTO<PostWithReplyCntDTO> getPostsWithReplyCnt(PageRequestDTO pageRequestDTO, long boardId) {
+        PageResponseDTO<PostWithReplyCntDTO> res = postRepository.getPostsWithReplyCnt(pageRequestDTO, boardId);
+        return res;
     }
 
     @Transactional
