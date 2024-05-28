@@ -32,6 +32,9 @@ public class ReplyDTO {
 
     private LocalDateTime mDate;
 
+    @NotNull
+    @Builder.Default
+    private Boolean isDeleted = false;
 
     public static ReplyDTO fromEntity(Reply reply) {
         return ReplyDTO.builder()
@@ -41,6 +44,7 @@ public class ReplyDTO {
                 .cDate(reply.getCDate())
                 .mDate(reply.getMDate())
                 .postId(reply.getPost().getId())
+                .isDeleted(reply.getIsDeleted())
                 .build()
         ;
     }
@@ -51,6 +55,7 @@ public class ReplyDTO {
                 .writer(replyDTO.getWriter())
                 .content(replyDTO.getContent())
                 .post(post)
+                .isDeleted(replyDTO.getIsDeleted())
                 .build()
         ;
     }

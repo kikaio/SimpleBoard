@@ -15,8 +15,8 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class ReplyService {
 
-    private ReplyRepository replyRepository;
-    private PostRepository postRepository;
+    private final ReplyRepository replyRepository;
+    private final PostRepository postRepository;
 
     public PageResponseDTO<ReplyDTO> getRepliesNotDelete(Long postId, PageRequestDTO pageRequestDTO) {
         PageResponseDTO<ReplyDTO> pageResponseDTO = replyRepository.getOnlyReplies(postId, pageRequestDTO, false);
