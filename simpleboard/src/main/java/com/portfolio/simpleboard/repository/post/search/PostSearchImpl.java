@@ -102,7 +102,14 @@ public class PostSearchImpl extends QuerydslRepositorySupport implements PostSea
             jpqlQuery.where(bb);
         }
         jpqlQuery.where(post.id.gt(0L));
-        jpqlQuery.where(reply.isDeleted.eq(false));
+        jpqlQuery.where(post.isDeleted.eq(false));
+
+        {
+            BooleanBuilder bb = new BooleanBuilder();
+            bb.or(reply.isDeleted.eq(false));
+            bb.or(reply.isDeleted.isNull());
+            jpqlQuery.where(bb);
+        }
 
         JPQLQuery<PostWithReplyCntDTO> dtoQuery = jpqlQuery.select(
                 Projections.bean(PostWithReplyCntDTO.class

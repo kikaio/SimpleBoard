@@ -4,6 +4,7 @@ package com.portfolio.simpleboard.dto.posts;
 import com.portfolio.simpleboard.dto.BoardDTO;
 import com.portfolio.simpleboard.entity.Board;
 import com.portfolio.simpleboard.entity.Post;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -32,6 +33,10 @@ public class PostDTO {
 
     private LocalDateTime mDate;
 
+    @NotNull
+    @Builder.Default
+    private Boolean isDelete = false;
+
     static public PostDTO fromEntity(Post post) {
         return PostDTO.builder()
                 .id(post.getId())
@@ -41,6 +46,7 @@ public class PostDTO {
                 .content(post.getContent())
                 .cDate(post.getCDate())
                 .mDate(post.getMDate())
+                .isDelete(post.getIsDeleted())
                 .build()
         ;
     }
@@ -53,6 +59,7 @@ public class PostDTO {
                 .title(postDTO.getTitle())
                 .content(postDTO.getContent())
                 .writer(postDTO.getWriter())
+                .isDeleted(postDTO.getIsDelete())
                 .build()
         ;
     }
