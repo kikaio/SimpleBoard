@@ -50,6 +50,7 @@ public class ReplySearchImpl extends QuerydslRepositorySupport implements ReplyS
         return PageResponseDTO.<ReplyDTO>builder()
                 .dtoList(dtos)
                 .total(cnt)
+                .pageRequestDTO(pageRequestDTO)
                 .build();
 
     }

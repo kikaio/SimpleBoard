@@ -44,7 +44,7 @@ public class PageRequestDTO {
         {
             StringBuffer sb = new StringBuffer();
             sb.append("page=%d".formatted(page));
-            sb.append("&size=%d".formatted(pageSize));
+            sb.append("&pageSize=%d".formatted(pageSize));
 
             if (type != null && type.length() > 0) {
                 sb.append("&type=%s".formatted(type));

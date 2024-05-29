@@ -25,7 +25,7 @@ public class ReplyController {
 
 
     @GetMapping(value = "")
-    public PageResponseDTO<ReplyDTO> getReplies(@RequestParam Long postId, @RequestParam PageRequestDTO pageRequestDTO) {
+    public PageResponseDTO<ReplyDTO> getReplies(Long postId, PageRequestDTO pageRequestDTO) {
         //todo : search replies using pager
         PageResponseDTO<ReplyDTO> pageResponseDTO = replyService.getRepliesNotDelete(postId, pageRequestDTO);
         return pageResponseDTO;

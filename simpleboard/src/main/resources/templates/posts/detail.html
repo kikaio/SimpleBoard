@@ -19,7 +19,7 @@
 </head>
 <body>
 <section class="vw-100 vh-100" style="background-color: #eee;">
-    <div class="vw-100 vh-100 justify-content-center d-flex align-items-center container">
+    <div class="vstack gap-3 vw-100 vh-100 justify-content-center d-flex align-items-center container">
         <div class="card" style="width: 24rem;">
             <div class="card-header">게시글 정보</div>
             <div class="card-body">
@@ -100,6 +100,77 @@
             console.log(err);
         });
     }, false);
+
+    const replyList = document.querySelector('.replyList');
+    const replyPaging = document.querySelector('.replyPaging');
+
+    function printList(dtoList) {
+        let str = '';
+
+        if(dtoList && dtoList.length > 0) {
+            for(const dto of dtoList) {
+                str += `
+                    <li class="list-group-item d-flex replyItem">
+                        <span class="col-2">${dto.id}</span>
+                        <span class="col-2">${dto.writer}</span>
+                        <span class="col-6" data-id="${dto.id}">${dto.content}</span>
+                        <span class="col-4">${dto.mdate}</span>
+                    </li>
+                `;
+            }
+        }
+
+        replyList.innerHTML = str;
+    }
+
+    function printPages(data) {
+        let pageStr = '';
+        if(data.prev) {
+            pageStr += `
+            <li class="page-item">
+                <a class="page-link" data-page=${data.start-1}>
+                    PREV
+                </a>
+            </li>
+            `;
+        }
+
+        for(let i = data.start; i <= data.end; i++) {
+            pageStr += `
+                <li class="page-item ${i == data.page? "active":""}">
+                    <a class="page-link" data-page="${i}">
+                        ${i}
+                    </a>
+                </li>
+            `;
+        }
+
+        if(data.next) {
+            pageStr += `
+                <li class="page-item">
+                    <a class="page-link" data-page="${data.end+1}">
+                        NEXT
+                    </a>
+                </li>
+            `;
+        }
+        replyPaging.innerHTML=pageStr;
+
+    }
+
+    function printReplies(postId, link, goLast) {
+        getList(postId, link, goLast)
+        .then(data=>{
+            console.log(data);
+            printList(data.dtoList);
+            printPages(data);
+
+        }).catch(err=>{
+            console.error(err);
+        });
+    };
+
+    printReplies([[${postDTO.id}]], [[${link}]]);
 </script>
 </body>
 </html>
