@@ -11,6 +11,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Log4j2
 @SpringBootTest
 public class ReplyServiceTest {
@@ -66,16 +69,18 @@ public class ReplyServiceTest {
     @Disabled
     @DisplayName("insert reply to post")
     public void insertReply() {
-        long postId = 0;
-        ReplyDTO newReply = ReplyDTO.builder()
-                .postId(postId)
-                .content("this is sample reply for %d".formatted(postId))
-                .writer("tester")
-                .build()
-        ;
+        long postId = 10;
 
-        replyService.insertReply(newReply);
-        log.info("try insert reply : %d".formatted(newReply));
+        for(int i = 1; i < 10; i++) {
+            ReplyDTO newReply = ReplyDTO.builder()
+                    .postId(postId)
+                    .content("this is sample reply_%d for %d".formatted(i, postId))
+                    .writer("tester_%d".formatted(i))
+                    .build()
+                    ;
+            replyService.insertReply(newReply);
+            log.info("try insert reply : %s".formatted(newReply.toString()));
+        }
         return ;
     }
 

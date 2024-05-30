@@ -1,5 +1,7 @@
 package com.portfolio.simpleboard.dto.replies;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.portfolio.simpleboard.entity.Post;
 import com.portfolio.simpleboard.entity.Reply;
 import jakarta.validation.constraints.NotEmpty;
@@ -28,8 +30,10 @@ public class ReplyDTO {
     @NotNull
     private Long postId;
 
+    @JsonIgnore
     private LocalDateTime cDate;
 
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private LocalDateTime mDate;
 
     @NotNull
