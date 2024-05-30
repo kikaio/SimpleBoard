@@ -28,7 +28,7 @@ public class ReplySearchImpl extends QuerydslRepositorySupport implements ReplyS
         query.where(reply.id.gt(0L));
 
         //reply just use page info.
-        getQuerydsl().applyPagination(pageRequestDTO.getPageable("id"), query);
+        getQuerydsl().applyPagination(pageRequestDTO.getPageable(), query);
 
         List<Reply> replies = query.fetch();
         int cnt = (int)query.fetchCount();
