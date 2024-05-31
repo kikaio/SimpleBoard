@@ -100,6 +100,29 @@
         </div> <!--end of modal dialog-->
     </div> <!--end of modal-->
 
+    <div class="modal modifyModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" replyHeader></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    </button>
+                </div> <!--end of modal header-->
+                <div class="modal-body">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">Reply Text</span>
+                        <input type="text" class="form-control modifyText">
+                    </div>
+                </div> <!--end of modal body-->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-info modifyBtn">Modify</button>
+                    <button type="button" class="btn btn-danger removeBtn">Remove</button>
+                    <button type="button" class="btn btn-outline-dark closeModifyBtn">Close</button>
+                </div> <!--end of modal footer-->
+            </div> <!--end of modal content-->
+        </div> <!--end of modal dialog-->
+    </div> <!--end of modal-->
+
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="/js/reply.js"></script>
 </section>
@@ -250,8 +273,59 @@
 
     }, false);
 
-
     printReplies(postId, link, true);
+
+    const modifyModal = new bootstrap.Modal(document.querySelector(".modifyModal"));
+    const replyHeader = document.querySelector(".replyHeader");
+    const modifyText = document.querySelector(".modifyText");
+    const modifyBtn = document.querySelector(".modifyBtn");
+    const removeBtn = document.querySelector(".removeBtn");
+    const closeModifyBtn = document.querySelector(".closeModifyBtn");
+
+    replyList.addEventListener("click", function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        const target = e.target;
+        if(!target || target.tagName != 'SPAN') {
+            return ;
+        }
+
+        const rid = target.getAttribute("data-id");
+
+        if(rid == null) {
+            return ;
+        }
+
+        getReply(rid)
+        .then(reply=>{
+            console.log(reply);
+            replyHeader.innerHTML = reply.id;
+            modifyText.value=reply.content;
+            modifyModal.show();
+        }).catch(e=>{
+
+        });
+
+    }, false);
+
+
+    modifyBtn.addEventListener("click", function(e) {
+        const replyObj = {
+            id : replyHeader.innerHTML
+            , content : modifyText.value
+        };
+
+        modifyReply(replyObj)
+        .then(data=>{
+            alert(`${data.id} was modified`);
+            replyText.value = '';
+            modifyModal.hide();
+            printReplies(postId, link);
+        }).catch(e=>{
+            console.error(e);
+        })
+    }, false);
 </script>
 </body>
 </html>

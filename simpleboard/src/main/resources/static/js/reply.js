@@ -16,3 +16,14 @@ async function addReply(replyObj) {
     const ret = await axios.post(`/replies`, replyObj);
     return ret.data;
 }
+
+
+async fucntion getReply(id) {
+    const ret = await axios.get(`/replies/${id}`);
+    return ret.data;
+}
+
+async function modifyReply(replyObj) {
+    const ret = await axios.put(`/replies/${replyObj.id}`, replyObj);
+    return ret.data;
+}
