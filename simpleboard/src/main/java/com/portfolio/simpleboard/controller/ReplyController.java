@@ -63,8 +63,12 @@ public class ReplyController {
     }
 
     @DeleteMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ReplyDTO deleteReply(@PathVariable(required = true) Long id, @RequestBody ReplyDTO replyDTO) {
+    public ReplyDTO deleteReply(@PathVariable(required = true) Long id, @Valid @RequestBody ReplyDTO replyDTO, BindingResult br) throws BindException {
         //todo : delete reply and sub replies.
+        if(br.hasErrors()) {
+            throw new BindException(br);
+        }
+
         if(id != replyDTO.getId()){
             id = replyDTO.getId();
         }

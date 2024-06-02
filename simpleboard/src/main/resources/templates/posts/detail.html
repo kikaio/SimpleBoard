@@ -330,6 +330,25 @@
             console.error(e);
         })
     }, false);
+
+    removeBtn.addEventListener("click", function(e) {
+        const replyObj = {
+            id : replyHeader.innerHTML
+            , content : modifyText.value
+            , writer : modalWriter.value
+            , postId : postId
+        };
+
+        removeReply(replyHeader.innerHTML, replyObj)
+        .then(data=>{
+            alert(`${data.id} was removed`);
+            replyText.value = ``;
+            modifyModal.hide();
+            printReplies(postId, link);
+        }).catch(e=>{
+            console.error(e);
+        })
+    }, false);
 </script>
 </body>
 </html>

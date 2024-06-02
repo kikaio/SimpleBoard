@@ -27,3 +27,10 @@ async function modifyReply(replyObj) {
     const ret = await axios.put(`/replies/${replyObj.id}`, replyObj);
     return ret.data;
 }
+
+async function removeReply(id, replyObj) {
+    const ret = await axios.delete(`/replies/${id}`, {
+        data : replyObj
+    });
+    return ret.data;
+}
