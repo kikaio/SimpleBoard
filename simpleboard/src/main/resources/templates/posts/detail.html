@@ -104,13 +104,13 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" replyHeader></h5>
+                    <h5 class="modal-title replyHeader" ></h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                     </button>
                 </div> <!--end of modal header-->
                 <div class="modal-body">
                     <div class="input-group mb-3">
-                        <span class="input-group-text">Reply Text</span>
+                        <span class="input-group-text modalWriter"></span>
                         <input type="text" class="form-control modifyText">
                     </div>
                 </div> <!--end of modal body-->
@@ -279,6 +279,7 @@
     const replyHeader = document.querySelector(".replyHeader");
     const modifyText = document.querySelector(".modifyText");
     const modifyBtn = document.querySelector(".modifyBtn");
+    const modalWriter = document.querySelector(".modalWriter");
     const removeBtn = document.querySelector(".removeBtn");
     const closeModifyBtn = document.querySelector(".closeModifyBtn");
 
@@ -302,9 +303,10 @@
             console.log(reply);
             replyHeader.innerHTML = reply.id;
             modifyText.value=reply.content;
+            modalWriter.value = reply.writer;
             modifyModal.show();
         }).catch(e=>{
-
+            console.error(e);
         });
 
     }, false);
@@ -314,6 +316,8 @@
         const replyObj = {
             id : replyHeader.innerHTML
             , content : modifyText.value
+            , writer : modalWriter.value
+            , postId : postId
         };
 
         modifyReply(replyObj)

@@ -18,7 +18,7 @@ async function addReply(replyObj) {
 }
 
 
-async fucntion getReply(id) {
+async function getReply(id) {
     const ret = await axios.get(`/replies/${id}`);
     return ret.data;
 }

@@ -31,6 +31,12 @@ public class ReplyController {
         return pageResponseDTO;
     }
 
+    @GetMapping("/{id}")
+    public ReplyDTO getReplyOne(@PathVariable Long id) {
+        ReplyDTO ret =  replyService.getReplyOne(id);
+        return ret;
+    }
+
     @PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ReplyDTO insertReply(@Valid @RequestBody ReplyDTO replyDTO, BindingResult bindingResult) throws BindException {
         if(bindingResult.hasErrors()) {

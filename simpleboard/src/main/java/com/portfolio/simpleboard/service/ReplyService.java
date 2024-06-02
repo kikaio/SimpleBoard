@@ -3,6 +3,7 @@ package com.portfolio.simpleboard.service;
 import com.portfolio.simpleboard.dto.pager.PageRequestDTO;
 import com.portfolio.simpleboard.dto.pager.PageResponseDTO;
 import com.portfolio.simpleboard.dto.replies.ReplyDTO;
+import com.portfolio.simpleboard.entity.Reply;
 import com.portfolio.simpleboard.repository.post.PostRepository;
 import com.portfolio.simpleboard.repository.reply.ReplyRepository;
 import jakarta.transaction.Transactional;
@@ -27,6 +28,11 @@ public class ReplyService {
         var post = postRepository.findById(replyDTO.getPostId()).orElseThrow();
         var reply = ReplyDTO.toEntity(post, replyDTO);
         reply = replyRepository.save(reply);
+        return ReplyDTO.fromEntity(reply);
+    }
+
+    public ReplyDTO getReplyOne(Long replyId) {
+        Reply reply = replyRepository.findById(replyId).orElseThrow();
         return ReplyDTO.fromEntity(reply);
     }
 
