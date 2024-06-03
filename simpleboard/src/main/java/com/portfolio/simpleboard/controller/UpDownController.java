@@ -8,20 +8,18 @@ import net.coobird.thumbnailator.Thumbnailator;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpRequest;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @RestController
 @Log4j2
@@ -66,7 +64,40 @@ public class UpDownController {
     }
 
     @GetMapping("/view/{name}")
-    public Resource viweFileGET(@PathVariable String name) {
-        return null;
+    public ResponseEntity<Resource> viweFileGET(@PathVariable String name) {
+        Resource resource = new FileSystemResource("%s%s%s".formatted(uploadPath, File.separator, name));
+        String resourceName = resource.getFilename();
+        HttpHeaders headers = new HttpHeaders();
+
+        try {
+            headers.add("Content-Type", Files.probeContentType(resource.getFile().toPath()));
+        } catch(Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
+        return ResponseEntity.ok().headers(headers).body(resource);
+    }
+
+    @DeleteMapping("/remove/{name}")
+    public Map<String, Boolean> removeFile(@PathVariable String name) {
+        Resource resource = new FileSystemResource("%s%s%s".formatted(uploadPath, File.separator, name));
+
+        String resourceName = resource.getFilename();
+        Map<String, Boolean> resultMap = new HashMap<>();
+        boolean isRemoved = false;
+
+
+        try {
+            isRemoved = resource.getFile().delete();
+            String contentType = Files.probeContentType(resource.getFile().toPath());
+            if(contentType.startsWith("image")) {
+                File thumbnail = new File("%s%ss_%s".formatted(uploadPath, File.separator, name));
+                thumbnail.delete();
+            }
+        } catch(IOException e) {
+            log.error(e);
+        }
+
+        resultMap.put("result", isRemoved);
+        return resultMap;
     }
 }

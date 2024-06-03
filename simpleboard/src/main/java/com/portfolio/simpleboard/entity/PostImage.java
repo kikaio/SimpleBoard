@@ -11,7 +11,7 @@ import java.io.Serializable;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @ToString
-public class PostFile implements Serializable {
+public class PostImage implements Comparable<PostImage> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,4 +33,13 @@ public class PostFile implements Serializable {
             , foreignKey = @ForeignKey(name = "fk_post_for_post_file")
     )
     private Post post;
+
+    @Override
+    public int compareTo(PostImage o) {
+        return this.ord - o.ord;
+    }
+
+    public void changePost(Post post) {
+        this.post = post;
+    }
 }

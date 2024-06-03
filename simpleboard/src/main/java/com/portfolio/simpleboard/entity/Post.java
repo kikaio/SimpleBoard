@@ -7,6 +7,8 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -58,5 +60,33 @@ public class Post extends DateEntity implements Serializable {
 
     public void updateBoard(Board board) {
         this.board = board;
+    }
+
+    @OneToMany(
+            mappedBy = "post"
+            , cascade = {
+                    CascadeType.ALL
+        }
+        , fetch = FetchType.LAZY
+        , orphanRemoval = true
+    )
+    @Builder.Default
+    private Set<PostImage> imageSet = new HashSet<>();
+
+    public void addImage(String uuid, String fileName) {
+        PostImage postImage = PostImage.builder()
+                .uuid(uuid)
+                .fileName(fileName)
+                .post(this)
+                .ord(this.imageSet.size())
+                .build();
+        imageSet.add(postImage);
+    }
+
+    public void clearImages() {
+        imageSet.forEach(img->{
+            img.changePost(null);
+        });
+        imageSet.clear();
     }
 }
