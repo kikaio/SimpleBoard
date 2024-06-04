@@ -7,6 +7,7 @@ import com.portfolio.simpleboard.dto.posts.PostListAllDTO;
 import com.portfolio.simpleboard.dto.posts.PostWithReplyCntDTO;
 import com.portfolio.simpleboard.repository.board.BoardRepository;
 import com.portfolio.simpleboard.repository.post.PostRepository;
+import com.portfolio.simpleboard.repository.reply.ReplyRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -19,6 +20,7 @@ public class PostService {
 
     private final BoardRepository boardRepository;
     private final PostRepository postRepository;
+    private final ReplyRepository replyRepository;
 
     public PageResponseDTO<PostDTO> getOnlyPostDTOs(PageRequestDTO pageRequestDTO, long boardId) {
         PageResponseDTO<PostDTO> pageResponseDTO = postRepository.getOnlyPosts(pageRequestDTO, boardId);
@@ -46,6 +48,8 @@ public class PostService {
 
     @Transactional
     public void deletePost(Long postId) {
+        //todo : delete 처리는 isDeleted를 활성화 시키도록 수정 할 것.
+        replyRepository.deleteByPost_Id(postId);
         postRepository.deleteById(postId);
         return ;
     }
@@ -60,13 +64,18 @@ public class PostService {
         }
 
         post.updatePost(postDTO.getTitle(), postDTO.getContent());
-
+        post.clearImages();
+        if(postDTO.getFileNames() != null) {
+            for(String fName : postDTO.getFileNames()) {
+                String[] arr = fName.split("_");
+                post.addImage(arr[0], arr[1]);
+            }
+        }
         postRepository.save(post);
         return ;
     }
 
-    public PageResponseDTO<PostListAllDTO> listWithAll(PageRequestDTO pageRequestDTO) {
-
-        return null;
+    public PageResponseDTO<PostListAllDTO> listWithAll(PageRequestDTO pageRequestDTO, Long boardId) {
+        return postRepository.searchWithAll(pageRequestDTO, boardId);
     }
 }

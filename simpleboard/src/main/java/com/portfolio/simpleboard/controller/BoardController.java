@@ -3,6 +3,7 @@ package com.portfolio.simpleboard.controller;
 import com.portfolio.simpleboard.dto.BoardDTO;
 import com.portfolio.simpleboard.dto.pager.PageRequestDTO;
 import com.portfolio.simpleboard.dto.pager.PageResponseDTO;
+import com.portfolio.simpleboard.dto.posts.PostListAllDTO;
 import com.portfolio.simpleboard.dto.posts.PostWithReplyCntDTO;
 import com.portfolio.simpleboard.service.BoardService;
 import com.portfolio.simpleboard.service.PostService;
@@ -106,7 +107,8 @@ public class BoardController {
         if(pageRequestDTO != null && pageRequestDTO.getLink() != null)
             link = pageRequestDTO.getLink();
 
-        PageResponseDTO<PostWithReplyCntDTO> pageResponseDTO = postService.getPostsWithReplyCnt(pageRequestDTO, boardId);
+//        PageResponseDTO<PostWithReplyCntDTO> pageResponseDTO = postService.getPostsWithReplyCnt(pageRequestDTO, boardId);
+        PageResponseDTO<PostListAllDTO> pageResponseDTO = postService.listWithAll(pageRequestDTO, boardId);
 
         model.addAttribute("boardId", boardId);
         model.addAttribute("pageRequestDTO", pageRequestDTO);
