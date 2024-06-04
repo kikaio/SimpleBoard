@@ -13,25 +13,17 @@ import java.io.Serializable;
 @ToString
 public class PostImage implements Comparable<PostImage> {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column
-    private Long id;
-
     @Column
     private Integer ord;
 
-    @Column
+    @Id
     private String uuid;
 
     @Column
     private String fileName;
 
     @ManyToOne
-    @JoinColumn(
-            referencedColumnName = "id"
-            , foreignKey = @ForeignKey(name = "fk_post_for_post_file")
-    )
+    @ToString.Exclude
     private Post post;
 
     @Override
