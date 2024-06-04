@@ -3,6 +3,7 @@ package com.portfolio.simpleboard.service;
 import com.portfolio.simpleboard.dto.pager.PageRequestDTO;
 import com.portfolio.simpleboard.dto.pager.PageResponseDTO;
 import com.portfolio.simpleboard.dto.posts.PostDTO;
+import com.portfolio.simpleboard.dto.posts.PostListAllDTO;
 import com.portfolio.simpleboard.dto.posts.PostWithReplyCntDTO;
 import com.portfolio.simpleboard.repository.board.BoardRepository;
 import com.portfolio.simpleboard.repository.post.PostRepository;
@@ -63,5 +64,10 @@ public class PostService {
 
         postRepository.save(post);
         return ;
+    }
+
+    public PageResponseDTO<PostListAllDTO> listWithAll(PageRequestDTO pageRequestDTO) {
+
+        return null;
     }
 }

@@ -3,16 +3,22 @@ package com.portfolio.simpleboard.repository.post.search;
 import com.portfolio.simpleboard.dto.pager.PageRequestDTO;
 import com.portfolio.simpleboard.dto.pager.PageResponseDTO;
 import com.portfolio.simpleboard.dto.posts.PostDTO;
+import com.portfolio.simpleboard.dto.posts.PostImageDTO;
+import com.portfolio.simpleboard.dto.posts.PostListAllDTO;
 import com.portfolio.simpleboard.dto.posts.PostWithReplyCntDTO;
 import com.portfolio.simpleboard.entity.Post;
+import com.portfolio.simpleboard.entity.PostImage;
 import com.portfolio.simpleboard.entity.QPost;
 import com.portfolio.simpleboard.entity.QReply;
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPQLQuery;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 
@@ -132,5 +138,88 @@ public class PostSearchImpl extends QuerydslRepositorySupport implements PostSea
                 .build();
     }
 
+    public PageResponseDTO<PostListAllDTO> searchWithAll(PageRequestDTO pageRequestDTO, Long boardId) {
+
+        QPost post = QPost.post;
+        QReply reply = QReply.reply;
+        JPQLQuery<Post> postQuery = from(post);
+
+        postQuery.leftJoin(reply).on(reply.post.eq(post));
+
+        postQuery.where(post.board.id.eq(boardId));
+        {
+            BooleanBuilder bb=  new BooleanBuilder();
+            bb.or(reply.isDeleted.isNull());
+            bb.or(reply.isDeleted.isFalse());
+            bb.or(post.isDeleted.isFalse());
+            postQuery.where(bb);
+        }
+
+        if(pageRequestDTO.getType() != null && pageRequestDTO.getType().length() > 0) {
+            BooleanBuilder bb = new BooleanBuilder();
+            String keyword = pageRequestDTO.getKeyword();
+            if(keyword != null) {
+                for(String type : pageRequestDTO.getTypes()) {
+                    switch(type) {
+                        case "t":
+                            bb.or(post.title.contains(keyword))
+                            break;
+                        case "w":
+                            bb.or(post.writer.contains(keyword));
+                            break;
+                        case "c":
+                            bb.or(post.content.contains(keyword));
+                            break;
+                    }
+                }
+                postQuery.where(bb);
+            }
+        }
+        postQuery.where(post.id.gt(0L));
+        postQuery.groupBy(post);
+
+
+        getQuerydsl().applyPagination(pageRequestDTO.getPageable(), postQuery);
+
+        JPQLQuery<Tuple> tupleJpql = postQuery.select(post, reply.countDistinct());
+        List<Tuple> tupleList = tupleJpql.fetch();
+
+        List<PostListAllDTO> dtoList = tupleList.stream().map(ele -> {
+            Post postRet = (Post)ele.get(post);
+            long replyCnt = ele.get(1, Long.class);
+            PostListAllDTO dto = PostListAllDTO.builder()
+                    .id(postRet.getId())
+                    .title(postRet.getTitle())
+                    .writer(postRet.getWriter())
+                    .mDate(postRet.getMDate())
+                    .replyCount(replyCnt)
+                    .build();
+
+            List<PostImageDTO> imagesDTO = postRet.getImageSet().stream()
+                    .sorted()
+                    .map(ele2->{
+                        return PostImageDTO.builder()
+                                .uuid(ele2.getUuid())
+                                .fileName(ele2.getFileName())
+                                .ord(ele2.getOrd())
+                                .build();
+                    })
+                    .collect(Collectors.toList())
+                    ;
+            dto.setPostImages(imagesDTO);
+            return dto;
+        }).collect(Collectors.toList());
+
+        int total = (int)postQuery.fetchCount();
+
+
+        return PageResponseDTO.<PostListAllDTO>builder()
+                .dtoList(dtoList)
+                .total(total)
+                .pageRequestDTO(pageRequestDTO)
+                .build()
+                ;
+
+    }
 }
 

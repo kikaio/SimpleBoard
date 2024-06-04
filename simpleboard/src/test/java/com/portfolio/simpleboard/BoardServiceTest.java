@@ -4,6 +4,7 @@ package com.portfolio.simpleboard;
 import com.portfolio.simpleboard.dto.BoardDTO;
 import com.portfolio.simpleboard.dto.pager.PageRequestDTO;
 import com.portfolio.simpleboard.dto.pager.PageResponseDTO;
+import com.portfolio.simpleboard.repository.reply.ReplyRepository;
 import com.portfolio.simpleboard.service.BoardService;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.Disabled;
@@ -92,4 +93,6 @@ public class BoardServiceTest{
 //            log.info("any board not exist for modify test");
 //        }
     }
+
+
 }

@@ -1,9 +1,11 @@
 package com.portfolio.simpleboard;
 
+import com.portfolio.simpleboard.dto.pager.PageRequestDTO;
 import com.portfolio.simpleboard.dto.posts.PostDTO;
 import com.portfolio.simpleboard.entity.Post;
 import com.portfolio.simpleboard.entity.PostImage;
 import com.portfolio.simpleboard.repository.post.PostRepository;
+import com.portfolio.simpleboard.repository.reply.ReplyRepository;
 import com.portfolio.simpleboard.service.PostService;
 import jakarta.transaction.Transactional;
 import lombok.extern.log4j.Log4j2;
@@ -12,6 +14,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Commit;
 
 import java.util.UUID;
 
@@ -22,6 +25,10 @@ public class PostServiceTest {
     private PostService  postService;
     @Autowired
     private PostRepository postRepository;
+
+    @Autowired
+    private ReplyRepository replyRepository;
+
     @Test
     @Disabled
     @DisplayName("insert test for image to post")
@@ -71,4 +78,59 @@ public class PostServiceTest {
 
         return ;
     }
+
+    @Test
+    @DisplayName("test for delete post and all replies")
+    @Transactional
+    @Commit
+    public void testREmoveAll() {
+        Long postId = 0L;
+        replyRepository.deleteByPost_Id(postId);
+        postRepository.deleteById(postId);
+    }
+
+    @Test
+    @DisplayName("test for insert image to post")
+    @Disabled
+    public void testInsertAll() {
+        Long postId = 0L;
+        int testCnt = 100;
+        int testCnt2 = 3;
+        for(int i = 0; i < testCnt; i++) {
+            Post post = Post.builder()
+                    .title("image test")
+                    .content("content for image test")
+                    .writer("image tester")
+                    .build();
+
+            for(int k = 0; k < testCnt2; k++) {
+                if(i % 5 == 0)
+                    continue;
+                post.addImage(UUID.randomUUID().toString(), "%d file %d.jpg".formatted(i, k));
+            }
+            postRepository.save(post);
+        }
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("test for earch about post and reply and images")
+    public void testSearchImageReplyCount() {
+        Long boardId = 0L;
+        PageRequestDTO pageRequestDTO = PageRequestDTO.builder()
+                .page(1)
+                .type("")
+                .pageSize(10)
+                .keyword("")
+                .build();
+        var result = postRepository.searchWithAll(pageRequestDTO, boardId);
+        log.info("==========================");
+        log.info("totla ele cnt : %d".formatted(result.getTotal()));
+
+        result.getDtoList().forEach(dto->{
+            log.info(dto);
+        });
+        return ;
+    }
+
 }

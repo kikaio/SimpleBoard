@@ -5,6 +5,7 @@ import com.portfolio.simpleboard.entity.base.DateEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.BatchSize;
 
 import java.io.Serializable;
 import java.util.HashSet;
@@ -43,6 +44,7 @@ public class Post extends DateEntity implements Serializable {
             referencedColumnName = "id"
             , foreignKey = @ForeignKey(name = "fk_board_for_post")
     )
+    @BatchSize(size = 20)
     @ToString.Exclude
     private Board board;
 
