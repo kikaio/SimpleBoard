@@ -8,6 +8,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -36,6 +37,8 @@ public class PostDTO {
     @NotNull
     @Builder.Default
     private Boolean isDelete = false;
+
+    private List<String> fileNames;
 
     static public PostDTO fromEntity(Post post) {
         return PostDTO.builder()
