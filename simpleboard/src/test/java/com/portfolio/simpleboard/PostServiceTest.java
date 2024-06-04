@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Commit;
 
+import java.util.Arrays;
 import java.util.UUID;
 
 @Log4j2
@@ -129,6 +130,44 @@ public class PostServiceTest {
 
         result.getDtoList().forEach(dto->{
             log.info(dto);
+        });
+        return ;
+    }
+
+    @Test
+    @DisplayName("test for register with postimages")
+    @Disabled
+    public void testRegisterWithImages() {
+        log.info("testRegisterWithImages");
+
+        PostDTO postDTO = PostDTO.builder()
+                .title("post for test with images insert")
+                .writer("tester3")
+                .content("just content for test")
+                .build();
+
+        postDTO.setFileNames(
+                Arrays.asList(
+                        "%d_aaa.jpg".formatted(UUID.randomUUID())
+                        , "%d_bbb.jpg".formatted(UUID.randomUUID())
+                        , "%d_ccc.jpg".formatted(UUID.randomUUID())
+                )
+        );
+
+        Long postId = postService.insertPost(postDTO);
+        log.info("%d was inserted".formatted(postId));
+        return ;
+    }
+
+    @Test
+    @DisplayName("test one post read with img")
+    @Disabled
+    public void testReadOneWithImg() {
+        Long postId = 0L;
+        PostDTO postDTO = postService.readOne(postId);
+        log.info(postDTO);
+        postDTO.getFileNames().forEach(x->{
+            log.info(x);
         });
         return ;
     }

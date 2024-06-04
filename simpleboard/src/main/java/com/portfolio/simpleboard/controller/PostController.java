@@ -65,8 +65,8 @@ public class PostController {
     @PostMapping("")
     public String insertPost(String link, PostDTO postDTO) {
         Long boardId = postDTO.getBoardId();
-        postService.insertPost(postDTO);
-
+        long newPostId = postService.insertPost(postDTO);
+        log.info("%d post inserted!".formatted(newPostId));
         return "redirect:/boards/%d/posts?%s".formatted(boardId, link);
     }
 

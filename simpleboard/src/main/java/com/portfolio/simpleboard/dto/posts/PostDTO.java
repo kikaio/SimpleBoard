@@ -9,6 +9,7 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -41,7 +42,7 @@ public class PostDTO {
     private List<String> fileNames;
 
     static public PostDTO fromEntity(Post post) {
-        return PostDTO.builder()
+        var dto = PostDTO.builder()
                 .id(post.getId())
                 .boardId(post.getBoard().getId())
                 .title(post.getTitle())
@@ -52,11 +53,19 @@ public class PostDTO {
                 .isDelete(post.getIsDeleted())
                 .build()
         ;
+        List<String> fileNames = post.getImageSet()
+                .stream().sorted()
+                .map(img->{
+                    return "%s_%s".formatted(img.getUuid(), img.getFileName());
+                })
+                .collect(Collectors.toList());
+        dto.setFileNames(fileNames);
+        return dto;
     }
 
     static public Post toEntityWithBoard(Board board, PostDTO postDTO) {
 
-        return Post.builder()
+        var post = Post.builder()
                 .id(postDTO.getId())
                 .board(board)
                 .title(postDTO.getTitle())
@@ -65,5 +74,10 @@ public class PostDTO {
                 .isDeleted(postDTO.getIsDelete())
                 .build()
         ;
+        postDTO.fileNames.forEach(name -> {
+            String[] strs = name.split("_");
+            post.addImage(strs[0], strs[1]);
+        });
+        return post;
     }
 }

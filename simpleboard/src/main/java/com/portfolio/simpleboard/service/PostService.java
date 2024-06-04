@@ -31,16 +31,15 @@ public class PostService {
     }
 
     @Transactional
-    public void insertPost(PostDTO postDTO) {
+    public Long insertPost(PostDTO postDTO) {
         long boardId = postDTO.getBoardId();
         var board = boardRepository.findById(boardId).orElseThrow();
         var post = PostDTO.toEntityWithBoard(board, postDTO);
-        postRepository.save(post);
-        return ;
+        return postRepository.save(post).getId();
     }
 
     public PostDTO readOne(Long postId) {
-        var post = postRepository.findById(postId).orElseThrow();
+        var post = postRepository.findByIdWithImages(postId).orElseThrow();
         var postDTO = PostDTO.fromEntity(post);
         return postDTO;
     }
