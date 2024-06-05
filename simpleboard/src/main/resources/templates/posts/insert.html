@@ -20,7 +20,7 @@
 <body>
 <section class="vw-100 vh-100" style="background-color: #eee;">
     <div class="vw-100 vh-100 justify-content-center d-flex align-items-center container">
-        <div class="card" style="width: 24rem;">
+        <div class="row card" style="width: 24rem;">
             <div class="card-header">게시글 생성</div>
             <div class="card-body">
                 <form action="/posts" method="post">
@@ -46,6 +46,14 @@
                             </div>
                         </li>
                         <li class="list-group-item">
+                            <div class="input-group mb-3">
+                                <span class="input-group-text">Images</span>
+                                <div class="float-end uploadHidden">
+                                    <button class="btn btn-primary uploadFileBtn" type="button">ADD Files</button>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
                             <div>
                                 <button type="submit" class="btn btn-primary createBtn">Do Create</button>
                                 <button type="button" class="btn btn-primary" th:onclick="location.href='/boards/[[${boardId}]]/posts?[[${link}]]'">Go Back</button>
@@ -56,12 +64,83 @@
             </div>
         </div> <!--end of card div-->
     </div>
+    <!--첨부파일 관련-->
+    <div class="row mt-3">
+        <div class="col">
+            <div class="container-fluid d-flex uploadResult" style="flext-wrap: wrap">
+            </div> <!--end of uploadResult-->
+        </div> <!--end of col-->
+    </div> <!--end of row-->
+
+    <div class="modal uploadModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Upload File</h5>
+                    <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div> <!--end of modal header-->
+                <div class="modal-body">
+                    <div class="input-group mb-3">
+                        <input type="file" name="files" class="form-control" multiple>
+                    </div>
+                </div> <!--end of modal body-->
+                <div class="modal-footer">
+                    <button class="btn btn-primary uploadBtn" type="button">Upload</button>
+                    <button class="btn btn-outline-dark closeUploadBtn closeUploadBtn" type="button">Close</button>
+                </div> <!--end of modal footer-->
+            </div>
+        </div> <!--end of modal dialog-->
+    </div> <!--end of uploadModal-->
+
 </section>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-<script src="/js/scripts.js"></script>
+<script src="/js/upload.js"></script>
 <script th:inline="javascript">
+
+    const errors = [[${errors}]]
+    console.log(errors);
+
+    let errMsg='';
+
+    if(errors) {
+        for(let i = 0; i < errors.length; i++) {
+            errorMsg += `${errors[i].filed} is ${errors[i].code}]n`;
+        }
+        alert(errMsg);
+    }
+
+    const uploadModal = new bootstrap.Modal(document.querySelector(".uploadModal"));
+    document.querySelector(".uploadFileBtn").addEventListener("click", function(e) {
+        e.stopPropagation();
+        e.preventDefault();
+        uploadModal.show();
+    }, false);
+
+    document.querySelector(".uploadBtn").addEventListener("click", function(e){
+        const formObj = new FormData();
+
+        const fileInput = document.querySelector("input[name='files']");
+        console.log(fileInput.files);
+        const files = fileInput.files;
+
+        for(let i = 0; i < files.length; i++) {
+            formObj.append("files", files[i]);
+        }
+
+        uploadToServer(formObj)
+        .then(data=>{
+            console.log(data);
+            uploadModal.hide();
+        })
+        .catch(e=>{
+            console.error(e);
+            uploadModal.hide();
+        });
+
+    }, false);
+
 </script>
 </body>
 </html>

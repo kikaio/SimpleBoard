@@ -28,7 +28,7 @@ public class UpDownController {
     @Value("${org.simpleboard.upload.path}")
     private String uploadPath;
 
-    @PostMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public List<UploadResultDTO> upload(UploadFileDTO uploadFileDTO) {
         log.info(uploadFileDTO);
         List<UploadResultDTO> retDtoList = new ArrayList<>();
@@ -40,15 +40,15 @@ public class UpDownController {
             log.info(f.getOriginalFilename());
             String uuid = UUID.randomUUID().toString();
             String oriName = f.getOriginalFilename();
-            Path savePath = Paths.get("%s_%s".formatted(uploadPath, oriName));
+            Path savePath = Paths.get(uploadPath, "%s_%s".formatted(uuid, oriName));
             boolean isImg = false;
             try {
+                f.transferTo(savePath);
                 isImg = Files.probeContentType(savePath).startsWith("image");
                 if(isImg) {
                     File thumb = new File(uploadPath, "s_%s_%s".formatted(uuid, oriName));
                     Thumbnailator.createThumbnail(savePath.toFile(), thumb, 200, 300);
                 }
-                f.transferTo(savePath);
             } catch(IOException e) {
                 e.printStackTrace();
             }

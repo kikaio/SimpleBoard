@@ -18,7 +18,7 @@ public class UploadResultDTO {
 
     public String getLink() {
         if(img) {
-            return "s_%s_%s".formatted(fileName);
+            return "s_%s_%s".formatted(uuid, fileName);
         }
         else {
             return "%s_%s".format(uuid, fileName);
