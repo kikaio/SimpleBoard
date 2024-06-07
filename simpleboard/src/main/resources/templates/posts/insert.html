@@ -49,13 +49,13 @@
                             <div class="input-group mb-3">
                                 <span class="input-group-text">Images</span>
                                 <div class="float-end uploadHidden">
-                                    <button class="btn btn-primary uploadFileBtn" type="button">ADD Files</button>
                                 </div>
+                                <button class="btn btn-primary uploadFileBtn" type="button">ADD Files</button>
                             </div>
                         </li>
                         <li class="list-group-item">
                             <div>
-                                <button type="submit" class="btn btn-primary createBtn">Do Create</button>
+                                <button type="button" class="btn btn-primary createBtn">Do Create</button>
                                 <button type="button" class="btn btn-primary" th:onclick="location.href='/boards/[[${boardId}]]/posts?[[${link}]]'">Go Back</button>
                             </div>
                         </li>
@@ -122,7 +122,7 @@
                     </button>
                 </div>
                 <div class="card-body">
-                    <img src="/view/${link}" data-src="${uuid}"+"_"+"${fileName}">
+                    <img src="/view/${link}" data-src="${uuid+"_"+fileName}">
                 </div>
             </div>
         `;
@@ -177,7 +177,29 @@
             console.error(e);
         });
 
-    }
+    };
+
+    document.querySelector(".createBtn").addEventListener("click", function(e) {
+
+        e.stopPropagation();
+        e.preventDefault();
+
+        const target = document.querySelector(".uploadHidden");
+        const uploadFiles = uploadResult.querySelectorAll("img");
+        let str = ``;
+
+        for(let i = 0; i < uploadFiles.length; i++) {
+            const uploadFile = uploadFiles[i];
+            const imgLink = uploadFile.dataset.src;
+
+            str += `
+                <input type='hidden' name='fileNames' value="${imgLink}">
+            `;
+        }
+
+        target.innerHTML = str;
+        document.querySelector("form").submit();
+    }, false);
 
 </script>
 </body>
