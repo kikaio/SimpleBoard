@@ -8,6 +8,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,7 +40,8 @@ public class PostDTO {
     @Builder.Default
     private Boolean isDelete = false;
 
-    private List<String> fileNames;
+    @Builder.Default
+    private List<String> fileNames = new ArrayList<>();
 
     static public PostDTO fromEntity(Post post) {
         var dto = PostDTO.builder()
@@ -75,8 +77,8 @@ public class PostDTO {
                 .build()
         ;
         postDTO.fileNames.forEach(name -> {
-            String[] strs = name.split("_");
-            post.addImage(strs[0], strs[1]);
+            int firstIdx = name.indexOf("_", 0);
+            post.addImage(name.substring(0, firstIdx), name.substring(firstIdx+1));
         });
         return post;
     }
