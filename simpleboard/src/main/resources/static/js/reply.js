@@ -4,7 +4,8 @@ async function getList(postId, link, goLast) {
         const total = result.data.total;
         const page = parseInt(result.data.page);
         const pageSize = parseInt(result.data.size);
-        const lastPage = parseInt(Math.ceil(total/pageSize));
+        const lastPage = parseInt(result.data.end);
+
         let newLink=`page=${lastPage}&pageSize=${pageSize}`;
         return getList(postId, newLink, false);
     }
