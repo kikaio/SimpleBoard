@@ -22,5 +22,8 @@ public class PostListAllDTO {
 
     private Long replyCount;
 
-    private List<PostImageDTO> postImages;
+//    private List<PostImageDTO> postImages;
+
+    @Builder.Default
+    private PostImageDTO mainImage = null;
 }

@@ -37,7 +37,8 @@
                 <div class="col mb-5" th:each="postDTO : ${pageResponseDTO.dtoList}">
                     <div class="card h-100">
                         <!-- Product image-->
-                        <img class="card-img-top" src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="..." />
+                        <img th:if="${postDTO.mainImage == null}" class="card-img-top" src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="..." />
+                        <img th:if="${postDTO.mainImage != null}" class="card-img-top" th:src="|/view/s_${postDTO.mainImage.uuid}_${postDTO.mainImage.fileName}|" alt="..." />
                         <!-- Product details-->
                         <div class="card-body p-5">
                             <div class="text-center ">

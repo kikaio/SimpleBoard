@@ -5,11 +5,14 @@ import com.portfolio.simpleboard.dto.BoardDTO;
 import com.portfolio.simpleboard.dto.pager.PageRequestDTO;
 import com.portfolio.simpleboard.dto.posts.PostDTO;
 import com.portfolio.simpleboard.service.PostService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindException;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -63,7 +66,12 @@ public class PostController {
     }
 
     @PostMapping("")
-    public String insertPost(String link, PostDTO postDTO) {
+    public String insertPost(String link, @Valid PostDTO postDTO, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+        if(bindingResult.hasErrors()) {
+            log.error("insertPost has binding errors");
+            redirectAttributes.addFlashAttribute("errors", bindingResult.getAllErrors());
+            return "redirect:/posts/insert?link=%s&boardId=%d".formatted(link, postDTO.getBoardId());
+        }
         Long boardId = postDTO.getBoardId();
         long newPostId = postService.insertPost(postDTO);
         log.info("%d post inserted!".formatted(newPostId));

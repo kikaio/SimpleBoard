@@ -206,7 +206,10 @@ public class PostSearchImpl extends QuerydslRepositorySupport implements PostSea
                     })
                     .collect(Collectors.toList())
                     ;
-            dto.setPostImages(imagesDTO);
+//            dto.setPostImages(imagesDTO);
+            if(imagesDTO.size() > 0) {
+                dto.setMainImage(imagesDTO.get(0));
+            }
             return dto;
         }).collect(Collectors.toList());
 
