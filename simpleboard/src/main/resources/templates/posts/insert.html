@@ -162,6 +162,12 @@
 
     }, false);
 
+    document.querySelector(".closeUploadBtn").addEventListener("click", function(e) {
+        e.stopPropagation();
+        e.preventDefault();
+        uploadModal.hide();
+    }, false);
+
     function removeFile(uuid, fileName, obj) {
         console.log(uuid);
         console.log(fileName);
