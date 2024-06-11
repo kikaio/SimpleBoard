@@ -20,7 +20,7 @@
 
 <body>
 <section class="vw-100 vh-100" style="background-color: #eee;">
-    <div class="vw-100 vh-100 justify-content-center d-flex align-items-center container">
+    <div class="vstack gap-3 vw-100 vh-100 justify-content-top d-flex align-items-center container" style="overflow: scroll; width: 100%; height: 100%; padding: 10px;">
         <div class="card" style="width: 24rem;">
             <div class="card-header">게시글 정보 수정</div>
             <div class="card-body">
@@ -38,13 +38,23 @@
                         <li class="list-group-item">
                             <div>
                                 <label>Writer : </label>
-                                <input type="text" name="writer" th:value="${postDTO.writer}">
+                                <input type="text" name="writer" th:value="${postDTO.writer}" readonly>
                             </div>
                         </li>
                         <li class="list-group-item" >
                             <div>
                                 <label>Content</label>
                                 <input type="textbox" name="content" th:value="${postDTO.content}">
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div>
+                                <span class="input-group-text">
+                                    Images
+                                </span>
+                                <div class="float-end uploadHidden">
+                                    <button type="button" class="btn btn-primary uploadFileBtn">ADD Files</button>
+                                </div>
                             </div>
                         </li>
                         <li class="list-group-item">
@@ -57,15 +67,45 @@
                 </form>
             </div>
         </div> <!--end of card div-->
+        <div class="container-fluid d-flex uploadResult justify-content-center align-items-center" style="flex-wrap: wrap;">
+            <th:block th:each="fileName: ${postDTO.fileNames}">
+                <div class="card col-4" th:with="pivot=${fileName.indexOf('_')}">
+                    <div class="card-header d-flex justify-content-center">
+                        [[${fileName.substring(pivot+1)}]]
+                        <button class="btn-sm btn-danger" th:onclick="removeFile([[${fileName.substring(0,pivot-1)}]], [[${fileName.substring(pivot+1)}]], this)">X</button>
+                    </div> <!--end of card header-->
+                    <div class="card-body">
+                        <img th:src="|/view/s_${fileName}|" th:data-src="${fileName}">
+                    </div>
+                </div> <!--end of card-->
+            </th:block>
+        </div> <!--end of uploadResult-->
+        <div class="modal uploadModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Upload File</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div> <!--end of modal header-->
+                    <div class="modal-body">
+                        <div class="input-group mb-3">
+                            <input type="file" name="files" class="form-control multiple">
+                        </div>
+                    </div> <!--end of modal body-->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary uploadBtn">Upload</button>
+                        <button type="button" class="btn btn-outline-dark closeUploadBtn">Close</button>
+                    </div> <!--end of modal footer-->
+                </div> <!--end of modal content-->
+            </div> <!--end of modal-dialog-->
+        </div> <!--end of modal for attach files-->
     </div>
 </section>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-<script src="/js/scripts.js"></script>
+<script src="/js/upload.js"></script>
 <script th:inline="javascript">
-
-    //var imgPath=
 
     function doUploadBannerImg() {
         return ;
@@ -109,6 +149,73 @@
         doModifyPost();
 
     }, false);
+
+    const removeFileList = [];
+
+    function removeFile(uuid, fileName, obj) {
+        if(confirm("try file delete?") == false) {
+            return ;
+        }
+
+        console.log(uuid);
+        console.log(fileName);
+        console.log(obj);
+
+        removeFileList.push({uuid, fileName});
+
+        const targetDiv = obj.closest(".card");
+        targetDiv.remove();
+    };
+
+    const uploadModal = new bootstrap.Modal(document.querySelector(".uploadModal"));
+    document.querySelector(".uploadFileBtn").addEventListener("click", function(e) {
+        e.stopPropagation();
+        e.preventDefault();
+        uploadModal.show();
+    }, false);
+
+    document.querySelector(".uploadBtn").addEventListener("click", function(e) {
+        const formObj = new FormData();
+        const fileInput = document.querySelector("input[name='files']");
+        console.log(fileInput.files);
+        const files = fileInput.files;
+
+        for(let i = 0; i < files.length; i++) {
+            formObj.append("files", files[i]);
+        }
+
+        uploadToServer(formObj)
+        .then(data=>{
+            console.log(data);
+            for(const uploadRet of data) {
+                showUploadFile(uploadRet);
+            }
+            uploadModal.hide();
+        })
+        .catch(e=>{
+            uploadModal.hide();
+        });
+    }, false);
+
+    const uploadResult = document.querySelector(".uploadResult");
+
+    function showUploadFile({uuid, fileName, link}) {
+        const str = `
+            <div class=card col-4>
+                <div class=card-header d-flex justify-content-center>
+                    ${fileName}
+                    <button class="btn-sm btn-danger" onclick="javascript:removeFile('${uuid}', '${fileName}', this)">
+                    X
+                    </button>
+                </div>
+                <div class="card-body">
+                    <img src="/view/${link}" data-src="${uuid+'_'+fileName}">
+                </div>
+            </div> <!--end of card-->
+        `;
+
+        uploadResult.innerHTML += str;
+    };
 
 </script>
 </body>
