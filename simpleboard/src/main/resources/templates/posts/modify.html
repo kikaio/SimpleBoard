@@ -116,17 +116,18 @@
     };
 
     function doModifyPost() {
+
+        appendFileData();
+        callRemoveFiles();
+
         const id = document.querySelector("input[name='id']").value;
         const title = document.querySelector("input[name='title']").value;
         const content = document.querySelector("input[name='content']").value;
         const writer = document.querySelector("input[name='writer']").value;
         const boardId = document.querySelector("input[name='boardId']").value;
         const link = document.querySelector("input[name='link']").value;
-        console.log("createBtn clicked, title:", title, ", content:", content);
-
-        //todo : check title is null or over max len
-        //todo : check content is null or over max len
-        //todo : send request for insert new post
+        const fileNames = document.querySelector("input[name='fileNames']").value;
+        console.log("modify btn clicked, title:", title, ", content:", content);
 
         axios.put("/posts/"+id, {
                 id : id
@@ -135,6 +136,7 @@
                 , content : content
                 , boardId : boardId
                 , link : link
+                , fileNames : fileNames
         }).then(res=>{
             console.log("res", res);
             alert("수정되었습니다.");
@@ -142,6 +144,30 @@
             console.log("err", e);
         });
     }
+
+    function appendFileData() {
+        const target = document.querySelector(".uploadHidden");
+        const uploadFiles = uploadResult.querySelectorAll("img");
+
+        let str = '';
+
+        for(let i = 0; i < uploadFiles.length; i++) {
+            const uploadFile = uploadFiles[i];
+            const imgLink = uploadFile.getAttribute("data-src");
+
+            str += `
+                <input type="hidden" name='fileNames' value="${imgLink}">
+            `;
+        }
+
+        target.innerHTML = str;
+    };
+
+    function callRemoveFiles() {
+        removeFileList.forEach( ({uuid, fileName})=>{
+            removeFileToServer( {uuid, fileName} );
+        } )
+    };
 
     document.querySelector(".modifyBtn").addEventListener("click", function(e) {
         e.stopPropagation();
