@@ -56,7 +56,7 @@
                         <li class="list-group-item">
                             <div>
                                 <button type="button" class="btn btn-primary createBtn">Do Create</button>
-                                <button type="button" class="btn btn-primary" th:onclick="location.href='/boards/[[${boardId}]]/posts?[[${link}]]'">Go Back</button>
+                                <button type="button" class="btn btn-primary" th:onclick="|location.href='@{/boards/{id}/posts?{link}(id={$boardId}, link=${link})}'|">Go Back</button>
                             </div>
                         </li>
                     </ul>

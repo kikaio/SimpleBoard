@@ -17,8 +17,12 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Controller
 @Log4j2
@@ -96,6 +100,7 @@ public class PostController {
         String title = data.get("title").toString();
         String writer = data.get("writer").toString();
         String content = data.get("content").toString();
+        var fileNames = (List<String>)data.get("fileNames");
 
         var postDTO = PostDTO.builder()
                 .id(id)
@@ -103,6 +108,7 @@ public class PostController {
                 .title(title)
                 .writer(writer)
                 .content(content)
+                .fileNames(fileNames)
                 .build()
         ;
         postService.modifyPost(postDTO);

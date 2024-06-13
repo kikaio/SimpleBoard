@@ -89,7 +89,7 @@
                     </div> <!--end of modal header-->
                     <div class="modal-body">
                         <div class="input-group mb-3">
-                            <input type="file" name="files" class="form-control multiple">
+                            <input type="file" name="files" class="form-control" multiple>
                         </div>
                     </div> <!--end of modal body-->
                     <div class="modal-footer">
@@ -126,8 +126,17 @@
         const writer = document.querySelector("input[name='writer']").value;
         const boardId = document.querySelector("input[name='boardId']").value;
         const link = document.querySelector("input[name='link']").value;
-        const fileNames = document.querySelector("input[name='fileNames']").value;
+        const fileNamesEle = document.querySelectorAll("input[name='fileNames']");
         console.log("modify btn clicked, title:", title, ", content:", content);
+        const fileNamesArr = [];
+        console.log(fileNamesEle);
+        console.log(fileNamesEle);
+        for(let i = 0; i < fileNamesEle.length; i++) {
+            const fileName = fileNamesEle[i];
+            fileNamesArr.push(fileName.value);
+            console.log(`push name ${fileName.value}`);
+        }
+        console.log(fileNamesArr);
 
         axios.put("/posts/"+id, {
                 id : id
@@ -136,7 +145,7 @@
                 , content : content
                 , boardId : boardId
                 , link : link
-                , fileNames : fileNames
+                , fileNames : fileNamesArr
         }).then(res=>{
             console.log("res", res);
             alert("수정되었습니다.");
