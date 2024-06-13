@@ -8,6 +8,9 @@ import com.portfolio.simpleboard.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,6 +20,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,6 +37,9 @@ import java.util.stream.Stream;
 @RequestMapping("/posts")
 @RequiredArgsConstructor
 public class PostController {
+
+    @Value("${org.simpleboard.upload.path}")
+    private String uploadPath;
 
     private final PostService postService;
 
@@ -119,7 +130,7 @@ public class PostController {
 
     @ResponseStatus(HttpStatus.SEE_OTHER)
     @DeleteMapping("/{id}")
-    public String deletePostInList(@PathVariable Long id, @RequestBody Map<String, Object> paramMap, RedirectAttributes redirectAttributes) {
+    public String deletePostInList(@PathVariable Long id, @RequestBody Map<String, Object> paramMap, RedirectAttributes redirectAttributes){
 
         Long postId = Long.parseLong(paramMap.get("postId").toString());
         Long boardId = Long.parseLong(paramMap.get("boardId").toString());
@@ -131,12 +142,29 @@ public class PostController {
         }
 
         var postDTO = postService.readOne(postId);
+        ArrayList<String> attachFiles = new ArrayList<String>(postDTO.getFileNames());
+
         if(postDTO.getBoardId() != boardId) {
             redirectAttributes.addFlashAttribute("error", "bad request");
             return "redirect:/boards/%d/posts?%s".formatted(boardId, link);
         }
 
         postService.deletePost(postId);
+        for(var fileName : attachFiles) {
+            Resource r = new FileSystemResource("%s%s%s".formatted(uploadPath, File.separator, fileName));
+            try {
+                String resourceName = r.getFilename();
+                String contentType = Files.probeContentType(r.getFile().toPath());
+                r.getFile().delete();
+                if(contentType.startsWith("image")) {
+                    File thumbnail = new File("%s%ss_%s".formatted(uploadPath, File.separator, fileName));
+                    thumbnail.delete();
+                }
+            } catch(Exception e) {
+                log.error(e.getMessage());
+            }
+        }
+        //todo : delete files
         return "redirect:/boards/%d/posts?%s".formatted(boardId, link);
     }
 
