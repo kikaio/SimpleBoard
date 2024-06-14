@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -30,6 +31,7 @@ public class BoardController {
 
     private final PostService postService;
 
+    @PreAuthorize("hasRole('USER')")
     @GetMapping("")
     public String getBoardListPage(PageRequestDTO pageRequestDTO, Model model) {
         PageResponseDTO<BoardDTO> boards = boardService.getBoards(pageRequestDTO);
@@ -39,17 +41,20 @@ public class BoardController {
         return "/boards/list";
     }
 
+    @PreAuthorize("hasRole('USER')")
     @GetMapping("/insert")
     public String getBoardInsertPage() {
 
         return "/boards/insert";
     }
 
+    @PreAuthorize("hasRole('USER')")
     @GetMapping("/detail/{id}")
     public String getBoardDetailPage(@PathVariable(required = true, name = "id") Long id) {
         return "/boards/detail";
     }
 
+    @PreAuthorize("hasRole('USER')")
     @GetMapping("/modify/{id}")
     public String getBoardModifyPage(@PathVariable(required = true, name = "id") Long id, PageRequestDTO pageRequestDTO, Model model) {
         var dto = boardService.readOne(id);
