@@ -17,9 +17,12 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatchers;
 
+import javax.sql.DataSource;
 import java.util.Arrays;
 import java.util.List;
 
@@ -28,6 +31,8 @@ import java.util.List;
 @RequiredArgsConstructor
 @Configuration
 public class CustomSecurityConfig {
+
+    private final DataSource dataSource;
 
     private final SimpleBoardUserDetailService simpleBoardUserDetailService;
 
@@ -58,9 +63,25 @@ public class CustomSecurityConfig {
         });
 
         http.formLogin(custom->{
-            custom.loginPage("/member/login");
+            custom.loginPage("/member/login")
+            ;
+        });
+        http.rememberMe(custom->{
+            custom
+                    .key("4312312421")
+                    .tokenRepository(persistentTokenRepository())
+                    .userDetailsService(simpleBoardUserDetailService)
+                    .tokenValiditySeconds(60 * 60 * 24 * 30)
+            ;
         });
         return http.build();
+    }
+
+    @Bean
+    public PersistentTokenRepository persistentTokenRepository() {
+        JdbcTokenRepositoryImpl repo = new JdbcTokenRepositoryImpl();
+        repo.setDataSource(dataSource);
+        return repo;
     }
 
 
