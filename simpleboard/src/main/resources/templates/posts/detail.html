@@ -2,6 +2,7 @@
 <html lang="en"
       xmlns:th="http://thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springxecurity6"
 >
 <head>
     <meta charset="UTF-8">
@@ -48,13 +49,20 @@
                                     <label name="content" th:value="${postDTO.content}">[[${postDTO.content}]]</label>
                                 </div>
                             </li>
-                            <li class="list-group-item">
-                                <div>
-                                    <button type="submit" class="btn btn-outline-dark mt-auto" >Edit</button>
-    <!--                                <button type="button" class="btn btn-outline-dark mt-auto" th:href="@{/posts/modify/{id}?{link}&boardId(id=${postDTO.id})}">Edit</button>-->
-                                    <button type="button" class="btn btn-primary deleteBtn">Delete</button>
-                                    <button type="button" class="btn btn-primary" th:onclick="|location.href='@{/boards/{id}/posts?{link}(id=${boardId}, link=${link})}'|">Go Back</button>
-                                </div>
+                            <li class="list-group-item" th:with="user=${#authentication.principal}">
+                                    <div>
+                                        <th:block th:if="${user != null && user.username == postDTO.writer}">
+                                            <button type="submit" class="btn btn-outline-dark mt-auto" >Edit</button>
+                                            <!--                                <button type="button" class="btn btn-outline-dark mt-auto" th:href="@{/posts/modify/{id}?{link}&boardId(id=${postDTO.id})}">Edit</button>-->
+                                            <button type="button" class="btn btn-primary deleteBtn">Delete</button>
+                                        </th:block>
+                                        <th:block th:if="${user != null  && user.username != postDTO.writer}" sec:authorize="hasRole('POST_DELETE')">
+                                            <button type="submit" class="btn btn-outline-dark mt-auto" >Edit</button>
+                                            <!--                                <button type="button" class="btn btn-outline-dark mt-auto" th:href="@{/posts/modify/{id}?{link}&boardId(id=${postDTO.id})}">Edit</button>-->
+                                            <button type="button" class="btn btn-primary deleteBtn">Delete</button>
+                                        </th:block>
+                                        <button type="button" class="btn btn-primary" th:onclick="|location.href='@{/boards/{id}/posts?{link}(id=${boardId}, link=${link})}'|">Go Back</button>
+                                    </div>
                             </li>
                         </ul>
                     </form>
@@ -93,7 +101,7 @@
                 <div class="modal-body">
                     <div class="input-group mb-3">
                         <span class="input-group-text">Writer</span>
-                        <input type="text" class="form-control writer">
+                        <input type="text" class="form-control writer" th:value="${#authentication.principal.username}" readonly>
                     </div>
                     <div class="input-group mb-3">
                         <span class="input-group-text">Reply Text</span>
@@ -139,6 +147,12 @@
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script src="/js/scripts.js"></script>
 <script th:inline="javascript">
+
+    const currentUser = [[${#authentication.principal.username}]]
+
+    let hasAuth = false;
+
+
     const replyList = document.querySelector('.replyList');
     const replyPaging = document.querySelector('.replyPaging');
     let link = [[${link}]];
@@ -313,6 +327,7 @@
             modifyText.value=reply.content;
             modalWriter.value = reply.writer;
             modifyModal.show();
+            hasAuth = currentUser===reply.writer;
         }).catch(e=>{
             console.error(e);
         });
@@ -321,6 +336,11 @@
 
 
     modifyBtn.addEventListener("click", function(e) {
+        if(hasAuth == false) {
+            alert("this action need authentication");
+            modifyModal.hide();
+            return ;
+        }
         const replyObj = {
             id : replyHeader.innerHTML
             , content : modifyText.value
@@ -340,6 +360,11 @@
     }, false);
 
     removeBtn.addEventListener("click", function(e) {
+        if(hasAuth == false) {
+            alert("this action need authentication");
+            modifyModal.hide();
+            return ;
+        }
         const replyObj = {
             id : replyHeader.innerHTML
             , content : modifyText.value

@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindException;
@@ -43,6 +44,7 @@ public class PostController {
 
     private final PostService postService;
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/{id}")
     public String getDetailPost(@PathVariable Long id, PageRequestDTO pageRequestDTO, Model model) {
         var postDTO = postService.readOne(id);
@@ -52,6 +54,7 @@ public class PostController {
         return "/posts/detail";
     }
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/insert")
     public String getInsertPage(Long boardId, String link, Model model) {
 
@@ -61,6 +64,7 @@ public class PostController {
     }
 
     //todo : 게시글 수정 권한이 존재하는지 여부 확인.
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/modify/{postId}")
     public String getModifyPostPage(@PathVariable Long postId, String link, Long boardId, Long id, Model model) {
         if(id != postId) {
@@ -80,6 +84,7 @@ public class PostController {
         return "/posts/modify";
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("")
     public String insertPost(String link, @Valid PostDTO postDTO, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
         if(bindingResult.hasErrors()) {
@@ -102,6 +107,7 @@ public class PostController {
 //            return "redirect:/posts/%d?%s".formatted(postId, link);
 //    }
 
+    @PreAuthorize("principal.username==#data.get('writer').toString()")
     @PutMapping("/{postId}")
     public ModelAndView modifyPost(@PathVariable Long postId, @RequestBody Map<String, Object> data) {
         log.info("data : %s".formatted(data));
