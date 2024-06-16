@@ -72,6 +72,7 @@ public class CustomSecurityConfig {
                     .tokenRepository(persistentTokenRepository())
                     .userDetailsService(simpleBoardUserDetailService)
                     .tokenValiditySeconds(60 * 60 * 24 * 30)
+                    .rememberMeParameter("remember-me")
             ;
         });
         return http.build();
