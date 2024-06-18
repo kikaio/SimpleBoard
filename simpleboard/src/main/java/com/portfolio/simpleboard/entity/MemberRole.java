@@ -25,8 +25,4 @@ public class MemberRole implements Serializable {
     @Column
     private String description;
 
-    public void updateInfo(String name, String description) {
-        this.name = name;
-        this.description = description;
-    }
 }
