@@ -134,6 +134,7 @@ public class PostController {
         return modelAndView;
     }
 
+    @PreAuthorize("principal.username==#paramMap.get('writer').toString()")
     @ResponseStatus(HttpStatus.SEE_OTHER)
     @DeleteMapping("/{id}")
     public String deletePostInList(@PathVariable Long id, @RequestBody Map<String, Object> paramMap, RedirectAttributes redirectAttributes){

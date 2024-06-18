@@ -192,25 +192,29 @@
         })
     }, false);
 
-    document.querySelector(".deleteBtn").addEventListener("click", function(e) {
-        e.stopPropagation();
-        e.preventDefault();
-        axios.delete("/posts/+[[${postDTO.id}]]", {
-            headers: {
-                'Content-Type': `application/json`,
-            },
-            data : {
-                postId : [[${postDTO.id}]]
-                , boardId : [[${boardId}]]
-                , link : [[${link}]]
-            }
-        }).then(res => {
-            console.log(res);
-            location.href=[[@{/boards/{bId}/posts?{link}(bId=${boardId}, link=${link})}]];
-        }).catch(err => {
-            console.log(err);
-        });
-    }, false);
+    const deleteBtn = document.querySelector(".deleteBtn");
+    if(deleteBtn != null) {
+        document.querySelector(".deleteBtn").addEventListener("click", function(e) {
+            e.stopPropagation();
+            e.preventDefault();
+            axios.delete("/posts/[[${postDTO.id}]]", {
+                headers: {
+                    'Content-Type': `application/json`,
+                },
+                data : {
+                    postId : [[${postDTO.id}]]
+                    , boardId : [[${boardId}]]
+                    , link : [[${link}]]
+                    , writer : [[${postDTO.writer}]]
+                }
+            }).then(res => {
+                console.log(res);
+                location.href=[[@{/boards/{bId}/posts?{link}(bId=${boardId}, link=${link})}]];
+            }).catch(err => {
+                console.log(err);
+            });
+        }, false);
+    }
 
     function printList(dtoList) {
         let str = '';
@@ -382,6 +386,7 @@
             console.error(e);
         })
     }, false);
+
 </script>
 </body>
 </html>
