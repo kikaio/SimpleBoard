@@ -23,6 +23,12 @@ public class AccountPlatform implements Serializable {
     private String email;
 
     @Column
+    private String password;
+
+    @Column
     @Enumerated(EnumType.STRING)
     private OAuthPlatform platformType;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    private MemberProfile memberProfile;
 }

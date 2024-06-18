@@ -22,6 +22,7 @@ public class MemberProfile extends DateEntity implements Serializable {
     @Column
     private String nickname;
 
+    @ToString.Exclude
     @OneToOne
     @JoinColumn(
             referencedColumnName = "id"
