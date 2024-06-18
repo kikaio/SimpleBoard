@@ -97,4 +97,9 @@ public class CustomSecurityConfig {
             web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations());
         };
     }
+
+    @Bean
+    public AccessDeniedHandler accessDeniedHandler() {
+        return new Custom403Handler();
+    }
 }
