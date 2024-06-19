@@ -12,7 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 @Log4j2
 @SpringBootTest
-public class memberRoleTest {
+public class MemberRoleTest {
 
     @Autowired
     private MemberRoleRepository memberRoleRepository;
@@ -22,9 +22,9 @@ public class memberRoleTest {
     @Disabled
     public void testSelectRole() {
 
-        Long id = 0L;
+        Long id = 1L;
         var role = memberRoleRepository.findById(id).orElseThrow();
-        log.info(role);
+        log.info("selected role : %s".formatted(role));
         return ;
     }
 
@@ -45,7 +45,7 @@ public class memberRoleTest {
     @DisplayName("testUpdateRole")
     @Disabled
     public void testUpdateRole() {
-        Long targetRoleId = 0L;
+        Long targetRoleId = 1L;
         var role = memberRoleRepository.findById(targetRoleId).orElseThrow();
         if(role != null) {
             role.updateInfo("ROLE_ADMIN2", "role for app admin");
@@ -59,7 +59,7 @@ public class memberRoleTest {
     @DisplayName("testDeleteRole")
     @Disabled
     public void testDeleteRole() {
-        Long targetId = 0L;
+        Long targetId = 1L;
         var role = memberRoleRepository.findById(targetId).orElseThrow();
         if(role != null) {
             log.info("try role delete target : %s".formatted(role));

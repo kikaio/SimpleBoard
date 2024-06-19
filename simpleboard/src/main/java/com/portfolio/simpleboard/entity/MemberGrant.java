@@ -23,4 +23,9 @@ public class MemberGrant implements Serializable {
 
     @Column
     private String description;
+
+    public void update(String name, String description) {
+        this.name = name;
+        this.description = description;
+    }
 }
