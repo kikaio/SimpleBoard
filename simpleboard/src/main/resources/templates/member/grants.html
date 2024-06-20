@@ -1,13 +1,153 @@
 <!DOCTYPE html>
 <html lang="en"
       xmlns:th="http://thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout_board_list.html}"
 >
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
 <body>
-<section>
-</section>  <!--end of section-->
+<section layout:fragment="content" class="py-5">
+    <div class="container px-4 px-lg-5 mt-5">
+        <div class="row mt-3">
+            <form method="post" action="/members/grants" class="postNewGrantFrom">
+                <div class="col">
+                    <div class="input-group">
+                        <label>Grant name : </label>
+                        <input tpye="text" class="form-control" name="newName">
+                        <label>Description : </label>
+                        <input type="text" class="form-control" name="newDescription">
+                        <button type="button" onclick="javascript:postNewGrant()">Create</button>
+                    </div>
+                </div>
+            </form> <!--end of form for new grant-->
+        </div> <!--end of row-->
+        <div class="row">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Edit</th>
+                        <th scope="col">Delete</th>
+                    </tr>
+                </thead>
+                <tbody class="grantsList">
+
+                </tbody>
+            </table> <!--end of table-->
+        </div> <!--end of row-->
+    </div>
+</section> <!--end of section-->
+
+<script layout:fragment="script" th:inline="javascript">
+
+    const newGrantForm = document.querySelector(".postNewGrantFrom");
+    const grantsTableBody = document.querySelector(".grantsList");
+
+function postNewGrant() {
+    const name = document.querySelector("input[name='newName']");
+    const description = document.querySelector("input[name='newDescription']");
+    if(name === null || name.value.length === 0) {
+        alert("name length must bigger than zero");
+        return ;
+    }
+
+    if(description === null || description.value.length === 0) {
+        alert("description length must bigger than zero");
+        return ;
+    }
+    console.log(`new grant info : ${name.value} - ${description.value}`);
+
+    axios.post("/members/grants"
+        , {
+            name : name.value
+            , description : description.value
+        }
+    ).then(data=>{
+        name.value = '';
+        description.value='';
+        alert("new grant was registed");
+
+        clearGrantList();
+        getGrantList();
+    })
+    .catch(e=> {
+        console.error(e);
+    });
+
+    return ;
+};
+
+function clearGrantList() {
+
+    grantsTableBody.innerHTML = '';
+
+    return ;
+};
+
+getGrantList();
+
+function getGrantList() {
+
+    let str = '';
+    axios.get("/members/grants")
+    .then(res=>{
+        let arrs = res.data;
+        for(var grantDTO of arrs) {
+            str += `
+                <tr data-id=${grantDTO.id}>
+                    <td class="name">
+                        ${grantDTO.name}
+                    </td>
+                    <td class="description">
+                        ${grantDTO.description}
+                    </td>
+                    <td>
+                        <button class="btn btn-primary" onclick="alert('edit clicked')">Edit</button>
+                    </td>
+                    <td>
+                        <button class="btn btn-secondary" onclick="javascript:tryGrantDel(${grantDTO.id}, '${grantDTO.name}', '${grantDTO.description}')">Delete</button>
+                    </td>
+                </tr>
+            `;
+        }
+        grantsTableBody.innerHTML = str;
+
+    }).catch(e=>{
+        console.error(e);
+    });
+    return ;
+};
+
+function tryGrantDel(id, name, description) {
+//    if(confirm("try delete" + name + " grant. right?") == false) {
+//        return ;
+//    }
+
+    axios.delete(`/members/grants/${id}`, {
+        headers: {
+            'Content-Type': `application/json`,
+        }
+        ,data : {
+            id : id
+            , name : name
+            , description : description
+        }
+    }).then(res=>{
+        if(res.data) {
+  //          alert("delete grant : " + name);
+   //         console.log(name + " is deleted");
+            clearGrantList();
+            getGrantList();
+        }
+        else {
+            alert("delete failed");
+        }
+    }).catch(e=>{
+        console.error(e);
+    });
+    return ;
+};
+
+</script>
 </body> <!--end of body-->
 </html>

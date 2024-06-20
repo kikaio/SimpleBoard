@@ -50,21 +50,6 @@ public class MemberGrantService {
         return true;
     }
 
-    @Transactional
-    public boolean insertMemberGrantList(List<MemberGrantDTO> memberGrantDTOs) {
-
-        for(var dto : memberGrantDTOs) {
-            var target = memberGrantRepository.findByName(dto.getName()).orElse(null);
-            if(target != null)
-                return false;
-        }
-        for(var dto : memberGrantDTOs) {
-            var entity = MemberGrantDTO.toEntity(dto);
-            memberGrantRepository.save(entity);
-        }
-        return true;
-    }
-
     public boolean deleteMemberGrant(MemberGrantDTO memberGrantDTO) {
         Long id = memberGrantDTO.getId();
         var target = memberGrantRepository.findById(id).orElse(null);

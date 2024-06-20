@@ -5,6 +5,7 @@ import com.portfolio.simpleboard.dto.member.MemberGrantDTO;
 import com.portfolio.simpleboard.service.member.MemberGrantService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,9 +31,9 @@ public class MemberGrantRestController {
         return ret;
     }
 
-    @PostMapping("")
-    public boolean insertMemberGrantList(@RequestBody List<MemberGrantDTO> memberGrantDTOs) {
-        boolean ret = memberGrantService.insertMemberGrantList(memberGrantDTOs);
+    @PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public boolean insertMemberGrant(@RequestBody MemberGrantDTO memberGrantDTO) {
+        boolean ret = memberGrantService.insertMemberGrant(memberGrantDTO);
         return ret;
     }
 
@@ -41,12 +42,6 @@ public class MemberGrantRestController {
         if(id != memberGrantDTO.getId())
             return false;
         boolean ret = memberGrantService.deleteMemberGrant(memberGrantDTO);
-        return ret;
-    }
-
-    @DeleteMapping("")
-    public boolean deleteMemberGrantList(@RequestBody List<MemberGrantDTO> memberGrantDTOs) {
-        boolean ret = memberGrantService.deleteMemberGrantList(memberGrantDTOs);
         return ret;
     }
 
