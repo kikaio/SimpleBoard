@@ -36,12 +36,46 @@
             </table> <!--end of table-->
         </div> <!--end of row-->
     </div>
+    <div class="modal editGrantModal" tabindex="-1" data-id="">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        Edit Grant
+                    </h5>
+                    <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close">
+                    </button>
+                </div> <!--end of modal-modal-header-->
+                <div class="modal-body">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">Name</span>
+                        <input type="text" class="form-control newNameText" readonly>
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">Description</span>
+                        <input type="text" class="form-control newDescriptionText">
+                    </div>
+                </div> <!--end of modal-modal-modal-body-->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-btn-primary modifyBtn">Modify</button>
+                    <button type="button" class="btn btn-out-line-dark closeBtn">Close</button>
+                </div> <!--end of modal-modal-modal-footer-->
+            </div> <!--end of modal-modal-content-->
+        </div> <!--end of modal-dialog-->
+    </div> <!--end of div for editModal-->
 </section> <!--end of section-->
 
 <script layout:fragment="script" th:inline="javascript">
 
     const newGrantForm = document.querySelector(".postNewGrantFrom");
     const grantsTableBody = document.querySelector(".grantsList");
+
+    const editGrantModal = new bootstrap.Modal(document.querySelector(".editGrantModal"));
+    const modifyBtn = document.querySelector(".modifyBtn");
+    const closeBtn = document.querySelector(".closeBtn");
+    const newGrantName = document.querySelector(".newNameText");
+    const newGrantDescription = document.querySelector(".newDescriptionText");
+    let curEditGrantId = 0;
 
 function postNewGrant() {
     const name = document.querySelector("input[name='newName']");
@@ -102,7 +136,7 @@ function getGrantList() {
                         ${grantDTO.description}
                     </td>
                     <td>
-                        <button class="btn btn-primary" onclick="alert('edit clicked')">Edit</button>
+                        <button class="btn btn-primary" onclick="javascript:showEditGrantModal(${grantDTO.id}, '${grantDTO.name}', '${grantDTO.description}')">Edit</button>
                     </td>
                     <td>
                         <button class="btn btn-secondary" onclick="javascript:tryGrantDel(${grantDTO.id}, '${grantDTO.name}', '${grantDTO.description}')">Delete</button>
@@ -117,6 +151,14 @@ function getGrantList() {
     });
     return ;
 };
+
+function showEditGrantModal(id, name, description) {
+    newGrantName.value = name;
+    newGrantDescription.value = description;
+    curEditGrantId = id;
+
+    editGrantModal.show();
+}
 
 function tryGrantDel(id, name, description) {
 //    if(confirm("try delete" + name + " grant. right?") == false) {
@@ -148,6 +190,32 @@ function tryGrantDel(id, name, description) {
     return ;
 };
 
+    modifyBtn.addEventListener("click", function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        axios.put(`/members/grants/${curEditGrantId}`,
+            {
+                id : curEditGrantId
+                , name : newGrantName.value
+                , description : newGrantDescription.value
+            }
+        ).then(res=>{
+            newGrantName.value = '';
+            newGrantDescription.value = '';
+            curEditGrantId = 0;
+            editGrantModal.hide();
+            clearGrantList();
+            getGrantList();
+        }).catch(e=>{
+            console.error(e);
+            editGrantModal.hide();
+        });
+    }, false);
+
+    closeBtn.addEventListener("click", function(e) {
+        editGrantModal.hide();
+    }, false);
 </script>
 </body> <!--end of body-->
 </html>

@@ -45,8 +45,11 @@ public class MemberGrantRestController {
         return ret;
     }
 
-    @PutMapping("")
-    public boolean updateMemberGrant(@RequestBody MemberGrantDTO memberGrantDTO) {
+    @PutMapping("/{id}")
+    public boolean updateMemberGrant(@PathVariable Long id, @RequestBody MemberGrantDTO memberGrantDTO) {
+        if(id != memberGrantDTO.getId()) {
+            log.error("invalid request. id[%d], json id[%d]".formatted(id, memberGrantDTO.getId()));
+        }
         boolean ret = memberGrantService.updateMemberGrant(memberGrantDTO);
         return ret;
     }
