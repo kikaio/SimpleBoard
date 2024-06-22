@@ -17,7 +17,7 @@
                         <button type="button" onclick="javascript:postNewRole()">Create</button>
                     </div>
                 </form>
-            </div>
+            </div> <!--end of form for role post-->
             <div class="row">
                 <table class="table table-striped">
                     <thead>
@@ -31,8 +31,35 @@
                     <tbody class="roleList">
                     </tbody>
                 </table>
+            </div> <!--end of div for role list table-->
+        </div> <!--end of container-->
+        <div class="row">
+            <div class="col modal modifyRoleModal" tabindex="-1">
+                <div class="modal-dialog">
+                    <dic class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">
+                                Edit Role
+                            </h5>
+                        </div>
+                        <div class="modal-body">
+                            <div class="input-group mb-3">
+                                <span class="input-group-text">Name</span>
+                                <input type="text" class="form-control modifyName" readonly>
+                            </div>
+                            <div class="input-group mb-3">
+                                <span class="input-group-text">Description</span>
+                                <input type="text" class="form-control modifyDescription">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-primary modifyBtn">Modify</button>
+                            <button class="btn btn-out-line-dark closeBtn">Close</button>
+                        </div>
+                    </dic> <!--end of div for modal content-->
+                </div>
             </div>
-        </div>
+        </div> <!--end of div for edit modal-->
     </scetion>
 
 <script layout:fragment="script" th:inline="javascript">
@@ -75,7 +102,8 @@
 
             newRoleName.value = 'ROLE_';
             newRoleDescription.value = '';
-
+            clearRoleList();
+            getRoleList();
         }).catch(e=>{
             console.error(e);
 
@@ -100,7 +128,7 @@
                         <td>${ele.name}</td>
                         <td>${ele.description}</td>
                         <td>
-                            <button class = "btn btn-primary" onclick="javascript:showRoleEditModal(${ele.id}, '${ele.name}', '${ele.description}')">
+                            <button class = "btn btn-primary" onclick="javascript:showRoleModifyModal(${ele.id}, '${ele.name}', '${ele.description}')">
                                 Edit
                             </button>
                         </td>
@@ -116,11 +144,6 @@
         }).catch(e=>{
             console.error(e);
         });
-    };
-
-    function showRoleEditModal(id, name, description) {
-        alert("showRoleEditModal called");
-        return ;
     };
 
     function deleteRole(id, name, description) {
@@ -150,6 +173,65 @@
     };
     clearRoleList();
     getRoleList();
+
+    const modifyModal = new bootstrap.Modal(document.querySelector(".modifyRoleModal"));
+    const modifyName = document.querySelector(".modifyName");
+    const modifyDescription = document.querySelector(".modifyDescription");
+    const modifyBtn = document.querySelector(".modifyBtn");
+    const closeBtn = document.querySelector(".closeBtn");
+    let curModifyRoleId = 0;
+
+    function showRoleModifyModal(id, name, description) {
+        curModifyRoleId = id;
+
+        modifyName.value = name;
+        modifyDescription.value = description;
+
+        modifyModal.show();
+        return ;
+    };
+
+    closeBtn.addEventListener("click", function(e) {
+        e.preventPropagation();
+        e.stopDefault;
+
+        curModifyRoleId = 0;
+        modifyName.value = '';
+        modifyDescription = '';
+
+        modifyModal.hide();
+    }, false);
+
+    modifyBtn.addEventListener("click", function(e){
+
+        let name = modifyName.value;
+        let description = modifyDescription.value;
+        let id = curModifyRoleId;
+        curModifyRoleId = 0;
+        modifyName.value = '';
+        modifyDescription.value = '';
+
+        axios.put(`/members/roles/${id}`, {
+            id : id
+            , name : name
+            , description : description
+        }).then(res=>{
+            if(res.data) {
+                alert(`${name} is updated`);
+                modifyModal.hide();
+                return ;
+            } else {
+                alert(`${name} update is failed`);
+                modifyModal.hide();
+                return ;
+            }
+        }).catch(e=>{
+            console.error(e);
+        });
+
+        modifyModal.hide();
+    }, false);
+
 </script>
 </body>
 </html>
