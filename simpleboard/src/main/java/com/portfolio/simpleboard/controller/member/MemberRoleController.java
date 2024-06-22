@@ -13,6 +13,6 @@ public class MemberRoleController {
 
     @GetMapping("/list")
     public String getRoleListPage() {
-        return "/members/roles";
+        return "/member/roles";
     }
 }

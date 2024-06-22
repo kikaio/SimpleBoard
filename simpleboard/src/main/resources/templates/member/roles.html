@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleag.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout_board_list.html}"
+>
+<body>
+    <scetion layout:fragment="content" class="py-5">
+        <div class="container px-4 px-lg-5 mt-5">
+            <form action="" method="POST" name="newRoleForm">
+                <div class="row mb-3">
+                    <div class="col">
+                        <label>Role name : </label>
+                        <input tpye="text" class="form-control" name="newName" value="ROLE_">
+                        <label>Description : </label>
+                        <input type="text" class="form-control" name="newDescription">
+                        <button type="button" onclick="javascript:postNewRole()">Create</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </scetion>
+
+<script layout:fragment="script" th:inline="javascript">
+    const newRoleForm = document.querySelector(".newRoleForm");
+    const newRoleName = document.querySelector("input[name='newName']");
+    const newRoleDescription = document.querySelector("input[name='newDescription']");
+
+    function postNewRole() {
+
+        if(newRoleName === null || newRoleName.value.length == 0) {
+            alert("role name length must bigger than zero");
+            return ;
+        }
+
+        if(newRoleName.value.startsWith("ROLE_") == false) {
+            alert("role's name must start with ROLE_");
+            return ;
+        }
+
+        if(newRoleDescription === null || newRoleDescription.length == 0) {
+            alert("role description length must bigger than zero");
+            return ;
+        }
+
+        let newName = newRoleName.value;
+        let newDescription = newRoleDescription.value;
+
+        axios.post("/members/roles", {
+            name : newName
+            , description : newDescription
+        }, {
+            headers : { 'Content-Type' : 'application/json'}
+        }).then(res=>{
+            if(res.data) {
+                alert(`new role ${newName} created`);
+            }
+            else {
+                alert("role create failed.");
+            }
+
+            newRoleName.value = 'ROLE_';
+            newRoleDescription.value = '';
+
+        }).catch(e=>{
+            console.error(e);
+
+            newRoleName.value = '';
+            newRoleDescription.value = '';
+        });
+    };
+</script>
+</body>
+</html>
