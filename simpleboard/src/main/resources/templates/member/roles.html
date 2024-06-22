@@ -7,8 +7,8 @@
 <body>
     <scetion layout:fragment="content" class="py-5">
         <div class="container px-4 px-lg-5 mt-5">
-            <form action="" method="POST" name="newRoleForm">
-                <div class="row mb-3">
+            <div class="row mb-3">
+                <form action="" method="POST" name="newRoleForm">
                     <div class="col">
                         <label>Role name : </label>
                         <input tpye="text" class="form-control" name="newName" value="ROLE_">
@@ -16,8 +16,22 @@
                         <input type="text" class="form-control" name="newDescription">
                         <button type="button" onclick="javascript:postNewRole()">Create</button>
                     </div>
-                </div>
-            </form>
+                </form>
+            </div>
+            <div class="row">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">Name</th>
+                            <th scope="col">Description</th>
+                            <th scope="col">Edit</th>
+                            <th scope="col">Delete</th>
+                        </tr>
+                    </thead>
+                    <tbody class="roleList">
+                    </tbody>
+                </table>
+            </div>
         </div>
     </scetion>
 
@@ -69,6 +83,73 @@
             newRoleDescription.value = '';
         });
     };
+
+    const tableBody = document.querySelector(".roleList");
+
+    function clearRoleList() {
+        tableBody.innerHTML = '';
+    };
+
+    function getRoleList() {
+        axios.get("/members/roles")
+        .then(res=>{
+            let str = '';
+            for(var ele of res.data) {
+                str += `
+                    <tr>
+                        <td>${ele.name}</td>
+                        <td>${ele.description}</td>
+                        <td>
+                            <button class = "btn btn-primary" onclick="javascript:showRoleEditModal(${ele.id}, '${ele.name}', '${ele.description}')">
+                                Edit
+                            </button>
+                        </td>
+                        <td>
+                            <button class = "btn btn-secondary" onclick="javascript:deleteRole(${ele.id}, '${ele.name}', '${ele.description}')">
+                                Delete
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }
+            tableBody.innerHTML += str;
+        }).catch(e=>{
+            console.error(e);
+        });
+    };
+
+    function showRoleEditModal(id, name, description) {
+        alert("showRoleEditModal called");
+        return ;
+    };
+
+    function deleteRole(id, name, description) {
+        axios.delete(`/members/roles/${id}`, {
+            data : {
+                id : id
+                , name : name
+                , description : description
+            },
+            headers : {
+                'Content-Type' : 'application/json'
+            }
+        }).then(res=>{
+            if(res.data) {
+                alert(`role[${name}] delete successed`);
+            } else {
+                alert(`role[${name}] delete failed`);
+            }
+            clearRoleList();
+            getRoleList();
+            return ;
+        }).catch(e=>{
+            console.error(e);
+            return ;
+        });
+        return ;
+    };
+    clearRoleList();
+    getRoleList();
 </script>
 </body>
 </html>

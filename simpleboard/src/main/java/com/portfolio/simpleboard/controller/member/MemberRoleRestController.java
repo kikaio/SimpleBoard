@@ -22,7 +22,7 @@ public class MemberRoleRestController {
     @GetMapping("")
     public List<MemberRoleDTO> getMemberRoles() {
         var memberDTOList = memberRoleService.getRoleDTOList();
-        return new ArrayList<>();
+        return memberDTOList;
     }
 
     @PostMapping(value="", consumes = MediaType.APPLICATION_JSON_VALUE)
