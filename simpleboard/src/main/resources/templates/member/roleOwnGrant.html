@@ -16,7 +16,7 @@
         <div class="row align-items-start align-items-center">
             <div class="col-5">
                 <label> cur none own grant list</label>
-                <select class="form-select nonOwnGrantSelector" size="10" aria-label="size 3 select example">
+                <select class="form-select noneOwnGrantSelector" size="10" aria-label="size 3 select example">
                     <option value="1">One</option>
                     <option value="2">Two</option>
                     <option value="3">Three</option>
@@ -25,19 +25,19 @@
             <div class="container col-2 h-100 d-inline-block">
                 <div class="container row flex-col justify-content-center">
                     <div class="d-flex row">
-                        <button type="button" class="btn btn-primary align-top" >
+                        <button type="button" class="btn btn-primary align-top insertBtn">
                             >
                         </button>
                     </div>
                     <div class="d-flex row">
-                        <button type="button" class="btn btn-out-line-dark align-bottom" >
+                        <button type="button" class="btn btn-out-line-dark align-bottom deleteBtn">
                             <
                         </button>
                     </div>
                 </div>
             </div>
             <div class="col-5">
-                <label> cur own grat list</label>
+                <label> cur own grant list</label>
                 <select class="form-select ownGrantSelector" size="10" aria-label="size 3 select example">
                     <option value="1">One</option>
                     <option value="2">Two</option>
@@ -48,6 +48,175 @@
     </div>
 </section>
 <script layout:fragment="script" th:inline="javascript">
+
+    const roleSelector = document.querySelector(".roleSelector");
+
+    const noneOwnGrantList = document.querySelector(".noneOwnGrantSelector");
+    const ownGrantList = document.querySelector(".ownGrantSelector");
+    const insertBtn = document.querySelector(".insertBtn");
+    const deleteBtn = document.querySelector(".deleteBtn");
+
+    function getRoleList() {
+        axios.get("/members/roles")
+        .then(res=>{
+            setRoleSelector(res.data);
+        }).catch(e=>{
+            console.error(e);
+        });
+    };
+
+    function setRoleSelector(roles) {
+        roleSelector.innerHTML = '';
+        let str = '';
+        console.log(roles);
+        if(roles.length == 0) {
+            return ;
+        }
+
+        for(let role of roles) {
+            str += `
+                <option value="${role.id}">${role.name}</option>
+            `;
+        }
+
+        roleSelector.innerHTML = str;
+
+        axios.get(`/members/roles/grants?id=${roles.at(0).id}`)
+        .then(res=>{
+            refreshGrantList(res.data);
+        }).catch(e=>{
+            console.error(e);
+        });
+    };
+
+    function refreshGrantList(data) {
+        console.log(data.memberRoleDTO);
+
+        setNoneOwnGrantsList(data.noneOwnGrantList);
+        setOwnGrantsList(data.ownGrantList);
+    }
+
+    function setNoneOwnGrantsList(grants) {
+        noneOwnGrantList.innerHTML = '';
+        if(grants === null) {
+            console.error("setNoneOwnGrantsList grants is null");
+            return ;
+        }
+        let str = "";
+        for(let grant of grants) {
+        str += `
+                <option value="${grant.id}">${grant.name}</option>
+        `;
+        }
+        noneOwnGrantList.innerHTML = str;
+        return ;
+    }
+
+    function setOwnGrantsList(grants) {
+        ownGrantList.innerHTML = '';
+        if(grants === null) {
+            console.error("setOwnGrantsList grants is null");
+            return ;
+        }
+        let str = "";
+        for(let grant of grants) {
+        str += `
+                <option value="${grant.id}">${grant.name}</option>
+        `;
+        }
+        ownGrantList.innerHTML = str;
+        return ;
+    }
+
+
+    insertBtn.addEventListener("click", function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        console.log("insertBtn clicked");
+
+        const roleId = roleSelector.options[roleSelector.selectedIndex].value;
+        const curSelectedOption = noneOwnGrantList.options[noneOwnGrantList.selectedIndex];
+
+        tryInsertGrant(roleId, noneOwnGrantList.selectedIndex, curSelectedOption);
+
+    }, false);
+
+    deleteBtn.addEventListener("click", function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        console.log("deleteBtn clicked");
+
+        const roleId = roleSelector.options[roleSelector.selectedIndex].value;
+        const curSelectedOption = ownGrantList.options[ownGrantList.selectedIndex];
+
+        tryDeleteGrant(roleId, ownGrantList.selectedIndex, curSelectedOption);
+    }, false);
+
+    function tryInsertGrant(roleId, idx, option) {
+        if(idx == -1) {
+            return ;
+        }
+        const value = option.value;
+        const name = option.text;
+
+       axios.post(`/members/roles/grants/${roleId}`, {
+            id : value
+            , name : name
+        }, {
+            headers : {
+                'Content-Type' : 'application/json'
+            }
+        }).then(res=>{
+            if(res.data) {
+                noneOwnGrantList.remove(idx);
+                ownGrantList.append(option);
+                ownGrantList.selected = -1;
+                return ;
+            } else {
+                return ;
+            }
+        }).catch(e=>{
+            console.error(e);
+        });
+
+        return ;
+    };
+
+    function tryDeleteGrant(roleId, idx, option) {
+        if(idx == -1) {
+            return ;
+        }
+        const value = option.value;
+        const name = option.text;
+
+        axios.delete(`/members/roles/grants/${roleId}`, {
+            data : {
+                id : value
+                , name : name
+            }
+            , headers : {
+                'Content-Type' : 'application/json'
+            }
+        }).then(res=>{
+            if(res.data) {
+                ownGrantList.remove(idx);
+                noneOwnGrantList.append(option);
+                noneOwnGrantList.selected = -1;
+                return ;
+            } else {
+                return ;
+            }
+        }).catch(e=>{
+            console.error(e);
+        });
+
+        return ;
+    };
+
+    getRoleList();
+
+
+
 
 </script>
 </body>

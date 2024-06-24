@@ -19,7 +19,7 @@ public class RoleOwnGrantSearchImpl extends QuerydslRepositorySupport implements
 
     @Transactional
     @Override
-    public RoleOwnGrantDTO searchRoleOwnGrant(Long id){
+    public RoleOwnGrantDTO searchRoleOwnGrant(Long roleId){
 
         QRoleOwnGrant roleOwnGrant = QRoleOwnGrant.roleOwnGrant;
         JPQLQuery query = from(roleOwnGrant);
@@ -30,7 +30,7 @@ public class RoleOwnGrantSearchImpl extends QuerydslRepositorySupport implements
         QMemberGrant memberGrant = QMemberGrant.memberGrant;
         JPQLQuery grantQuery = from(memberGrant);
 
-        roleQuery.where(memberRole.id.eq(id));
+        roleQuery.where(memberRole.id.eq(roleId));
         List<MemberRole> roleList = roleQuery.fetch();
         if(roleList.size() == 0) {
             return null;
@@ -39,7 +39,7 @@ public class RoleOwnGrantSearchImpl extends QuerydslRepositorySupport implements
         grantQuery.where(memberGrant.id.gt(0));
         List<MemberGrant> memberGrantList = grantQuery.fetch();
 
-        query.where(roleOwnGrant.roleGrantId.memberRole.eq(roleList.get(0)));
+        query.where(roleOwnGrant.id.memberRole.eq(roleList.get(0)));
         List<RoleOwnGrant> roleOwnGrantList = query.fetch();
 
         return RoleOwnGrantDTO.fromEntities(roleList.get(0), roleOwnGrantList, memberGrantList);

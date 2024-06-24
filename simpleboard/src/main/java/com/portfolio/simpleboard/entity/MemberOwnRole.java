@@ -19,7 +19,7 @@ public class MemberOwnRole implements Serializable {
     @AllArgsConstructor
     @NoArgsConstructor
     @ToString
-    public class MemberOwnRoleId implements Serializable{
+    public static class MemberOwnRoleId implements Serializable{
 
         @Column(nullable = false)
         private MemberProfile memberProfile;

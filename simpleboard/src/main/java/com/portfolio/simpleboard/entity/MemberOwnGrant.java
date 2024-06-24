@@ -19,7 +19,7 @@ public class MemberOwnGrant implements Serializable{
     @AllArgsConstructor
     @NoArgsConstructor
     @EqualsAndHashCode
-    public class MemberOwnGrantId implements Serializable {
+    public static class MemberOwnGrantId implements Serializable {
         @Column(nullable = false)
         private MemberProfile memberProfile;
 

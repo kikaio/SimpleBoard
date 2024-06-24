@@ -4,5 +4,5 @@ import com.portfolio.simpleboard.entity.RoleOwnGrant;
 import com.portfolio.simpleboard.service.member.search.RoleOwnGrantSearch;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface RoleOwnGrantRepository extends JpaRepository<RoleOwnGrant, Long>, RoleOwnGrantSearch {
+public interface RoleOwnGrantRepository extends JpaRepository<RoleOwnGrant, RoleOwnGrant.RoleOwnGrantId>, RoleOwnGrantSearch {
 }

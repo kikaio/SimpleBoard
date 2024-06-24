@@ -37,7 +37,8 @@ public class RoleOwnGrantDTO {
         for(MemberGrant grant : allGrantList) {
 
             boolean find = rogList.stream().anyMatch(ele->{
-                return ele.getRoleGrantId().getMemberGrant() == grant;
+                var ret = ele.getId().getMemberGrant().getId().longValue() == grant.getId().longValue();
+                return ret;
             });
             if(find) {
                 dto.getOwnGrantList().add(MemberGrantDTO.fromEntity(grant));

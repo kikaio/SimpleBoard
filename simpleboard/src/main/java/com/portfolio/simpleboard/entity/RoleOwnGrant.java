@@ -21,7 +21,7 @@ public class RoleOwnGrant implements Serializable {
     @NoArgsConstructor
     @EqualsAndHashCode
     @ToString
-    public class RoleOwnGrantId implements Serializable {
+    public static class RoleOwnGrantId implements Serializable {
         @Column(nullable = false)
         private MemberRole memberRole;
 
@@ -30,6 +30,6 @@ public class RoleOwnGrant implements Serializable {
     }
 
     @EmbeddedId
-    private RoleOwnGrantId roleGrantId;
+    private RoleOwnGrantId id;
 
 }

@@ -4,5 +4,5 @@ import com.portfolio.simpleboard.dto.member.RoleOwnGrantDTO;
 
 public interface RoleOwnGrantSearch {
 
-    RoleOwnGrantDTO searchRoleOwnGrant(Long id);
+    RoleOwnGrantDTO searchRoleOwnGrant(Long roleId);
 }
