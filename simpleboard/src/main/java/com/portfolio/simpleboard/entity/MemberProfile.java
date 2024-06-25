@@ -22,11 +22,4 @@ public class MemberProfile extends DateEntity implements Serializable {
     @Column
     private String nickname;
 
-    @ToString.Exclude
-    @OneToOne
-    @JoinColumn(
-            referencedColumnName = "id"
-            , foreignKey = @ForeignKey(name = "fk_accoutn_platform_for_member_profile")
-    )
-    private AccountPlatform accountPlatform;
 }
