@@ -55,4 +55,28 @@ public class RoleOwnGrantService {
         log.info("newRoleOwnGrant was saved. : %s".formatted(newRoleOwnGrant));
         return true;
     }
+    @Transactional
+    public boolean deleteRoleOwnGrant(Long roleId, MemberGrantDTO memberGrantDTO) {
+
+        MemberRole memberRole = memberRoleRepository.findById(roleId).orElse(null);
+        if(memberRole == null) {
+            log.error("role[%d] is not exist".formatted(roleId));
+            return false;
+        }
+
+        MemberGrant grant = memberGrantRepository.findById(memberGrantDTO.getId()).orElse(null);
+        if(grant == null) {
+            log.error("grant[%d] is not exist".formatted(memberGrantDTO.getId()));
+            return false;
+        }
+
+        RoleOwnGrant.RoleOwnGrantId id = new RoleOwnGrant.RoleOwnGrantId(memberRole, grant);
+        var target = roleOwnGrantRepository.findById(id).orElse(null);
+        if(target == null) {
+            log.error("this roleOwnGrant[%d-%d] is not exist.".formatted(roleId, memberGrantDTO.getId()));
+            return false;
+        }
+        roleOwnGrantRepository.deleteById(id);
+        return true;
+    }
 }

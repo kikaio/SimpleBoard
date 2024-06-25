@@ -29,4 +29,10 @@ public class RoleOwnGrantRestController {
         var ret = roleOwnGrantService.createRoleOwnGrant(roleId, memberGrantDTO);
         return ret;
     }
+
+    @DeleteMapping(value="/{roleId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public boolean deleteRoleOwnGrant(@PathVariable Long roleId, @RequestBody MemberGrantDTO memberGrantDTO) {
+        var ret = roleOwnGrantService.deleteRoleOwnGrant(roleId, memberGrantDTO);
+        return ret;
+    }
 }
