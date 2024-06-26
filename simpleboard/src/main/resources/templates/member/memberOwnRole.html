@@ -57,9 +57,6 @@
         console.log("searchBtnClicked");
         const curSearchOption = searchType[searchType.selectedIndex];
         curSearchType = curSearchOption.value;
-        if(curSearchType == '') {
-            return ;
-        }
 
         curKeyword = searchText.value;
         if(curKeyword === null){
