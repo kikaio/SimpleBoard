@@ -7,19 +7,169 @@
 <body>
 <section layout:fragment="content" class="py-5">
     <div class="container h-100">
-        <div class="row">
-
+        <div class="container row">
+            <divc class="col input-group-prepend">
+                <select class="form-select" name="type">
+                    <option value="" selcted>----------</option>
+                    <option value="i">id</option>
+                    <option value="n">nickname</option>
+                    <option value="in">id+nickname</option>
+                </select>
+            </divc>
+            <input type="text" class="col form-control" name="keyword">
+            <divc class="col input-group-append">
+                <button type="button" class="btn btn-primary" onclick="searchBtnClicked()">Search</button>
+            </divc>
         </div>
-        <div class="row">
-
+        <div class="container row">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>id</th>
+                        <th>nickname</th>
+                        <th>select</th>
+                    </tr>
+                </thead>
+                <tbody class="tableBody">
+                </tbody>
+            </table>
         </div>
-        <div class="row">
-
+        <div class="container row ">
+            <div class="searchPager col">
+            </div>
         </div>
     </div>
 </section>
 
 <script layout:fragment="script" th:inline="javascript">
+
+    const searchType = document.querySelector("select[name='type']");
+    const searchText = document.querySelector("input[name='keyword']");
+    let curPage = 1;
+    let curSearchType = '';
+    let curKeyword = '';
+
+    const tableBody = document.querySelector(".tableBody");
+    const searchPager = document.querySelector(".searchPager");
+
+
+    function searchBtnClicked() {
+        console.log("searchBtnClicked");
+        const curSearchOption = searchType[searchType.selectedIndex];
+        curSearchType = curSearchOption.value;
+        if(curSearchType == '') {
+            return ;
+        }
+
+        curKeyword = searchText.value;
+        if(curKeyword === null){
+            curKeyword = '';
+        }
+        console.log(`cur input : [${curSearchType}][${curKeyword}]`);
+
+        var pageRequestDTO = {
+            pageSize : 10
+            , page : curPage
+            , type : curSearchType
+            , keyword : curKeyword
+        };
+
+        searchMember(pageRequestDTO);
+
+        return ;
+    }
+
+    function searchMember(pageRequestDTO) {
+
+        let page = pageRequestDTO.page;
+        let type = ""+pageRequestDTO.type;
+        let keyword = ""+pageRequestDTO.keyword;
+
+        axios.get(`/members/own/roles`, {
+            params : {
+                page:page
+                , pageSize : 10
+                , type : `${type}`
+                , keyword : `${keyword}`
+            }
+        })
+        .then(res=>{
+            let memberOwnRoleSearchDTO = res.data;
+
+            setTableBodyData(res.data.pageResponseDTO.dtoList);
+            setSearchPager(res.data.pageResponseDTO);
+
+            return ;
+        })
+        .catch(e=>{
+            console.error(e);
+        });
+    }
+
+    function setTableBodyData(dtoList) {
+
+        let str = '';
+        for(let dto of dtoList) {
+            str += `
+                <tr>
+                    <td>${dto.id}</td>
+                    <td>${dto.nickname}</td>
+                    <td>
+                        <button type="button" class=" btn btn-secondary">Select</button>
+                    </td>
+                </tr>
+            `;
+        }
+        tableBody.innerHTML = str;
+        return ;
+    }
+
+    function setSearchPager(pageResponseDTO) {
+        let str = '';
+        let start = pageResponseDTO.start;
+        let end = pageResponseDTO.end;
+        let prev = pageResponseDTO.prev;
+        let next = pageResponseDTO.next;
+        let page = pageResponseDTO.page;
+
+        if(prev) {
+            str += `
+                <button class='btn btn-primary'><</button>
+            `;
+        } else {
+            str += `
+                <button class='btn btn-secondary' disable><</button>
+            `;
+        }
+
+        for(let curPage = start; curPage <= end; curPage++) {
+            if(curPage == page) {
+                str += `
+                    <button type="button" class="btn btn-primary">${curPage}</button>
+                `;
+            } else {
+                str += `
+                    <button type="button" class="btn btn-primary">${curPage}</button>
+                `;
+            }
+        }
+
+        if(next) {
+            str += `
+                <button class='btn btn-primary'>></button>
+            `;
+        } else {
+            str += `
+                <button class='btn btn-secondary' disable>></button>
+            `;
+        }
+
+        searchPager.innerHTML = str;
+
+        return ;
+    }
+
+    searchBtnClicked();
 
 </script>
 
