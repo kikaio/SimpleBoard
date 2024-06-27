@@ -1,4 +1,4 @@
-package com.portfolio.simpleboard.service.member.search;
+package com.portfolio.simpleboard.repository.member.search;
 
 
 import com.portfolio.simpleboard.dto.member.MemberProfileDTO;

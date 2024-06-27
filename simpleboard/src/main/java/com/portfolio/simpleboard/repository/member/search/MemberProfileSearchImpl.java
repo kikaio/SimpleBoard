@@ -1,4 +1,4 @@
-package com.portfolio.simpleboard.service.member.search;
+package com.portfolio.simpleboard.repository.member.search;
 
 
 import com.portfolio.simpleboard.dto.member.MemberProfileDTO;
@@ -10,9 +10,6 @@ import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.JPQLQuery;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 @Log4j2

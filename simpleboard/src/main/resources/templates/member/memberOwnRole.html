@@ -38,6 +38,33 @@
             <div class="searchPager col">
             </div>
         </div>
+
+        <div class="container row align-items-start align-items-center ownRoleDiv">
+            <div class="col-5">
+                <label> cur member none own role list</label>
+                <select class="form-select noneOwnRoleSelector" size="10" aria-label="size 3 select example">
+                </select>
+            </div>
+            <div class="container col-2 h-100 d-inline-block">
+                <div class="container row flex-col justify-content-center">
+                    <div class="d-flex row">
+                        <button type="button" class="btn btn-primary align-top insertBtn">
+                            >
+                        </button>
+                    </div>
+                    <div class="d-flex row">
+                        <button type="button" class="btn btn-out-line-dark align-bottom deleteBtn">
+                            <
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-5">
+                <label> cur member own role list</label>
+                <select class="form-select ownRoleSelector" size="10" aria-label="size 3 select example">
+                </select>
+            </div>
+        </div>
     </div>
 </section>
 
@@ -53,10 +80,13 @@
     const searchPager = document.querySelector(".searchPager");
 
 
+
     function searchBtnClicked() {
         console.log("searchBtnClicked");
         const curSearchOption = searchType[searchType.selectedIndex];
         curSearchType = curSearchOption.value;
+
+        clearRoleSelector();
 
         curKeyword = searchText.value;
         if(curKeyword === null){
@@ -82,7 +112,7 @@
         let type = ""+pageRequestDTO.type;
         let keyword = ""+pageRequestDTO.keyword;
 
-        axios.get(`/members/own/roles`, {
+        axios.get(`/members/profiles`, {
             params : {
                 page:page
                 , pageSize : 10
@@ -91,10 +121,8 @@
             }
         })
         .then(res=>{
-            let memberOwnRoleSearchDTO = res.data;
-
-            setTableBodyData(res.data.pageResponseDTO.dtoList);
-            setSearchPager(res.data.pageResponseDTO);
+            setTableBodyData(res.data.dtoList);
+            setSearchPager(res.data);
 
             return ;
         })
@@ -112,7 +140,7 @@
                     <td>${dto.id}</td>
                     <td>${dto.nickname}</td>
                     <td>
-                        <button type="button" class=" btn btn-secondary">Select</button>
+                        <button type="button" class=" btn btn-secondary" onclick="selectBtnClicked(${dto.id})">Select</button>
                     </td>
                 </tr>
             `;
@@ -164,6 +192,132 @@
         searchPager.innerHTML = str;
 
         return ;
+    };
+
+
+
+
+    const ownRoleDiv = document.querySelector(".ownRoleDiv");
+    const noneOwnRoleSelector = document.querySelector(".noneOwnRoleSelector");
+    const ownRoleSelector = document.querySelector(".ownRoleSelector");
+    const insertBtn = document.querySelector(".insertBtn");
+    const deleteBtn = document.querySelector(".deleteBtn");
+    let curProfileId = 0;
+
+    function selectBtnClicked(profileId) {
+
+        curProfileId = profileId;
+
+        axios.get("/members/own/roles", {
+            params:{
+                profileId : profileId
+            }
+        }).then(res=>{
+            dto = res.data;
+            setNoneOwnRoleSelect(dto.noneRoleDTOList);
+            setOwnRoleSelect(dto.roleDTOList);
+        }).catch(e=>{
+            console.error(e);
+        });
+    };
+
+    function setOwnRoleSelect(roleList) {
+        console.log(`own role list : ${roleList}`);
+        ownRoleSelector.innerHTML = '';
+        let str = '';
+        for(let role of roleList) {
+            str += `
+                <option value=${role.id}>${role.name}</option>
+            `;
+        }
+
+        ownRoleSelector.innerHTML = str;
+
+        return ;
+    };
+
+    function setNoneOwnRoleSelect(roleList) {
+        console.log(`NoneOwnRoleSelect : ${roleList}`);
+        noneOwnRoleSelector.innerHTML = '';
+
+        let str = '';
+
+        for(let role of roleList) {
+            str += `
+                <option value=${role.id}>${role.name}</option>
+            `;
+        }
+
+        noneOwnRoleSelector.innerHTML = str;
+
+        return ;
+    };
+
+    insertBtn.addEventListener("click", function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        let curIdx = noneOwnRoleSelector.selectedIndex;
+        let value = noneOwnRoleSelector[curIdx].value;
+        let name = noneOwnRoleSelector[curIdx].text;
+
+        axios.post(`/members/own/roles/${curProfileId}`, {
+            id : value
+            , name : name
+        }).then(res=>{
+            if(res.data) {
+                console.log(`member own role[${name}] create is success`);
+                let opt = noneOwnRoleSelector[curIdx];
+                noneOwnRoleSelector.remove(curIdx);
+                ownRoleSelector.append(opt);
+                ownRoleSelector.selected = -1;
+                return ;
+            } else {
+                console.log("member own role create is failed");
+                return ;
+            }
+        }).catch(e=>{
+            console.error(e);
+        });
+    }, false);
+
+    deleteBtn.addEventListener("click", function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        let curIdx = ownRoleSelector.selectedIndex;
+        let value = ownRoleSelector[curIdx].value;
+        let name = ownRoleSelector[curIdx].text;
+
+        axios.delete(`/members/own/roles/${curProfileId}`, {
+            data : {
+                id : value
+                , name : name
+            }, headers : {
+                'Content-Type' : 'application/json'
+            }
+        }).then(res=>{
+            if(res.data) {
+                console.info(`${name} role delete success`);
+                let opt = ownRoleSelector[curIdx];
+                ownRoleSelector.remove(curIdx);
+                noneOwnRoleSelector.append(opt);
+                noneOwnRoleSelector.selected = -1;
+                return ;
+            } else {
+                console.error(`${name} role delete failed`);
+                return ;
+            }
+        }).catch(e=>{
+            console.error(e);
+        })
+
+    }, false);
+
+    function clearRoleSelector() {
+        noneOwnRoleSelector.innerHTML = '';
+        ownRoleSelector.innerHTML = '';
+        curProfileId = 0;
     }
 
     searchBtnClicked();

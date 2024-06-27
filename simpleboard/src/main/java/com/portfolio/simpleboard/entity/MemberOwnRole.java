@@ -15,9 +15,10 @@ public class MemberOwnRole implements Serializable {
 
     @Embeddable
     @Setter
-    @EqualsAndHashCode
+    @Getter
     @AllArgsConstructor
     @NoArgsConstructor
+    @EqualsAndHashCode
     @ToString
     public static class MemberOwnRoleId implements Serializable{
 
