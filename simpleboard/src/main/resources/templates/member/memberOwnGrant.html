@@ -6,10 +6,322 @@
 >
 <body>
 <section layout:fragment="content" class="py-5">
+    <div class="container h-100">
+        <div class="container row">
+            <divc class="col input-group-prepend">
+                <select class="form-select" name="type">
+                    <option value="" selcted>----------</option>
+                    <option value="i">id</option>
+                    <option value="n">nickname</option>
+                    <option value="in">id+nickname</option>
+                </select>
+            </divc>
+            <input type="text" class="col form-control" name="keyword">
+            <divc class="col input-group-append">
+                <button type="button" class="btn btn-primary" onclick="searchBtnClicked()">Search</button>
+            </divc>
+        </div>
+        <div class="container row">
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>id</th>
+                    <th>nickname</th>
+                    <th>select</th>
+                </tr>
+                </thead>
+                <tbody class="tableBody">
+                </tbody>
+            </table>
+        </div>
+        <div class="container row ">
+            <div class="searchPager col">
+            </div>
+        </div>
 
+        <div class="container row align-items-start align-items-center ownGrnatDiv">
+            <div class="col-5">
+                <label> cur member none own Grant list</label>
+                <select class="form-select noneOwnGrantSelector" size="10" aria-label="size 3 select example">
+                </select>
+            </div>
+            <div class="container col-2 h-100 d-inline-block">
+                <div class="container row flex-col justify-content-center">
+                    <div class="d-flex row">
+                        <button type="button" class="btn btn-primary align-top insertBtn">
+                            >
+                        </button>
+                    </div>
+                    <div class="d-flex row">
+                        <button type="button" class="btn btn-out-line-dark align-bottom deleteBtn">
+                            <
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-5">
+                <label> cur member own Grant list</label>
+                <select class="form-select ownGrantSelector" size="10" aria-label="size 3 select example">
+                </select>
+            </div>
+        </div>
+    </div>
 </section>
 
 <script layout:fragment="script" th:inline="javascript">
+
+    const searchType = document.querySelector("select[name='type']");
+    const searchText = document.querySelector("input[name='keyword']");
+    let curPage = 1;
+    let curSearchType = '';
+    let curKeyword = '';
+
+    const tableBody = document.querySelector(".tableBody");
+    const searchPager = document.querySelector(".searchPager");
+
+
+
+    function searchBtnClicked() {
+        console.log("searchBtnClicked");
+        const curSearchOption = searchType[searchType.selectedIndex];
+        curSearchType = curSearchOption.value;
+
+        clearGrantSelector();
+
+        curKeyword = searchText.value;
+        if(curKeyword === null){
+            curKeyword = '';
+        }
+        console.log(`cur input : [${curSearchType}][${curKeyword}]`);
+
+        var pageRequestDTO = {
+            pageSize : 10
+            , page : curPage
+            , type : curSearchType
+            , keyword : curKeyword
+        };
+
+        searchMember(pageRequestDTO);
+
+        return ;
+    }
+
+    function searchMember(pageRequestDTO) {
+
+        let page = pageRequestDTO.page;
+        let type = ""+pageRequestDTO.type;
+        let keyword = ""+pageRequestDTO.keyword;
+
+        axios.get(`/members/profiles`, {
+            params : {
+                page:page
+                , pageSize : 10
+                , type : `${type}`
+                , keyword : `${keyword}`
+            }
+        })
+        .then(res=>{
+            setTableBodyData(res.data.dtoList);
+            setSearchPager(res.data);
+
+            return ;
+        })
+        .catch(e=>{
+            console.error(e);
+        });
+    }
+
+    function setTableBodyData(dtoList) {
+
+        let str = '';
+        for(let dto of dtoList) {
+            str += `
+                <tr>
+                    <td>${dto.id}</td>
+                    <td>${dto.nickname}</td>
+                    <td>
+                        <button type="button" class=" btn btn-secondary" onclick="selectBtnClicked(${dto.id})">Select</button>
+                    </td>
+                </tr>
+            `;
+        }
+        tableBody.innerHTML = str;
+        return ;
+    }
+
+    function setSearchPager(pageResponseDTO) {
+        let str = '';
+        let start = pageResponseDTO.start;
+        let end = pageResponseDTO.end;
+        let prev = pageResponseDTO.prev;
+        let next = pageResponseDTO.next;
+        let page = pageResponseDTO.page;
+
+        if(prev) {
+            str += `
+                <button class='btn btn-primary'><</button>
+            `;
+        } else {
+            str += `
+                <button class='btn btn-secondary' disable><</button>
+            `;
+        }
+
+        for(let curPage = start; curPage <= end; curPage++) {
+            if(curPage == page) {
+                str += `
+                    <button type="button" class="btn btn-primary">${curPage}</button>
+                `;
+            } else {
+                str += `
+                    <button type="button" class="btn btn-primary">${curPage}</button>
+                `;
+            }
+        }
+
+        if(next) {
+            str += `
+                <button class='btn btn-primary'>></button>
+            `;
+        } else {
+            str += `
+                <button class='btn btn-secondary' disable>></button>
+            `;
+        }
+
+        searchPager.innerHTML = str;
+
+        return ;
+    };
+
+
+
+    const ownGrantDiv = document.querySelector(".ownGrantDiv");
+    const noneOwnGrantSelector = document.querySelector(".noneOwnGrantSelector");
+    const ownGrantSelector = document.querySelector(".ownGrantSelector");
+    const insertBtn = document.querySelector(".insertBtn");
+    const deleteBtn = document.querySelector(".deleteBtn");
+    let curProfileId = 0;
+
+    function selectBtnClicked(profileId) {
+
+        curProfileId = profileId;
+
+        axios.get("/members/own/grants", {
+            params:{
+                profileId : profileId
+            }
+        }).then(res=>{
+            dto = res.data;
+            setNoneOwnGrantSelect(dto.noneOwnMemberGrantDTOS);
+            setOwnGrantSelect(dto.ownMemberGrantDTOS);
+        }).catch(e=>{
+            console.error(e);
+        });
+    };
+
+    function setOwnGrantSelect(GrantList) {
+        console.log(`own Grant list : ${GrantList}`);
+        ownGrantSelector.innerHTML = '';
+        let str = '';
+        for(let Grant of GrantList) {
+            str += `
+                <option value=${Grant.id}>${Grant.name}</option>
+            `;
+        }
+
+        ownGrantSelector.innerHTML = str;
+
+        return ;
+    };
+
+    function setNoneOwnGrantSelect(GrantList) {
+        console.log(`NoneOwnGrantSelect : ${GrantList}`);
+        noneOwnGrantSelector.innerHTML = '';
+
+        let str = '';
+
+        for(let Grant of GrantList) {
+            str += `
+                <option value=${Grant.id}>${Grant.name}</option>
+            `;
+        }
+
+        noneOwnGrantSelector.innerHTML = str;
+
+        return ;
+    };
+
+    insertBtn.addEventListener("click", function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        let curIdx = noneOwnGrantSelector.selectedIndex;
+        let value = noneOwnGrantSelector[curIdx].value;
+        let name = noneOwnGrantSelector[curIdx].text;
+
+        axios.post(`/members/own/grants/${curProfileId}`, {
+            id : value
+            , name : name
+        }).then(res=>{
+            if(res.data) {
+                console.log(`member own Grant[${name}] create is success`);
+                let opt = noneOwnGrantSelector[curIdx];
+                noneOwnGrantSelector.remove(curIdx);
+                ownGrantSelector.append(opt);
+                ownGrantSelector.selected = -1;
+                return ;
+            } else {
+                console.log("member own Grant create is failed");
+                return ;
+            }
+        }).catch(e=>{
+            console.error(e);
+        });
+    }, false);
+
+    deleteBtn.addEventListener("click", function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        let curIdx = ownGrantSelector.selectedIndex;
+        let value = ownGrantSelector[curIdx].value;
+        let name = ownGrantSelector[curIdx].text;
+
+        axios.delete(`/members/own/grants/${curProfileId}`, {
+            data : {
+                id : value
+                , name : name
+            }, headers : {
+                'Content-Type' : 'application/json'
+            }
+        }).then(res=>{
+            if(res.data) {
+                console.info(`${name} Grant delete success`);
+                let opt = ownGrantSelector[curIdx];
+                ownGrantSelector.remove(curIdx);
+                noneOwnGrantSelector.append(opt);
+                noneOwnGrantSelector.selected = -1;
+                return ;
+            } else {
+                console.error(`${name} Grant delete failed`);
+                return ;
+            }
+        }).catch(e=>{
+            console.error(e);
+        })
+
+    }, false);
+
+    function clearGrantSelector() {
+        noneOwnGrantSelector.innerHTML = '';
+        ownGrantSelector.innerHTML = '';
+        curProfileId = 0;
+    }
+
+    searchBtnClicked();
+
+
 
 </script>
 

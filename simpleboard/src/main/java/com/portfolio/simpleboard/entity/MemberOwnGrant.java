@@ -20,10 +20,14 @@ public class MemberOwnGrant implements Serializable{
     @NoArgsConstructor
     @EqualsAndHashCode
     public static class MemberOwnGrantId implements Serializable {
-        @Column(nullable = false)
+        @Column(nullable = false
+                , columnDefinition = "varbinary(500)"
+        )
         private MemberProfile memberProfile;
 
-        @Column(nullable = false)
+        @Column(nullable = false
+                , columnDefinition = "varbinary(500)"
+        )
         private MemberGrant memberGrant;
 
     }

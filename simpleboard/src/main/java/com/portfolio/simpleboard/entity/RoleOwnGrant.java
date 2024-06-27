@@ -22,10 +22,14 @@ public class RoleOwnGrant implements Serializable {
     @EqualsAndHashCode
     @ToString
     public static class RoleOwnGrantId implements Serializable {
-        @Column(nullable = false)
+        @Column(nullable = false
+                , columnDefinition = "varbinary(500)"
+        )
         private MemberRole memberRole;
 
-        @Column(nullable = false)
+        @Column(nullable = false
+                , columnDefinition = "varbinary(500)"
+        )
         private MemberGrant memberGrant;
     }
 

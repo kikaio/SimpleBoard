@@ -22,10 +22,14 @@ public class MemberOwnRole implements Serializable {
     @ToString
     public static class MemberOwnRoleId implements Serializable{
 
-        @Column(nullable = false)
+        @Column(nullable = false
+                , columnDefinition = "varbinary(500)"
+        )
         private MemberProfile memberProfile;
 
-        @Column(nullable = false)
+        @Column(nullable = false
+                , columnDefinition = "varbinary(500)"
+        )
         private MemberRole memberRole;
     }
 
