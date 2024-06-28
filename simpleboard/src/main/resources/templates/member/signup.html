@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<html lang="en">
+<head
+        xmlns:th="http://www.thymeleaf.org"
+>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <!-- Favicon-->
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+    <!-- Bootstrap icons-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <link th:href="@{/css/styles.css}" rel="stylesheet" />
+
+    <title>SimpleBoard</title>
+</head>
+<body>
+<scetion class="align-middle">
+    <div class="container-fluid d-flex justify-content-center align-items-center" style="height:100vh">
+        <form action="/member/signup" method="post" class="container">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Sign Up Input Form</h5>
+                </div> <!--end of card header-->
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label for="emailInput" class="form-label">Email Address</label>
+                        <input type="email" class="form-control" placeholder="xxx@naver.com" name="email" id="emailInput" requied>
+                    </div>
+                    <div calss="mb-3">
+                        <label for="nicknameInput" class="form-label">Nickname</label>
+                        <input type="text" class="form-control" placeholder="xxxx" name="nickname" id="nicknameInput" requied>
+                    </div>
+                    <div class="mb-3">
+                        <label for="passwordInput" class="form-label">Password</label>
+                        <input type="password" class="form-control" placeholder="please enter your password" name="password" id="passwordInput" requied>
+                    </div>
+                    <div class="mb-3">
+                        <label for="passwordConfirmInput" class="form-label">Password Confirm</label>
+                        <input type="password" class="form-control" placeholder="please enter password repeat" id="passwordConfirmInput" required>
+                        <div class="form-text">
+                            비밀번호와 동일하게 적어주세요
+                        </div>
+                    </div>
+                    <input type="hidden" value="GUEST" name="oAuthPlatform">
+                </div> <!--end of card body-->
+                <div class="card-footer">
+                    <button type="submit" class="btn btn-primary">Sign Up!</button>
+                    <button type="button" class="btn btn-secondary" onclick="location.href='/'">Back to Main!</button>
+                </div> <!--end of card footer-->
+            </div> <!--end of card-->
+        </form>
+    </div>
+</scetion>
+</body>
+</html>

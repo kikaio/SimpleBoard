@@ -7,6 +7,8 @@ import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class RoleOwnGrantSearchImpl extends QuerydslRepositorySupport implements RoleOwnGrantSearch{
 
@@ -42,6 +44,19 @@ public class RoleOwnGrantSearchImpl extends QuerydslRepositorySupport implements
         List<RoleOwnGrant> roleOwnGrantList = query.fetch();
 
         return RoleOwnGrantDTO.fromEntities(role, roleOwnGrantList, memberGrantList);
+    }
+
+    @Override
+    public Set<MemberGrant> searchGrantEntities(Set<MemberRole> roleSet) {
+        QRoleOwnGrant roleOwnGrant = QRoleOwnGrant.roleOwnGrant;
+        JPQLQuery<RoleOwnGrant> roleOwnGrantJPQLQuery = from(roleOwnGrant);
+
+        roleOwnGrantJPQLQuery.where(roleOwnGrant.id.memberRole.in(roleSet));
+        var ret = roleOwnGrantJPQLQuery.fetch();
+
+        return ret.stream().map(ele->{
+            return ele.getId().getMemberGrant();
+        }).collect(Collectors.toSet());
     }
 
 }

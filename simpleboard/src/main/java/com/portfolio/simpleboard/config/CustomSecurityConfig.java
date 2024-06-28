@@ -53,6 +53,7 @@ public class CustomSecurityConfig {
         };
         String[] signPath = {
                 "/member/login"
+                , "/member/signup"
         };
         http.authorizeHttpRequests(custom->{
             custom

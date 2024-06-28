@@ -7,6 +7,8 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Log4j2
 public class MemberOwnGrantSearchImpl extends QuerydslRepositorySupport implements MemberOwnGrantSearch {
@@ -15,6 +17,7 @@ public class MemberOwnGrantSearchImpl extends QuerydslRepositorySupport implemen
         super(MemberOwnGrant.class);
     }
 
+    @Override
     public MemberOwnGrantDetailDTO searchMemberOwnGrantDetailDTO(Long profileId) {
 
         QMemberProfile memberProfile = QMemberProfile.memberProfile;
@@ -51,6 +54,21 @@ public class MemberOwnGrantSearchImpl extends QuerydslRepositorySupport implemen
                 .toList();
 
         return MemberOwnGrantDetailDTO.fromEntities(grantDTOList, ownDTOList);
+    }
+
+
+    @Override
+    public Set<MemberGrant> searchMemberOwnGrantEntities(MemberProfile memberProfile) {
+
+        QMemberOwnGrant memberOwnGrant = QMemberOwnGrant.memberOwnGrant;
+        JPQLQuery<MemberOwnGrant> memberOwnGrantJPQLQuery = from(memberOwnGrant);
+
+        memberOwnGrantJPQLQuery.where(memberOwnGrant.memberOwnGrantId.memberProfile.eq(memberProfile));
+        List<MemberOwnGrant> entities = memberOwnGrantJPQLQuery.fetch();
+
+        return entities.stream().map(ele->{
+            return ele.getMemberOwnGrantId().getMemberGrant();
+        }).collect(Collectors.toSet());
     }
 
 }

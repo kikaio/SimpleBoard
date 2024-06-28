@@ -31,4 +31,8 @@ public class AccountPlatform implements Serializable {
 
     @ManyToOne(fetch = FetchType.EAGER)
     private MemberProfile memberProfile;
+
+    public void setMemberProfile(MemberProfile memberProfile) {
+        this.memberProfile = memberProfile;
+    }
 }
