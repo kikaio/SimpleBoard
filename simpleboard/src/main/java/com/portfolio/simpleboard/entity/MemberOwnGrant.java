@@ -20,13 +20,13 @@ public class MemberOwnGrant implements Serializable{
     @NoArgsConstructor
     @EqualsAndHashCode
     public static class MemberOwnGrantId implements Serializable {
-        @OneToOne(cascade = CascadeType.ALL ,fetch = FetchType.EAGER)
+        @ManyToOne(cascade = CascadeType.ALL ,fetch = FetchType.EAGER)
         @JoinColumn(referencedColumnName = "id"
                 , foreignKey = @ForeignKey(name = "fk_member_profile_for_member_own_grant")
         )
         private MemberProfile memberProfile;
 
-        @OneToOne(cascade = CascadeType.ALL ,fetch = FetchType.EAGER)
+        @ManyToOne(cascade = CascadeType.ALL ,fetch = FetchType.EAGER)
         @JoinColumn(referencedColumnName = "id"
                 , foreignKey = @ForeignKey(name = "fk_member_grant_for_member_own_grant")
         )

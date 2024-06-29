@@ -41,7 +41,7 @@ public class RoleOwnGrantService {
             log.error("invalid request. grant[%d] is not exist in repo".formatted(memberGrantDTO.getId()));
             return false;
         }
-        var targetId = new RoleOwnGrant.RoleOwnGrantId(memberRole, memberGrant);
+        var targetId = new RoleOwnGrant.RoleOwnGrantId(memberGrant, memberRole);
         RoleOwnGrant roleOwnGrant = roleOwnGrantRepository.findById(targetId).orElse(null);
         if(roleOwnGrant != null) {
             log.error("role[%d] own grant[%d] is already exist ".formatted(roleId, memberGrant.getId()));
@@ -70,7 +70,7 @@ public class RoleOwnGrantService {
             return false;
         }
 
-        RoleOwnGrant.RoleOwnGrantId id = new RoleOwnGrant.RoleOwnGrantId(memberRole, grant);
+        RoleOwnGrant.RoleOwnGrantId id = new RoleOwnGrant.RoleOwnGrantId(grant, memberRole);
         var target = roleOwnGrantRepository.findById(id).orElse(null);
         if(target == null) {
             log.error("this roleOwnGrant[%d-%d] is not exist.".formatted(roleId, memberGrantDTO.getId()));

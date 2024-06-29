@@ -22,13 +22,13 @@ public class MemberOwnRole implements Serializable {
     @ToString
     public static class MemberOwnRoleId implements Serializable{
 
-        @OneToOne(cascade = CascadeType.ALL ,fetch = FetchType.EAGER)
+        @ManyToOne(cascade = CascadeType.ALL ,fetch = FetchType.EAGER)
         @JoinColumn(referencedColumnName = "id"
                 , foreignKey = @ForeignKey(name = "fk_member_profile_for_member_own_role")
         )
         private MemberProfile memberProfile;
 
-        @OneToOne(cascade = CascadeType.ALL ,fetch = FetchType.EAGER)
+        @ManyToOne(cascade = CascadeType.ALL ,fetch = FetchType.EAGER)
         @JoinColumn(referencedColumnName = "id"
                 , foreignKey = @ForeignKey(name = "fk_member_role_for_member_own_role")
         )

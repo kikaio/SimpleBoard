@@ -22,17 +22,18 @@ public class RoleOwnGrant implements Serializable {
     @EqualsAndHashCode
     @ToString
     public static class RoleOwnGrantId implements Serializable {
-        @OneToOne(cascade = CascadeType.ALL ,fetch = FetchType.EAGER)
+        @ManyToOne(cascade = CascadeType.ALL ,fetch = FetchType.EAGER)
+        @JoinColumn(referencedColumnName = "id"
+                , foreignKey = @ForeignKey(name = "fk_member_grant_for_role_own_grant")
+        )
+        private MemberGrant memberGrant;
+
+        @ManyToOne(cascade = CascadeType.ALL ,fetch = FetchType.EAGER)
         @JoinColumn(referencedColumnName = "id"
                 , foreignKey = @ForeignKey(name = "fk_member_role_for_role_own_grant")
         )
         private MemberRole memberRole;
 
-        @OneToOne(cascade = CascadeType.ALL ,fetch = FetchType.EAGER)
-        @JoinColumn(referencedColumnName = "id"
-                , foreignKey = @ForeignKey(name = "fk_member_grant_for_role_own_grant")
-        )
-        private MemberGrant memberGrant;
     }
 
     @EmbeddedId
