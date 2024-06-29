@@ -23,6 +23,7 @@ public class MemberSignUpDTO {
         return MemberProfile.builder()
                 .nickname(nickname)
                 .password(password)
+                .email(email)
                 .build();
     }
 

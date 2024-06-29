@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @Log4j2
-@RequestMapping("/members/roles/grants")
+@RequestMapping("/members/roles/own/grants")
 public class RoleOwnGrantController {
 
     @GetMapping("/list")

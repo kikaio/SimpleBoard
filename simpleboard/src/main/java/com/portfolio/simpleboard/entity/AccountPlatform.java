@@ -29,7 +29,8 @@ public class AccountPlatform implements Serializable {
     @Enumerated(EnumType.STRING)
     private OAuthPlatform platformType;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name="member_profile_id", foreignKey = @ForeignKey(name = "fk_member_profile_for_account_platform"))
     private MemberProfile memberProfile;
 
     public void setMemberProfile(MemberProfile memberProfile) {

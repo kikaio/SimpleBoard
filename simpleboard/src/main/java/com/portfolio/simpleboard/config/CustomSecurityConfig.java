@@ -69,6 +69,8 @@ public class CustomSecurityConfig {
 
         http.formLogin(custom->{
             custom.loginPage("/member/login")
+                    .usernameParameter("email")
+                    .successForwardUrl("/")
             ;
         });
         http.rememberMe(custom->{

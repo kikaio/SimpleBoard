@@ -3,6 +3,7 @@ package com.portfolio.simpleboard.entity;
 import com.portfolio.simpleboard.entity.base.DateEntity;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
@@ -15,7 +16,7 @@ import java.util.stream.Collectors;
 
 @Entity
 @Builder
-@Getter()
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @ToString
@@ -33,23 +34,36 @@ public class MemberProfile extends DateEntity implements Serializable, UserDetai
     private Boolean isDel = false;
 
     @Builder.Default
+    @Transient
     private List<SimpleGrantedAuthority> simpleGrantedAuthorities = new ArrayList<>();
+
+    @Transient
+    private String email;
+
+    @Transient
+    public String password;
 
     @Override
     public Collection<SimpleGrantedAuthority> getAuthorities(){
         return simpleGrantedAuthorities;
     }
 
-    public String password;
-
     @Override
     public String getPassword(){
-        return "";
+        return password;
     }
 
     @Override
     public String getUsername(){
-        return nickname;
+        return this.email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getEmail() {
+        return this.email;
     }
 
     public void setPassword(String password) {
