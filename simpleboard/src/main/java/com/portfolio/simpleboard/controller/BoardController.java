@@ -30,7 +30,7 @@ public class BoardController {
     private final BoardService boardService;
 
     private final PostService postService;
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('USER') or hasAuthority('BOARD_READ')")
     @GetMapping("")
     public String getBoardListPage(PageRequestDTO pageRequestDTO, Model model) {
         PageResponseDTO<BoardDTO> boards = boardService.getBoards(pageRequestDTO);
@@ -40,14 +40,14 @@ public class BoardController {
         return "/boards/list";
     }
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('USER') or hasAuthority('BOARD_CREATE')")
     @GetMapping("/insert")
     public String getBoardInsertPage() {
 
         return "/boards/insert";
     }
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('USER') or hasAuthority('BOARD_READ')")
     @GetMapping("/detail/{id}")
     public String getBoardDetailPage(@PathVariable(required = true, name = "id") Long id) {
         return "/boards/detail";
@@ -65,6 +65,7 @@ public class BoardController {
         return "/boards/modify";
     }
 
+    @PreAuthorize("hasAuthority('BOARD_CREATE')")
     @PostMapping(value="")
     public String boardInsert(@Valid BoardDTO boardDTO, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
         if(bindingResult.hasErrors()) {
@@ -76,6 +77,7 @@ public class BoardController {
         return "redirect:/boards";
     }
 
+    @PreAuthorize("hasAuthority('BOARD_MODIFY')")
     @PutMapping("/{id}")
     public String boardUpdate(@PathVariable(name = "id") Long id, @RequestBody BoardDTO boardDTO, RedirectAttributes redirectAttributes) {
         if(id != boardDTO.getId()) {
@@ -87,6 +89,7 @@ public class BoardController {
         return "redirect:/boards/modify/%d".formatted(id);
     }
 
+    @PreAuthorize("hasAuthority('BOARD_DELETE')")
     @DeleteMapping("/{id}")
     public ModelAndView boardDelete(@PathVariable(name = "id")Long id, PageRequestDTO pageRequestDTO
             , @RequestBody BoardDTO boardDTO, RedirectAttributes redirectAttributes
@@ -105,6 +108,7 @@ public class BoardController {
         return modelAndView;
     }
 
+    @PreAuthorize("hasAuthority('POST_READ')")
     @GetMapping("/{boardId}/posts")
     public String getPostList(@PathVariable(name="boardId") Long boardId, PageRequestDTO pageRequestDTO, Model model){
         String link = "";

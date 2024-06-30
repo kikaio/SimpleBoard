@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindException;
@@ -33,10 +34,11 @@ public class ReplyController {
 
     @GetMapping("/{id}")
     public ReplyDTO getReplyOne(@PathVariable Long id) {
-        ReplyDTO ret =  replyService.getReplyOne(id);
+        ReplyDTO ret = replyService.getReplyOne(id);
         return ret;
     }
 
+    @PreAuthorize("hasAuthority('REPLY_CREATE') or hasRole('ADMIN')")
     @PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ReplyDTO insertReply(@Valid @RequestBody ReplyDTO replyDTO, BindingResult bindingResult) throws BindException {
         if(bindingResult.hasErrors()) {
@@ -47,6 +49,7 @@ public class ReplyController {
         return ret;
     }
 
+    @PreAuthorize("hasAuthority('REPLY_MODIFY') or hasRole('ADMIN')")
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ReplyDTO modifyReply(@PathVariable(required = true) Long id, @Valid @RequestBody ReplyDTO replyDTO,  BindingResult bindingResult) throws BindException {
         //todo : modify reply using id
@@ -62,6 +65,7 @@ public class ReplyController {
         return ret;
     }
 
+    @PreAuthorize("hasAuthority('REPLY_DELETE') or hasRole('ADMIN')")
     @DeleteMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ReplyDTO deleteReply(@PathVariable(required = true) Long id, @Valid @RequestBody ReplyDTO replyDTO, BindingResult br) throws BindException {
         //todo : delete reply and sub replies.

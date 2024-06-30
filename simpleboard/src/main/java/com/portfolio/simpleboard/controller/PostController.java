@@ -44,7 +44,7 @@ public class PostController {
 
     private final PostService postService;
 
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasAuthority('POST_READ')")
     @GetMapping("/{id}")
     public String getDetailPost(@PathVariable Long id, PageRequestDTO pageRequestDTO, Model model) {
         var postDTO = postService.readOne(id);
@@ -54,7 +54,7 @@ public class PostController {
         return "/posts/detail";
     }
 
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasAuthority('POST_CREATE')")
     @GetMapping("/insert")
     public String getInsertPage(Long boardId, String link, Model model) {
 
@@ -64,19 +64,15 @@ public class PostController {
     }
 
     //todo : 게시글 수정 권한이 존재하는지 여부 확인.
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasAuthority('POST_MODIFY') or hasRole('ADMIN')")
     @GetMapping("/modify/{postId}")
     public String getModifyPostPage(@PathVariable Long postId, String link, Long boardId, Long id, Model model) {
         if(id != postId) {
             //todo : error handle
             return "";
         }
-
-        if(false) {
-            //todo : 작성자 본인 혹은 관리자인지 여부 확인.
-            return "";
-        }
         var postDTO = postService.readOne(postId);
+
         model.addAttribute("postDTO", postDTO);
         model.addAttribute("boardId", postDTO.getBoardId());
         model.addAttribute("link", link);
@@ -84,7 +80,7 @@ public class PostController {
         return "/posts/modify";
     }
 
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasAuthority('POST_CREATE') or hasRole('ADMIN')")
     @PostMapping("")
     public String insertPost(String link, @Valid PostDTO postDTO, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
         if(bindingResult.hasErrors()) {
@@ -107,7 +103,7 @@ public class PostController {
 //            return "redirect:/posts/%d?%s".formatted(postId, link);
 //    }
 
-    @PreAuthorize("principal.username==#data.get('writer').toString()")
+    @PreAuthorize("(principal.username==#data.get('writer').toString() and hasAuthority('POST_MODIFY')) or hasRole('ADMIN')")
     @PutMapping("/{postId}")
     public ModelAndView modifyPost(@PathVariable Long postId, @RequestBody Map<String, Object> data) {
         log.info("data : %s".formatted(data));
@@ -134,7 +130,7 @@ public class PostController {
         return modelAndView;
     }
 
-    @PreAuthorize("principal.username==#paramMap.get('writer').toString()")
+    @PreAuthorize("(principal.username==#data.get('writer').toString()  and hasAuthority('POST_DELETE')) or hasRole('ADMIN')")
     @ResponseStatus(HttpStatus.SEE_OTHER)
     @DeleteMapping("/{id}")
     public String deletePostInList(@PathVariable Long id, @RequestBody Map<String, Object> paramMap, RedirectAttributes redirectAttributes){
