@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Log4j2
 public class MemberGrantController {
 
-    @GetMapping("list")
+    @GetMapping("/list")
     public String getMemberGrantsPage() {
         return "/member/grants";
     }

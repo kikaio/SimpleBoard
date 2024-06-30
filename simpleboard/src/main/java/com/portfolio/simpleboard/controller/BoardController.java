@@ -30,7 +30,6 @@ public class BoardController {
     private final BoardService boardService;
 
     private final PostService postService;
-
     @PreAuthorize("hasRole('USER')")
     @GetMapping("")
     public String getBoardListPage(PageRequestDTO pageRequestDTO, Model model) {

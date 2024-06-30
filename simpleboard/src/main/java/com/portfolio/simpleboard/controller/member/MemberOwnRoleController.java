@@ -15,6 +15,6 @@ public class MemberOwnRoleController {
 
     @GetMapping("/list")
     public String getMemberOwnRoleListPage() {
-        return "member/memberOwnRole";
+        return "/member/memberOwnRole";
     }
 }

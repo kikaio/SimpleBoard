@@ -70,7 +70,14 @@ public class CustomSecurityConfig {
         http.formLogin(custom->{
             custom.loginPage("/member/login")
                     .usernameParameter("email")
-                    .successForwardUrl("/")
+                    .successHandler((request, response, authentication) -> {
+                        var referer = request.getHeader("Referer");
+                        log.info("referer : %s".formatted(referer));
+                        response.sendRedirect("/");
+                        //response.setHeader("Location", "url~~") 로도 되지만 이때는 status code도 304로 변경해줘야함.
+                        var principal = authentication.getPrincipal();
+                        log.info("login success : %s".formatted(principal));
+                    })
             ;
         });
         http.rememberMe(custom->{

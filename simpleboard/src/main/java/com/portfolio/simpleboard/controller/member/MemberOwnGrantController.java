@@ -15,6 +15,6 @@ public class MemberOwnGrantController {
 
     @GetMapping("/list")
     public String getMemberOwnGrantListPage(){
-        return "member/memberOwnGrant";
+        return "/member/memberOwnGrant";
     }
 }

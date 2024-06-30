@@ -35,6 +35,7 @@ public class SimpleBoardUserDetailService implements UserDetailsService {
     private final MemberOwnGrantRepository memberOwnGrantRepository;
     private final RoleOwnGrantRepository roleOwnGrantRepository;
     private final MemberProfileRepository memberProfileRepository;
+    private final MemberRoleRepository memberRoleRepository;
 
     @Override
     @Transactional
@@ -91,6 +92,33 @@ public class SimpleBoardUserDetailService implements UserDetailsService {
         profile = memberProfileRepository.save(profile);
         accountPlatform.setMemberProfile(profile);
         accountPlatform = accountPlatformRepository.save(accountPlatform);
+
+        var memberRole = memberRoleRepository.findByName("ROLE_USER").orElse(null);
+        if(memberRole == null) {
+            memberRole = MemberRole.builder()
+                    .name("ROLE_USER")
+                    .description("default role for all user")
+                    .build();
+            memberRole = memberRoleRepository.save(memberRole);
+
+            var adminRole = memberRoleRepository.findByName("ROLE_ADMIN").orElse(null);
+            if(adminRole == null) {
+                adminRole = MemberRole.builder()
+                        .name("ROLE_ADMIN")
+                        .description("role for admin")
+                        .build();
+                adminRole = memberRoleRepository.save(adminRole);
+            }
+        }
+
+        var memberOwnRoleKey = new MemberOwnRole.MemberOwnRoleId(profile, memberRole);
+        var memberOwnRole = memberOwnRoleRepository.findById(memberOwnRoleKey).orElse(null);
+        if(memberOwnRole == null) {
+            memberOwnRole = MemberOwnRole.builder()
+                    .memberOwnRoleId(new MemberOwnRole.MemberOwnRoleId())
+                    .build();
+            memberOwnRole = memberOwnRoleRepository.save(memberOwnRole);
+        }
 
         return true;
     }

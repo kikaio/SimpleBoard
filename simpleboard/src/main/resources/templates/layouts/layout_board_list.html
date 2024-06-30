@@ -31,15 +31,16 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
-                <li class="nav-item"><a class="nav-link active" aria-current="page" th:href="@{/boards}">Home</a></li>
-                <li class="nav-item"><a class="nav-link" href="#!">About</a></li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Shop</a>
+                <li class="nav-item"><a class="nav-link active" href="/about">About</a></li>
+                <li class="nav-item"><a class="nav-link active" aria-current="page" th:href="@{/boards}">Boards</a></li>
+                <li class="nav-item dropdown active">
+                    <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">About Member</a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item" href="#!">All Products</a></li>
-                        <li><hr class="dropdown-divider" /></li>
-                        <li><a class="dropdown-item" href="#!">Popular Items</a></li>
-                        <li><a class="dropdown-item" href="#!">New Arrivals</a></li>
+                        <li><a class="dropdown-item" href="/members/roles/list">RolePage</a></li>
+                        <li><a class="dropdown-item" href="/members/grants/list">GrantPage</a></li>
+                        <li><a class="dropdown-item" href="/members/roles/own/grants/list">RoleOwnGrantPage</a></li>
+                        <li><a class="dropdown-item" href="/members/own/roles/list">MemberOwnRolePage</a></li>
+                        <li><a class="dropdown-item" href="/members/own/grants/list">MemberOwnGrantPage</a></li>
                     </ul>
                 </li>
             </ul>
