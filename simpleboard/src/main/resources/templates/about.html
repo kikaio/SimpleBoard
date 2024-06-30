@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout_board_list.html}"
+>
+
+<section layout:fragment="content" class="vw-100 vh-100 align-items-center d-flex">
+    <div class="container justify-content-center">
+        <div class="card">
+            <div class="card-header">
+                <div class="mb-3">
+                    <label class="form-label">프로젝트 명</label>
+                    <input class="form-control" type="text" value="SimpleBoard" readonly >
+                    <div class="form-text">
+                        해당 프로젝트는 개인의 java 및 springboot 숙달을 위해 진행한 portfolio 입니다.
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label class="form-label">개발자</label>
+                    <input class="form-control" type="text" value="허영욱" readonly >
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">출생 년도</label>
+                    <input class="form-control" type="text" value="1990" readonly >
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">blog link</label>
+                    <a class="form-control" href="https://m.blog.naver.com/PostList.naver?blogId=gjduddnr5923">naver</a>
+                    <a class="form-control" href="https://its-fusion-blog.tistory.com">tistory</a>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">이력서</label>
+                    <a class="form-control" href="https://docs.google.com/presentation/d/1_7y3droYJR-cI9Y72OZG-EqV2ubfvAKkr2ElYNYeYv8/edit">이력서 링크</a>
+                </div>
+            </div>
+            <div class="card-footer">
+                <div class="mb-3">
+                    <label class="form-label">email</label>
+                    <input class="form-control" type="email" value="gjduddnr5923@naver.com" readonly >
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">해당 프로젝트 세부 ppt</label>
+                    <a class="form-control" href="">이동</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script layout:fragment="script" th:inline="javascript">
+
+</script>
+</html>

@@ -13,4 +13,9 @@ public class SimpleBoardController {
     public String index() {
         return "index";
     }
+
+    @GetMapping("/about")
+    public String aboutPage() {
+        return "about";
+    }
 }
