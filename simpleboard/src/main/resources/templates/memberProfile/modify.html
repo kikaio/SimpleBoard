@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleag.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout_board_list.html}"
+>
+<section layout:fragment="content" class="container vh-100">
+    <div class="container d-flex align-items-center">
+        <div class="row">
+            <form class="container col">
+                <div class="row">
+                    <input type="hidden" class="form-control" readonly name="id" th:value="${profileId}">
+                </div>
+                <div class="row">
+                    <label class="form-label"></label>
+                    <input type="text" class="form-control nicknameInput" name="nickname" th:value="${nickname}">
+                    <button type="button" class="btn btn-primary" onclick="checkNicknameDuplicate()">check</button>
+                </div>
+            </form>
+        </div>
+        <div class="row">
+            <button class="btn btn-primary modifyBtn" th:onclick="|location.href='@(members/profiles/modify?profileId=${profileId})'|">Modify</button>
+        </div>
+    </div>
+</section>
+<script layout:fragment="script" th:inline="javascript">
+    const modifyBtn = document.querySelector("modifyBtn");
+
+    function checkNicknameDuplicate() {
+        let str = document.querySelector("nicknameInput").value;
+        axios.get("/members/profiles/nickname/check", {
+            params : {
+                nickname : `${str}`
+            }
+        }).then(res->{
+            if(res.data) {
+                alert("this nickname duplicated");
+                modifyBtn.disabled = true;
+            } else {
+                alert("this nickname not duplicated");
+                modifyBtn.disabled =false;
+            }
+        }).catch(err->{
+            console.error(err);
+        });
+    }
+
+</script>
+</html>

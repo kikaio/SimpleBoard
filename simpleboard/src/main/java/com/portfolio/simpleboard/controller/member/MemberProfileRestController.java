@@ -24,4 +24,10 @@ public class MemberProfileRestController {
     public PageResponseDTO<MemberProfileDTO> searchMemberProfileList(PageRequestDTO pageRequestDTO) {
         return memberProfileService.searchMemberProfileList(pageRequestDTO);
     }
+
+    @GetMapping("/nickname/check")
+    public boolean checkNicknameDuplication(Long id, String nickname) {
+        //중복 시 true 반환
+        return memberProfileService.checkNicknameDuplication(id, nickname);
+    }
 }

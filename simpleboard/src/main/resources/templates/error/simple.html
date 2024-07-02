@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleag.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout_board_list.html}"
+>
+<section layout:fragmen="content" class="container vh-100">
+    <div class="container d-flex align-items-center">
+        <label>
+            [[${msg}]]
+        </label>
+        <button type="button" class="btn btn-primary" onclick="location.href='/'">return to main</button>
+    </div>
+</section>
+</html>

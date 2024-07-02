@@ -5,16 +5,23 @@ import com.portfolio.simpleboard.dto.member.MemberProfileDTO;
 import com.portfolio.simpleboard.dto.member.MemberRoleDTO;
 import com.portfolio.simpleboard.dto.pager.PageRequestDTO;
 import com.portfolio.simpleboard.dto.pager.PageResponseDTO;
-import com.portfolio.simpleboard.entity.MemberOwnRole;
+import com.portfolio.simpleboard.entity.*;
 import com.portfolio.simpleboard.repository.member.MemberOwnRoleRepository;
 import com.portfolio.simpleboard.repository.member.MemberProfileRepository;
 import com.portfolio.simpleboard.repository.member.MemberRoleRepository;
+import com.portfolio.simpleboard.repository.member.RoleOwnGrantRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+
+import java.security.Principal;
+import java.util.*;
 
 @Service
 @Log4j2
@@ -24,13 +31,15 @@ public class MemberOwnRoleService {
     private final MemberOwnRoleRepository memberOwnRoleRepository;
     private final MemberProfileRepository memberProfileRepository;
     private final MemberRoleRepository memberRoleRepository;
+    private final RoleOwnGrantRepository roleOwnGrantRepository;
+
 
     public MemberOwnRoleDetailDTO searchMemberOwnRoleDetail(Long profileId) {
         return memberOwnRoleRepository.searchMemberOwnRoleDetail(profileId);
     }
 
     @Transactional
-    public boolean createMemberOwnRole(Long profileId, MemberRoleDTO memberRoleDTO) {
+    public boolean createMemberOwnRole(Authentication authentication, Long profileId, MemberRoleDTO memberRoleDTO) {
         var profile = memberProfileRepository.findById(profileId).orElse(null);
         if(profile == null) {
             log.error("profile[%d] is not exist".formatted(profileId));
@@ -54,15 +63,19 @@ public class MemberOwnRoleService {
         var memberOwnRole = MemberOwnRole.builder()
                 .memberOwnRoleId(id)
                 .build();
+
         log.info("pre create : %s".formatted(memberOwnRole));
         memberOwnRole = memberOwnRoleRepository.save(memberOwnRole);
         log.info("after create : %s".formatted(memberOwnRole));
 
+        var autorities = (List<GrantedAuthority>)authentication.getAuthorities();
+        var newGranted  = new SimpleGrantedAuthority(memberRoleDTO.getName());
+        autorities.add(newGranted);
         return true;
     }
 
     @Transactional
-    public boolean deleteMemberOwnRole(Long profileId, MemberRoleDTO memberRoleDTO) {
+    public boolean deleteMemberOwnRole(Authentication authentication, Long profileId, MemberRoleDTO memberRoleDTO) {
         var profile = memberProfileRepository.findById(profileId).orElse(null);
         if(profile == null) {
             log.error("profile[%d] is not exist".formatted(profileId));
@@ -83,6 +96,38 @@ public class MemberOwnRoleService {
             return false;
         }
         memberOwnRoleRepository.deleteById(id);
+        List<RoleOwnGrant> allRoleOwnGrant = roleOwnGrantRepository.findAll();
+        Map<MemberGrant, Set<MemberRole>> grantPerRole = new HashMap<>();
+        List<MemberGrant> targetGrant = new ArrayList<>();
+        allRoleOwnGrant.forEach(ele->{
+            var memberGrant= ele.getId().getMemberGrant();
+            var memberRole = ele.getId().getMemberRole();
+            var value = grantPerRole.get(memberGrant);
+            if(value == null) {
+                grantPerRole.put(memberGrant, new HashSet<>());
+                value = grantPerRole.get(memberGrant);
+            }
+            value.add(memberRole);
+            if(memberRole.getName() == memberRoleDTO.getName()) {
+                targetGrant.add(memberGrant);
+            }
+        });
+
+        var autorities = (List<GrantedAuthority>)authentication.getAuthorities();
+        //우선 해당 role만이 지닌 고유 권한을 authorities에서 제거한다.
+        for(var grant : targetGrant) {
+            var value = grantPerRole.get(grant);
+            if(value.size() == 1) {
+                autorities.removeIf(ele->{
+                    return ele.getAuthority() == grant.getName();
+                });
+            }
+        }
+        //그 후 역할 자체를 제거.
+        autorities.removeIf(ele->{
+            return ele.getAuthority() == memberRoleDTO.getName();
+        });
+
         return true;
     }
 }

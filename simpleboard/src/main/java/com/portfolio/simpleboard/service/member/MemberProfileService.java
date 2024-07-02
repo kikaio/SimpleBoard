@@ -20,4 +20,24 @@ public class MemberProfileService {
     public PageResponseDTO<MemberProfileDTO> searchMemberProfileList(PageRequestDTO pageRequestDTO) {
         return memberProfileRepository.searchMemberProfile(pageRequestDTO);
     }
+
+    public MemberProfileDTO readOne(Long profileId) {
+        var profile = memberProfileRepository.findById(profileId).orElse(null);
+        if(profile == null) {
+            return null;
+        }
+        return MemberProfileDTO.fromEntity(profile);
+    }
+
+    public boolean checkNicknameDuplication(Long profileId, String nickname) {
+        var profile = memberProfileRepository.findByNickname(nickname).orElse(null);
+        if(profile != null) {
+            if(profileId.longValue() == profile.getId().longValue()) {
+                return false;
+            } else {
+                return true;
+            }
+        }
+        return false;
+    }
 }

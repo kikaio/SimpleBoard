@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleag.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout_board_list.html}"
+>
+<section layout:fragment="content" class="container vh-100">
+    <div class="container d-flex align-items-center">
+        <div class="row">
+            <form class="container col">
+                <div class="row">
+                    <input type="hidden" class="form-control" readonly name="id" th:value="${profileId}">
+                </div>
+                <div class="row">
+                    <label class="form-label"></label>
+                    <input type="text" class="form-control" readonly name="nickname" th:value="${nickname}">
+                </div>
+            </form>
+        </div>
+        <div class="row">
+            <button class="btn btn-primary" th:onclick="|location.href='@(members/profiles/modify?profileId=${profileId})'|">Modify</button>
+        </div>
+    </div>
+</section>
+<script layout:fragment="script" th:inline="javascript"></script>
+</html>
