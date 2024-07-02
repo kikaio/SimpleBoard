@@ -1,5 +1,6 @@
 package com.portfolio.simpleboard.service.member;
 
+import com.portfolio.simpleboard.SimpleboardApplication;
 import com.portfolio.simpleboard.dto.member.MemberOwnRoleDetailDTO;
 import com.portfolio.simpleboard.dto.member.MemberProfileDTO;
 import com.portfolio.simpleboard.dto.member.MemberRoleDTO;
@@ -13,9 +14,11 @@ import com.portfolio.simpleboard.repository.member.RoleOwnGrantRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -39,7 +42,7 @@ public class MemberOwnRoleService {
     }
 
     @Transactional
-    public boolean createMemberOwnRole(Authentication authentication, Long profileId, MemberRoleDTO memberRoleDTO) {
+    public boolean createMemberOwnRole(Long profileId, MemberRoleDTO memberRoleDTO) {
         var profile = memberProfileRepository.findById(profileId).orElse(null);
         if(profile == null) {
             log.error("profile[%d] is not exist".formatted(profileId));
@@ -68,14 +71,11 @@ public class MemberOwnRoleService {
         memberOwnRole = memberOwnRoleRepository.save(memberOwnRole);
         log.info("after create : %s".formatted(memberOwnRole));
 
-        var autorities = (List<GrantedAuthority>)authentication.getAuthorities();
-        var newGranted  = new SimpleGrantedAuthority(memberRoleDTO.getName());
-        autorities.add(newGranted);
         return true;
     }
 
     @Transactional
-    public boolean deleteMemberOwnRole(Authentication authentication, Long profileId, MemberRoleDTO memberRoleDTO) {
+    public boolean deleteMemberOwnRole(Long profileId, MemberRoleDTO memberRoleDTO) {
         var profile = memberProfileRepository.findById(profileId).orElse(null);
         if(profile == null) {
             log.error("profile[%d] is not exist".formatted(profileId));
@@ -111,21 +111,6 @@ public class MemberOwnRoleService {
             if(memberRole.getName() == memberRoleDTO.getName()) {
                 targetGrant.add(memberGrant);
             }
-        });
-
-        var autorities = (List<GrantedAuthority>)authentication.getAuthorities();
-        //우선 해당 role만이 지닌 고유 권한을 authorities에서 제거한다.
-        for(var grant : targetGrant) {
-            var value = grantPerRole.get(grant);
-            if(value.size() == 1) {
-                autorities.removeIf(ele->{
-                    return ele.getAuthority() == grant.getName();
-                });
-            }
-        }
-        //그 후 역할 자체를 제거.
-        autorities.removeIf(ele->{
-            return ele.getAuthority() == memberRoleDTO.getName();
         });
 
         return true;

@@ -115,7 +115,7 @@ public class SimpleBoardUserDetailService implements UserDetailsService {
         var memberOwnRole = memberOwnRoleRepository.findById(memberOwnRoleKey).orElse(null);
         if(memberOwnRole == null) {
             memberOwnRole = MemberOwnRole.builder()
-                    .memberOwnRoleId(new MemberOwnRole.MemberOwnRoleId())
+                    .memberOwnRoleId(memberOwnRoleKey)
                     .build();
             memberOwnRole = memberOwnRoleRepository.save(memberOwnRole);
         }

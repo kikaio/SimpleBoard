@@ -43,9 +43,14 @@ public class MemberProfile extends DateEntity implements Serializable, UserDetai
     @Transient
     public String password;
 
+
     @Override
-    public Collection<SimpleGrantedAuthority> getAuthorities(){
+    public Collection<SimpleGrantedAuthority> getAuthorities() {
         return simpleGrantedAuthorities;
+    }
+
+    public void addAuthority(SimpleGrantedAuthority simpleGrantedAuthority) {
+        simpleGrantedAuthorities.add(simpleGrantedAuthority);
     }
 
     @Override

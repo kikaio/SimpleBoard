@@ -5,6 +5,7 @@ import com.portfolio.simpleboard.dto.member.MemberRoleDTO;
 import com.portfolio.simpleboard.service.member.MemberOwnRoleService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.web.bind.annotation.*;
@@ -26,14 +27,14 @@ public class MemberOwnRoleRestController {
     }
 
     @PostMapping("/{profileId}")
-    public boolean createMemberOwnRole(@PathVariable Long profileId, @RequestBody MemberRoleDTO memberRoleDTO, Authentication authentication) {
-        var ret = memberOwnRoleService.createMemberOwnRole( authentication, profileId, memberRoleDTO);
+    public boolean createMemberOwnRole(@PathVariable Long profileId, @RequestBody MemberRoleDTO memberRoleDTO, Principal principal) {
+        var ret = memberOwnRoleService.createMemberOwnRole(profileId, memberRoleDTO);
         return ret;
     }
 
     @DeleteMapping("/{profileId}")
-    public boolean deleteMemberOwnRole(@PathVariable Long profileId, @RequestBody MemberRoleDTO memberRoleDTO, Authentication authentication) {
-        var ret = memberOwnRoleService.deleteMemberOwnRole(authentication, profileId, memberRoleDTO);
+    public boolean deleteMemberOwnRole(@PathVariable Long profileId, @RequestBody MemberRoleDTO memberRoleDTO, Principal principal) {
+        var ret = memberOwnRoleService.deleteMemberOwnRole(profileId, memberRoleDTO);
         return ret;
     }
 }
