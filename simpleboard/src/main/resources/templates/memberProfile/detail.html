@@ -6,13 +6,11 @@
 >
 <section layout:fragment="content" class="container vh-100">
     <div class="container d-flex align-items-center">
-        <div class="row">
-            <form class="container col">
-                <div class="row">
-                    <input type="hidden" class="form-control" readonly name="id" th:value="${profileId}">
-                </div>
-                <div class="row">
-                    <label class="form-label"></label>
+        <div class="row mb-3">
+            <form class="container col-5">
+                <input type="hidden" class="form-control" readonly name="id" th:value="${profileId}">
+                <div class="mb-3">
+                    <label class="form-label">nickname</label>
                     <input type="text" class="form-control" readonly name="nickname" th:value="${nickname}">
                 </div>
             </form>

@@ -5,19 +5,21 @@
       layout:decorate="~{layouts/layout_board_list.html}"
 >
 <section layout:fragment="content" class="container">
-    <div class="h-100 d-flex align-items-center">
-        <div class="container row">
-            <select class="form-select" name="type">
-                <option value="" selcted>----------</option>
-                <option value="i">id</option>
-                <option value="n">nickname</option>
-                <option value="in">id+nickname</option>
-            </select>
+    <div class="container h-100 d-flex align-items-center">
+        <div class="row align-items-start align-items-center">
+            <div class="col-5 input-group-prepend">
+                <select class="form-select" name="type">
+                    <option value="" selcted>----------</option>
+                    <option value="i">id</option>
+                    <option value="n">nickname</option>
+                    <option value="in">id+nickname</option>
+                </select>
+            </div>
+            <input type="text" class="col form-control" name="keyword"></input>
+            <div class="col input-group-append">
+                <button type="button" class="btn btn-primary col" onclick="searchBtnClicked()">Search</button>
+            </div>
         </div> <!--end of div for search input-->
-        <input type="text" class="col form-control" name="keyword">
-        <div class="col input-group-append">
-            <button type="button" class="btn btn-primary" onclick="searchBtnClicked()">Search</button>
-        </div>
     </div>
     <div class="container row">
         <table class="table table-striped">
@@ -50,8 +52,6 @@
         console.log("searchBtnClicked");
         const curSearchOption = searchType[searchType.selectedIndex];
         curSearchType = curSearchOption.value;
-
-        clearGrantSelector();
 
         curKeyword = searchText.value;
         if(curKeyword === null){
@@ -166,5 +166,7 @@
         window.location.href=redirectUrl;
 
     };
+
+    searchBtnClicked();
 </script>
 </html>
