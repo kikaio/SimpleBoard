@@ -1,6 +1,7 @@
 package com.portfolio.simpleboard.controller.member;
 
 
+import com.portfolio.simpleboard.dto.member.MemberProfileDetailDTO;
 import com.portfolio.simpleboard.service.member.MemberProfileService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -28,26 +29,24 @@ public class MemberProfileController {
     @PreAuthorize("hasRole('ADMIN') or (hasAuthority('PROFILE_READ') or principal.id==#profileId)")
     @GetMapping("/detail")
     public String getMemberProfileDetailPage(@RequestParam Long profileId, Model model) {
-        var profile = memberProfileService.readOne(profileId);
-        if(profile == null) {
+        var profileDetailDTO = memberProfileService.readOneToDetailDTO(profileId);
+        if(profileDetailDTO == null) {
             model.addAttribute("msg", "not exist profile");
             return "/error/simple";
         }
-        model.addAttribute("profileId", profile.getId());
-        model.addAttribute("nickname", profile.getNickname());
+        model.addAttribute("profileDetailDTO", profileDetailDTO);
         return "/memberProfile/detail";
     }
 
     @PreAuthorize("hasRole('ADMIN') or (hasAuthority('PROFILE_MODIFY') or principal.id==#profileId)")
     @GetMapping("/modify")
     public String getMemberProfileModifyPage(@RequestParam Long profileId, Model model) {
-        var profile = memberProfileService.readOne(profileId);
-        if(profile == null) {
+        var profileDetailDTO = memberProfileService.readOneToDetailDTO(profileId);
+        if(profileDetailDTO == null) {
             model.addAttribute("msg", "not exist profile");
             return "/error/simple";
         }
-        model.addAttribute("profileId", profile.getId());
-        model.addAttribute("nickname", profile.getNickname());
+        model.addAttribute("profileDetailDTO", profileDetailDTO);
         return "/memberProfile/modify";
     }
 

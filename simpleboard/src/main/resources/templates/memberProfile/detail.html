@@ -5,18 +5,62 @@
       layout:decorate="~{layouts/layout_board_list.html}"
 >
 <section layout:fragment="content" class="container vh-100">
-    <div class="container d-flex align-items-center">
-        <div class="row mb-3">
-            <form class="container col-5">
-                <input type="hidden" class="form-control" readonly name="id" th:value="${profileId}">
-                <div class="mb-3">
-                    <label class="form-label">nickname</label>
-                    <input type="text" class="form-control" readonly name="nickname" th:value="${nickname}">
+    <div class="container-fluid">
+        <div class="container-fluid d-flex flex-column align-items-center">
+            <form class="container col-12">
+                <input type="hidden" class="form-control" readonly name="id" th:value="${profileDetailDTO.Id}">
+                <div class="input-group mb-3">
+                    <span for="" class="input-group-text">nickname</span>
+                    <input type="text" class="form-control" readonly name="nickname" th:value="${profileDetailDTO.nickname}">
+                </div>
+                <div class="form-check mb-3">
+                    <span for="isAccountNonExpired" class="form-check-label">isAccountNonExpired</span>
+                    <input th:if="${profileDetailDTO.isAccountNonExpired}" type="checkbox" class="form-check-input" disabled id="isAccountNonExpired" name="isAccountNonExpired" checked>
+                    <input th:unless="${profileDetailDTO.isAccountNonExpired}" type="checkbox" class="form-check-input" disabled id="isAccountNonExpired" name="isAccountNonExpired">
+                </div>
+                <div class="form-check mb-3">
+                    <span for="isAccountNonLocked" class="form-check-label">isAccountNonLocked</span>
+                    <input th:if="${profileDetailDTO.isAccountNonLocked}" type="checkbox" class="form-check-input" disabled id="isAccountNonLocked" name="isAccountNonLocked" checked>
+                    <input th:unless="${profileDetailDTO.isAccountNonLocked}" type="checkbox" class="form-check-input" disabled id="isAccountNonLocked" name="isAccountNonLocked">
+                </div>
+                <div class="form-check mb-3">
+                    <span for="isCredentialsNonExpired" class="form-check-label">isCredentialsNonExpired</span>
+                    <input th:if="${profileDetailDTO.isCredentialsNonExpired}" type="checkbox" class="form-check-input" disabled id="isCredentialsNonExpired" name="isCredentialsNonExpired" checked>
+                    <input th:unless="${profileDetailDTO.isCredentialsNonExpired}" type="checkbox" class="form-check-input" disabled id="isCredentialsNonExpired" name="isCredentialsNonExpired" >
+                </div>
+                <div class="form-check mb-3">
+                    <span for="isEnabled" class="form-check-label">isEnabled</span>
+                    <input th:if="${profileDetailDTO.isEnabled}" type="checkbox" class="form-check-input" disabled id="isEnabled" name="isEnabled" checked>
+                    <input th:unless="${profileDetailDTO.isEnabled}" type="checkbox" class="form-check-input" disabled name="isEnabled" id="isEnabled">
                 </div>
             </form>
         </div>
-        <div class="row">
-            <button class="btn btn-primary" th:onclick="|location.href='@(members/profiles/modify?profileId=${profileId})'|">Modify</button>
+        <div class="container mb-3">
+            <div class="accordion" id="accordionExample">
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                            Authorities
+                        </button>
+                    </h2>
+                    <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
+                        <div class="accordion-body">
+                            <ul class="">
+                                <th:block>
+                                    <ul class="list-group">
+                                        <li th:each="auth:${profileDetailDTO.authorities}" class="list-group-item">
+                                            [[${auth}]]
+                                        </li>
+                                    </ul>
+                                </th:block>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="mb-3 d-flex justify-content-center">
+            <button class="btn btn-primary" th:onclick="|location.href='/members/profiles/modify?profileId=${profileDetailDTO.id}'|">Modify</button>
         </div>
     </div>
 </section>

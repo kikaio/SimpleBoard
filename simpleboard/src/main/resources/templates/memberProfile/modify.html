@@ -5,43 +5,100 @@
       layout:decorate="~{layouts/layout_board_list.html}"
 >
 <section layout:fragment="content" class="container vh-100">
-    <div class="container d-flex align-items-center">
-        <div class="row">
-            <form class="container col">
-                <div class="row">
-                    <input type="hidden" class="form-control" readonly name="id" th:value="${profileId}">
+    <div class="container-fluid">
+        <div class="container-fluid d-flex flex-column align-items-center">
+            <form class="container col-12">
+                <input type="hidden" class="form-control" readonly name="id" th:value="${profileDetailDTO.Id}">
+                <div class="input-group mb-3">
+                    <span for="" class="input-group-text">nickname</span>
+                    <input type="text" class="form-control" name="nickname" th:value="${profileDetailDTO.nickname}">
+                    <button type="button" class="btn btn-primary" onclick="checkNicknameDuplication()">duplicate check</button>
                 </div>
-                <div class="row">
-                    <label class="form-label"></label>
-                    <input type="text" class="form-control nicknameInput" name="nickname" th:value="${nickname}">
-                    <button type="button" class="btn btn-primary" onclick="checkNicknameDuplicate()">check</button>
+                <div class="form-check mb-3">
+                    <span for="isAccountNonExpired" class="form-check-label">isAccountNonExpired</span>
+                    <input th:if="${profileDetailDTO.isAccountNonExpired}" type="checkbox" class="form-check-input" id="isAccountNonExpired" name="isAccountNonExpired" checked>
+                    <input th:unless="${profileDetailDTO.isAccountNonExpired}" type="checkbox" class="form-check-input" id="isAccountNonExpired" name="isAccountNonExpired">
+                </div>
+                <div class="form-check mb-3">
+                    <span for="isAccountNonLocked" class="form-check-label">isAccountNonLocked</span>
+                    <input th:if="${profileDetailDTO.isAccountNonLocked}" type="checkbox" class="form-check-input" id="isAccountNonLocked" name="isAccountNonLocked" checked>
+                    <input th:unless="${profileDetailDTO.isAccountNonLocked}" type="checkbox" class="form-check-input" id="isAccountNonLocked" name="isAccountNonLocked">
+                </div>
+                <div class="form-check mb-3">
+                    <span for="isCredentialsNonExpired" class="form-check-label">isCredentialsNonExpired</span>
+                    <input th:if="${profileDetailDTO.isCredentialsNonExpired}" type="checkbox" class="form-check-input" id="isCredentialsNonExpired" name="isCredentialsNonExpired" checked>
+                    <input th:unless="${profileDetailDTO.isCredentialsNonExpired}" type="checkbox" class="form-check-input" id="isCredentialsNonExpired" name="isCredentialsNonExpired" >
+                </div>
+                <div class="form-check mb-3">
+                    <span for="isEnabled" class="form-check-label">isEnabled</span>
+                    <input th:if="${profileDetailDTO.isEnabled}" type="checkbox" class="form-check-input" id="isEnabled" name="isEnabled" checked>
+                    <input th:unless="${profileDetailDTO.isEnabled}" type="checkbox" class="form-check-input" name="isEnabled" id="isEnabled">
                 </div>
             </form>
         </div>
-        <div class="row">
-            <button class="btn btn-primary modifyBtn" th:onclick="|location.href='@(members/profiles/modify?profileId=${profileId})'|">Modify</button>
+        <div class="container mb-3">
+            <div class="accordion" id="accordionExample">
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                            Authorities
+                        </button>
+                    </h2>
+                    <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
+                        <div class="accordion-body">
+                            <ul class="">
+                                <th:block>
+                                    <ul class="list-group">
+                                        <li th:each="auth:${profileDetailDTO.authorities}" class="list-group-item">
+                                            [[${auth}]]
+                                        </li>
+                                    </ul>
+                                </th:block>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="mb-3 d-flex justify-content-center">
+            <button class="btn btn-primary" onclick="modifyBtnClicked()">Modify</button>
         </div>
     </div>
 </section>
 <script layout:fragment="script" th:inline="javascript">
-    const modifyBtn = document.querySelector("modifyBtn");
+    const nicknameInput = document.querySelector("input[name='nickname']");
+    const profileIdInput = document.querySelector("input[name='id']")
+    let nicknameAble = false;
+    function checkNicknameDuplication() {
 
-    function checkNicknameDuplicate() {
-        let str = document.querySelector("nicknameInput").value;
-        axios.get("/members/profiles/nickname/check", {
-            params : {
-                nickname : `${str}`
+        axios.get(`/members/profiles/nickname/check`, {
+            params: {
+                id : profileIdInput.value
+                , nickname : nicknameInput.value
             }
-        }).then(res->{
+        }).then(res=>{
             if(res.data) {
-                alert("this nickname duplicated");
-                modifyBtn.disabled = true;
+                console.error(`nickname[${nicknameInput.value}] was duplicated`);
+                alert(`nickname[${nicknameInput.value}] was duplicated`);
+                nicknameAble = false;
             } else {
-                alert("this nickname not duplicated");
-                modifyBtn.disabled =false;
+                console.error(`nickname[${nicknameInput.value}] was enable`);
+                alert(`nickname[${nicknameInput.value}] was enable`);
+                nicknameAble = true;
             }
-        }).catch(err->{
+        }).catch(err=>{
             console.error(err);
+        });
+        return ;
+    };
+
+    function modifyBtnClicked() {
+        if(nicknameAble == false) {
+            alert("nickname check again please");
+            return ;
+        }
+
+        axios.put(``, data : {
         });
     }
 

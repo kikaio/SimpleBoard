@@ -30,4 +30,6 @@ public class MemberProfileRestController {
         //중복 시 true 반환
         return memberProfileService.checkNicknameDuplication(id, nickname);
     }
+
+
 }

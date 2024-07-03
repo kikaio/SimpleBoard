@@ -33,6 +33,7 @@
                     <div calss="mb-3">
                         <label for="nicknameInput" class="form-label">Nickname</label>
                         <input type="text" class="form-control" placeholder="xxxx" name="nickname" id="nicknameInput" requied>
+                        <button type="button" class="btn btn-primary" onclick="checkNicknameDuplication()">duplicate check</button>
                     </div>
                     <div class="mb-3">
                         <label for="passwordInput" class="form-label">Password</label>
@@ -55,5 +56,29 @@
         </form>
     </div>
 </scetion>
+<script>
+
+    function checkNicknameDuplication() {
+
+        axios.get(`/members/profiles/nickname/check`, {
+            params: {
+                id : profileIdInput.value
+                , nickname : nicknameInput.value
+            }
+        }).then(res=>{
+            if(res.data) {
+                console.error(`nickname[${nicknameInput.value}] was duplicated`);
+                alert(`nickname[${nicknameInput.value}] was duplicated`);
+            } else {
+                console.error(`nickname[${nicknameInput.value}] was enable`);
+                alert(`nickname[${nicknameInput.value}] was enable`);
+            }
+        }).catch(err=>{
+            console.error(err);
+        });
+        return ;
+    };
+
+</script>
 </body>
 </html>
