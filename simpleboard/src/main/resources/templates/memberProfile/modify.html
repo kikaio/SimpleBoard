@@ -19,21 +19,34 @@
                     <span for="isAccountNonExpired" class="form-check-label">isAccountNonExpired</span>
                     <input th:if="${profileDetailDTO.isAccountNonExpired}" type="checkbox" class="form-check-input" id="isAccountNonExpired" name="isAccountNonExpired" checked>
                     <input th:unless="${profileDetailDTO.isAccountNonExpired}" type="checkbox" class="form-check-input" id="isAccountNonExpired" name="isAccountNonExpired">
+                    <div class="form-text">
+                        계정의 만료 여부입니다. false로 처리시 계정 만료 처리가 됩니다.
+                    </div>
                 </div>
                 <div class="form-check mb-3" sec:authorize="hasAuthority('MEMBER_PROFILE_FLAG_MODIFY')">
                     <span for="isAccountNonLocked" class="form-check-label">isAccountNonLocked</span>
                     <input th:if="${profileDetailDTO.isAccountNonLocked}" type="checkbox" class="form-check-input" id="isAccountNonLocked" name="isAccountNonLocked" checked>
                     <input th:unless="${profileDetailDTO.isAccountNonLocked}" type="checkbox" class="form-check-input" id="isAccountNonLocked" name="isAccountNonLocked">
+                    <div class="form-text">
+                        계정의 잠금 여부입니다. false로 수정 시 잠금처리 됩니다.
+                    </div>
                 </div>
                 <div class="form-check mb-3" sec:authorize="hasAuthority('MEMBER_PROFILE_FLAG_MODIFY')">
                     <span for="isCredentialsNonExpired" class="form-check-label">isCredentialsNonExpired</span>
                     <input th:if="${profileDetailDTO.isCredentialsNonExpired}" type="checkbox" class="form-check-input" id="isCredentialsNonExpired" name="isCredentialsNonExpired" checked>
                     <input th:unless="${profileDetailDTO.isCredentialsNonExpired}" type="checkbox" class="form-check-input" id="isCredentialsNonExpired" name="isCredentialsNonExpired" >
+                    <div class="form-text">
+                        계정의 인증 만료 여부입니다. false로 수정 시 로그아웃됩니다.
+                    </div>
+
                 </div>
                 <div class="form-check mb-3" sec:authorize="hasAuthority('MEMBER_PROFILE_FLAG_MODIFY')">
                     <span for="isEnabled" class="form-check-label">isEnabled</span>
                     <input th:if="${profileDetailDTO.isEnabled}" type="checkbox" class="form-check-input" id="isEnabled" name="isEnabled" checked>
                     <input th:unless="${profileDetailDTO.isEnabled}" type="checkbox" class="form-check-input" name="isEnabled" id="isEnabled">
+                    <div class="form-text">
+                        계정의 사용 여부입니다. false로 수정 시 로그인이 불가합니다.
+                    </div>
                 </div>
             </form>
         </div>
@@ -164,22 +177,27 @@
     function modifyMemberProfileFlags() {
 
         if(changedEnabled || changedAccountNonLocked || changedAccountNonExpired || changedCredentialsNonExpired) {
+            var patchFlagMap = new Object();
 
+            if(changedEnabled) {
+                patchFlagMap.isEnabled = enabledInput.checked;
+            }
+            if(changedAccountNonLocked) {
+                patchFlagMap.isAccountNonLocked = accountNonLockedInput.checked;
+            }
+            if(changedAccountNonExpired) {
+                patchFlagMap.isAccountNonExpired = accountNonExpiredInput.checked;
+            }
+            if(changedCredentialsNonExpired) {
+                patchFlagMap.isCredentialsNonExpired = credentialsNonExpiredInput.checked;
+            }
+            console.log(patchFlagMap);
             axios.patch(`/members/profiles/${profileIdInput.value}`, {
                 id : profileIdInput.value
-                , patchFlagMap : {
-                    "isEnabled" : enabledInput.checked
-                    , "isAccountNonLocked" : accountNonLockedInput.checked
-                    , "isAccountNonExpired" : accountNonExpiredInput.checked
-                    , "isCredentialsNonExpired" : credentialsNonExpiredInput.checked
-                }
+                , patchFlagMap : patchFlagMap
             })
             .then(res=>{
                 console.log("members flags modified");
-                console.log(changedEnabled);
-                console.log(changedAccountNonLocked);
-                console.log(changedAccountNonExpired);
-                console.log(changedCredentialsNonExpired);
             }).catch(err=>{
                 console.error("members flags failed");
                 console.error(err);

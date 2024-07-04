@@ -75,7 +75,7 @@ public class MemberProfileRestController {
             switch (key) {
                 case "isCredentialsNonExpired": {
                     if (val != null) {
-                        return memberProfileService.modifyMemberProfileIsNonExpired(id, val);
+                        ret = memberProfileService.modifyMemberProfileIsNonExpired(id, val);
                     } else {
                         log.error("%s vlaue must be not null".formatted(key));
                     }
@@ -83,7 +83,7 @@ public class MemberProfileRestController {
                 }
                 case "isAccountNonExpired": {
                     if (val != null) {
-                        return memberProfileService.modifyMemberProfileIsNonExpired(id, val);
+                        ret = memberProfileService.modifyMemberProfileIsNonExpired(id, val);
                     } else {
                         log.error("%s vlaue must be not null".formatted(key));
                     }
@@ -91,7 +91,7 @@ public class MemberProfileRestController {
                 }
                 case "isAccountNonLocked": {
                     if (val != null) {
-                        return memberProfileService.modifyMemberProfileIsNonLocked(id, val);
+                        ret = memberProfileService.modifyMemberProfileIsNonLocked(id, val);
                     } else {
                         log.error("%s vlaue must be not null".formatted(key));
                     }
@@ -99,7 +99,7 @@ public class MemberProfileRestController {
                 }
                 case "isEnabled": {
                     if (val != null) {
-                        return memberProfileService.modifyMemberProfileIsEnabled(id, val);
+                        ret = memberProfileService.modifyMemberProfileIsEnabled(id, val);
                     } else {
                         log.error("%s vlaue must be not null".formatted(key));
                     }
@@ -109,6 +109,8 @@ public class MemberProfileRestController {
                     log.error("something invalid key.... %s".formatted(key));
                     break;
             }
+            if(ret == false)
+                break;
         }
         return ret;
     }
