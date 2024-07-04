@@ -22,18 +22,18 @@ API 설계
   
 게시글 관련
  - 기본적인 URL RequestMapping : RequestMapping("/post : ")
- - 게시글 생성 화면
+ - 게시글 생성 화면 : "hasRole('ADMIN') or hasAuthority('POST_CREATE')"
 	-> GET : /insert
- - 게시글 수정 화면
+ - 게시글 수정 화면 : "hasAuthority('POST_MODIFY') or hasRole('ADMIN')"
 	-> GET : /modify/{postId}
- - 게시글 조회 상세 화면
+ - 게시글 조회 상세 화면 : "hasRole('ADMIN') or hasAuthority('POST_READ')"
 	-> GET : /{postId}
- - 게시글 생성
+ - 게시글 생성 : "hasAuthority('POST_CREATE') or hasRole('ADMIN')"
 	-> POST : 
- - 게시글 수정
-	-> PUT : 
- - 게시글 삭제
-	-> DELETE : 
+ - 게시글 수정 : "(#user.getId().longValue()==#data.get('id').toLong().longValue() and hasAuthority('POST_MODIFY')) or hasRole('ADMIN')"
+	-> PUT : /{postId}
+ - 게시글 삭제 : "(principal.username==#data.get('writer').toString()  and hasAuthority('POST_DELETE')) or hasRole('ADMIN')"
+	-> DELETE : /{postId}
  
 댓글 관련
  - 기본적인 URL RequestMapping : RequestMapping("/comment")
