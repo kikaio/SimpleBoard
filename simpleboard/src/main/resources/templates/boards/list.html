@@ -3,6 +3,7 @@
       xmlns:th="http://thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layouts/layout_board_list.html}"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
 >
 <body>
 
@@ -27,7 +28,7 @@
                         <div class="input-group-append">
                             <button class="btn btn-outline-secondary searchBtn" type="submit">Search</button>
                             <button type="button" class="btn btn-outline-secondary clearBtn">Clear</button>
-                            <button type="button" class="btn btn-outline-secondary createBtn" th:onclick="|location.href='@{/boards/insert}'|">Create</button>
+                            <button sec:authority="hasAuthority('BOARD_CREATE') or hasRole('ADMIN')" type="button" class="btn btn-outline-secondary createBtn" th:onclick="|location.href='@{/boards/insert}'|">Create</button>
                         </div>
                     </div><!-- end of input group div-->
                     <br>
@@ -52,9 +53,9 @@
                     <!-- Product actions-->
                     <div class="card-footer p-3 pt-0 border-top-0 bg-transparent">
                         <div class="text-center">
-                            <a class="btn btn-outline-dark mt-auto" th:href="@{/boards/{id}/posts?{link}(id=${boardDTO.id}, link=${pageRequestDTO.link})}">Enter</a>
-                            <a class="btn btn-outline-dark mt-auto" th:href="@{/boards/modify/{id}(id=${boardDTO.id})}">Edit</a>
-                            <button type="button" class="btn btn-outline-dark mt-auto" th:onclick="deleteBoardClick([[${boardDTO.id}]], [[${boardDTO.title}]])">Delete</button>
+                            <a sec:authority="hasAuthority('BOARD_READ') or hasRole('ADMIN')" class="btn btn-outline-dark mt-auto" th:href="@{/boards/{id}/posts?{link}(id=${boardDTO.id}, link=${pageRequestDTO.link})}">Enter</a>
+                            <a sec:authority="hasAuthority('BOARD_MODIFY') or hasRole('ADMIN')" class="btn btn-outline-dark mt-auto" th:href="@{/boards/modify/{id}(id=${boardDTO.id})}">Edit</a>
+                            <button sec:authority="hasAuthority('BOARD_DELETE') or hasRole('ADMIN')" type="button" class="btn btn-outline-dark mt-auto" th:onclick="deleteBoardClick([[${boardDTO.id}]], [[${boardDTO.title}]])">Delete</button>
                         </div>
                     </div>
                 </div> <!--end of board card -->
