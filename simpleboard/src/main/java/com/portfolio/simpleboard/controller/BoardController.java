@@ -53,7 +53,7 @@ public class BoardController {
         return "/boards/detail";
     }
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('ADMIN') or hasAuthority('BOARD_MODIFY')")
     @GetMapping("/modify/{id}")
     public String getBoardModifyPage(@PathVariable(required = true, name = "id") Long id, PageRequestDTO pageRequestDTO, Model model) {
         var dto = boardService.readOne(id);
