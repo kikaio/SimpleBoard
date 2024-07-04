@@ -46,7 +46,7 @@ public class PostSearchImpl extends QuerydslRepositorySupport implements PostSea
                         bb.or(post.content.contains(keyword));
                         break;
                     case "w":
-                        bb.or(post.writer.contains(keyword));
+                        bb.or(post.memberProfile.nickname.contains(keyword));
                         break;
                 }
             }
@@ -101,7 +101,7 @@ public class PostSearchImpl extends QuerydslRepositorySupport implements PostSea
                         bb.or(post.content.contains(val));
                         break;
                     case "w":
-                        bb.or(post.writer.contains(val));
+                        bb.or(post.memberProfile.nickname.contains(val));
                         break;
                 }
             }
@@ -121,7 +121,7 @@ public class PostSearchImpl extends QuerydslRepositorySupport implements PostSea
                 Projections.bean(PostWithReplyCntDTO.class
                         , post.id
                         , post.title
-                        , post.writer
+                        , post.memberProfile.nickname
                         , post.cDate
                         , reply.count().as("replyCount")
                 )
@@ -165,7 +165,7 @@ public class PostSearchImpl extends QuerydslRepositorySupport implements PostSea
                             bb.or(post.title.contains(keyword));
                             break;
                         case "w":
-                            bb.or(post.writer.contains(keyword));
+                            bb.or(post.memberProfile.nickname.contains(keyword));
                             break;
                         case "c":
                             bb.or(post.content.contains(keyword));
@@ -190,7 +190,8 @@ public class PostSearchImpl extends QuerydslRepositorySupport implements PostSea
             PostListAllDTO dto = PostListAllDTO.builder()
                     .id(postRet.getId())
                     .title(postRet.getTitle())
-                    .writer(postRet.getWriter())
+                    .writer(postRet.getMemberProfile().getNickname())
+                    .writerId(postRet.getMemberProfile().getId())
                     .mDate(postRet.getMDate())
                     .replyCount(replyCnt)
                     .build();

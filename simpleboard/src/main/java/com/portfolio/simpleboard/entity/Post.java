@@ -36,8 +36,14 @@ public class Post extends DateEntity implements Serializable {
     @Column
     private String content;
 
-    @Column
-    private String writer;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(
+            referencedColumnName = "id"
+            , foreignKey = @ForeignKey(name="fk_member_profile_for_post")
+    )
+    @BatchSize(size=20)
+    @ToString.Exclude
+    private MemberProfile memberProfile;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(

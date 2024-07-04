@@ -80,7 +80,7 @@ public class MemberProfile extends DateEntity implements Serializable, UserDetai
 
     @Override
     public String getUsername(){
-        return this.email;
+        return this.nickname;
     }
 
     public void setEmail(String email) {

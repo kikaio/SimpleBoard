@@ -3,6 +3,7 @@ package com.portfolio.simpleboard.dto.posts;
 
 import com.portfolio.simpleboard.dto.BoardDTO;
 import com.portfolio.simpleboard.entity.Board;
+import com.portfolio.simpleboard.entity.MemberProfile;
 import com.portfolio.simpleboard.entity.Post;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -32,6 +33,9 @@ public class PostDTO {
     @Builder.Default
     private String writer = "";
 
+    @Builder.Default
+    private Long writerId = 0L;
+
     private LocalDateTime cDate;
 
     private LocalDateTime mDate;
@@ -48,7 +52,8 @@ public class PostDTO {
                 .id(post.getId())
                 .boardId(post.getBoard().getId())
                 .title(post.getTitle())
-                .writer(post.getWriter())
+                .writer(post.getMemberProfile().getUsername())
+                .writerId(post.getId())
                 .content(post.getContent())
                 .cDate(post.getCDate())
                 .mDate(post.getMDate())
@@ -67,12 +72,17 @@ public class PostDTO {
 
     static public Post toEntityWithBoard(Board board, PostDTO postDTO) {
 
+        var memberProfile = MemberProfile.builder()
+                .id(postDTO.getWriterId())
+                .nickname(postDTO.getWriter())
+                .build();
+
         var post = Post.builder()
                 .id(postDTO.getId())
                 .board(board)
                 .title(postDTO.getTitle())
                 .content(postDTO.getContent())
-                .writer(postDTO.getWriter())
+                .memberProfile(memberProfile)
                 .isDeleted(postDTO.getIsDelete())
                 .build()
         ;

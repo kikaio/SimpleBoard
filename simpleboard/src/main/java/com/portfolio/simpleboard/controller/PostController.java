@@ -13,6 +13,7 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindException;
@@ -26,6 +27,7 @@ import java.io.IOException;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -44,7 +46,7 @@ public class PostController {
 
     private final PostService postService;
 
-    @PreAuthorize("hasAuthority('POST_READ')")
+    @PreAuthorize("hasRole('ADMIN') or hasAuthority('POST_READ')")
     @GetMapping("/{id}")
     public String getDetailPost(@PathVariable Long id, PageRequestDTO pageRequestDTO, Model model) {
         var postDTO = postService.readOne(id);
@@ -54,7 +56,7 @@ public class PostController {
         return "/posts/detail";
     }
 
-    @PreAuthorize("hasAuthority('POST_CREATE')")
+    @PreAuthorize("hasRole('ADMIN') or hasAuthority('POST_CREATE')")
     @GetMapping("/insert")
     public String getInsertPage(Long boardId, String link, Model model) {
 
@@ -103,7 +105,7 @@ public class PostController {
 //            return "redirect:/posts/%d?%s".formatted(postId, link);
 //    }
 
-    @PreAuthorize("(principal.username==#data.get('writer').toString() and hasAuthority('POST_MODIFY')) or hasRole('ADMIN')")
+    @PreAuthorize("(principal.getName().equals((#data.get('writer').toString()) and hasAuthority('POST_MODIFY')) or hasRole('ADMIN')")
     @PutMapping("/{postId}")
     public ModelAndView modifyPost(@PathVariable Long postId, @RequestBody Map<String, Object> data) {
         log.info("data : %s".formatted(data));
@@ -114,7 +116,6 @@ public class PostController {
         String writer = data.get("writer").toString();
         String content = data.get("content").toString();
         var fileNames = (List<String>)data.get("fileNames");
-
         var postDTO = PostDTO.builder()
                 .id(id)
                 .boardId(boardId)
@@ -130,7 +131,7 @@ public class PostController {
         return modelAndView;
     }
 
-    @PreAuthorize("(principal.username==#data.get('writer').toString()  and hasAuthority('POST_DELETE')) or hasRole('ADMIN')")
+    @PreAuthorize("principal.getName().equals((#data.get('writer').toString())  and hasAuthority('POST_DELETE')) or hasRole('ADMIN')")
     @ResponseStatus(HttpStatus.SEE_OTHER)
     @DeleteMapping("/{id}")
     public String deletePostInList(@PathVariable Long id, @RequestBody Map<String, Object> paramMap, RedirectAttributes redirectAttributes){

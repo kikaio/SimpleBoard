@@ -1,6 +1,7 @@
 package com.portfolio.simpleboard.dto.posts;
 
 import com.portfolio.simpleboard.entity.Board;
+import com.portfolio.simpleboard.entity.MemberProfile;
 import com.portfolio.simpleboard.entity.Post;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -24,6 +25,9 @@ public class PostWithReplyCntDTO {
     @Builder.Default
     private String writer = "";
 
+    @Builder.Default
+    private Long writerId = 0L;
+
     private LocalDateTime cDate;
 
     private Long replyCount;
@@ -37,7 +41,8 @@ public class PostWithReplyCntDTO {
                 .id(post.getId())
                 .boardId(post.getBoard().getId())
                 .title(post.getTitle())
-                .writer(post.getWriter())
+                .writer(post.getMemberProfile().getNickname())
+                .writerId(post.getMemberProfile().getId())
                 .cDate(post.getCDate())
                 .replyCount(replyCount)
                 .isDeleted(post.getIsDeleted())
@@ -47,11 +52,16 @@ public class PostWithReplyCntDTO {
 
     static public Post toEntityWithBoard(Board board, PostWithReplyCntDTO postDTO) {
 
+        MemberProfile memberProfile = MemberProfile.builder()
+                .nickname(postDTO.getWriter())
+                .id(postDTO.getWriterId())
+                .build();
+
         return Post.builder()
                 .id(postDTO.getId())
                 .board(board)
                 .title(postDTO.getTitle())
-                .writer(postDTO.getWriter())
+                .memberProfile(memberProfile)
                 .isDeleted(postDTO.getIsDeleted())
                 .build()
                 ;

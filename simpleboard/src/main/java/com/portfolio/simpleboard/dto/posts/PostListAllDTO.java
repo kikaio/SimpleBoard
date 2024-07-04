@@ -17,7 +17,13 @@ public class PostListAllDTO {
 
     private Long id;
     private String title;
-    private String writer;
+
+    @Builder.Default
+    private String writer = "";
+
+    @Builder.Default
+    private Long writerId = 0L;
+
     private LocalDateTime mDate;
 
     private Long replyCount;
