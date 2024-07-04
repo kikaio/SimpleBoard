@@ -72,4 +72,74 @@ public class MemberProfileService {
         }
         return false;
     }
+
+    public boolean modifyMemberProfileDetail(MemberProfileDetailDTO dto) {
+        var memberProfile = memberProfileRepository.findById(dto.getId()).orElse(null);
+        if(memberProfile == null) {
+            log.error("modifyMemberProfileDetail : not exist memberProfile[%d]".formatted(dto.getId()));
+            return false;
+        }
+        memberProfile.modifyDetail(MemberProfileDetailDTO.toEntity(dto));
+        memberProfile = memberProfileRepository.save(memberProfile);
+        return true;
+    }
+
+    public boolean modifyMemberProfileIsDel(Long profileId, boolean isDel) {
+        var profile = memberProfileRepository.findById(profileId).orElse(null);
+        if(profile == null) {
+            log.error("member profile[%d] not exist".formatted(profileId));
+            return false;
+        }
+        profile.modifyIsDel(isDel);
+        profile = memberProfileRepository.save(profile);
+        return true;
+    }
+
+    public boolean modifyMemberProfileIsAccountNonExpired(Long profileId, boolean isAccountNonExpired) {
+
+        var profile = memberProfileRepository.findById(profileId).orElse(null);
+        if(profile == null) {
+            log.error("member profile[%d] not exist".formatted(profileId));
+            return false;
+        }
+        profile.modifyIsAccountNonExpired(isAccountNonExpired);
+        profile = memberProfileRepository.save(profile);
+        return true;
+    }
+
+    public boolean modifyMemberProfileIsNonLocked(Long profileId, boolean isAccountNonLocked) {
+
+        var profile = memberProfileRepository.findById(profileId).orElse(null);
+        if(profile == null) {
+            log.error("member profile[%d] not exist".formatted(profileId));
+            return false;
+        }
+        profile.modifyIsAccountNonLocked(isAccountNonLocked);
+        profile = memberProfileRepository.save(profile);
+        return true;
+    }
+
+    public boolean modifyMemberProfileIsNonExpired(Long profileId, boolean isCredentialsNonExpired) {
+
+        var profile = memberProfileRepository.findById(profileId).orElse(null);
+        if(profile == null) {
+            log.error("member profile[%d] not exist".formatted(profileId));
+            return false;
+        }
+        profile.modifyIsCredentialsNonExpired(isCredentialsNonExpired);
+        profile = memberProfileRepository.save(profile);
+        return true;
+    }
+
+    public boolean modifyMemberProfileIsEnabled(Long profileId, boolean isEnabled) {
+
+        var profile = memberProfileRepository.findById(profileId).orElse(null);
+        if(profile == null) {
+            log.error("member profile[%d] not exist".formatted(profileId));
+            return false;
+        }
+        profile.modifyIsEnabled(isEnabled);
+        profile = memberProfileRepository.save(profile);
+        return true;
+    }
 }

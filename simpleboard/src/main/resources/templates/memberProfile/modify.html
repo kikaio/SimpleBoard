@@ -2,6 +2,7 @@
 <html lang="en"
       xmlns:th="http://www.thymeleag.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       layout:decorate="~{layouts/layout_board_list.html}"
 >
 <section layout:fragment="content" class="container vh-100">
@@ -14,22 +15,22 @@
                     <input type="text" class="form-control" name="nickname" th:value="${profileDetailDTO.nickname}">
                     <button type="button" class="btn btn-primary" onclick="checkNicknameDuplication()">duplicate check</button>
                 </div>
-                <div class="form-check mb-3">
+                <div class="form-check mb-3" sec:authorize="hasAuthority('MEMBER_PROFILE_FLAG_MODIFY')">
                     <span for="isAccountNonExpired" class="form-check-label">isAccountNonExpired</span>
                     <input th:if="${profileDetailDTO.isAccountNonExpired}" type="checkbox" class="form-check-input" id="isAccountNonExpired" name="isAccountNonExpired" checked>
                     <input th:unless="${profileDetailDTO.isAccountNonExpired}" type="checkbox" class="form-check-input" id="isAccountNonExpired" name="isAccountNonExpired">
                 </div>
-                <div class="form-check mb-3">
+                <div class="form-check mb-3" sec:authorize="hasAuthority('MEMBER_PROFILE_FLAG_MODIFY')">
                     <span for="isAccountNonLocked" class="form-check-label">isAccountNonLocked</span>
                     <input th:if="${profileDetailDTO.isAccountNonLocked}" type="checkbox" class="form-check-input" id="isAccountNonLocked" name="isAccountNonLocked" checked>
                     <input th:unless="${profileDetailDTO.isAccountNonLocked}" type="checkbox" class="form-check-input" id="isAccountNonLocked" name="isAccountNonLocked">
                 </div>
-                <div class="form-check mb-3">
+                <div class="form-check mb-3" sec:authorize="hasAuthority('MEMBER_PROFILE_FLAG_MODIFY')">
                     <span for="isCredentialsNonExpired" class="form-check-label">isCredentialsNonExpired</span>
                     <input th:if="${profileDetailDTO.isCredentialsNonExpired}" type="checkbox" class="form-check-input" id="isCredentialsNonExpired" name="isCredentialsNonExpired" checked>
                     <input th:unless="${profileDetailDTO.isCredentialsNonExpired}" type="checkbox" class="form-check-input" id="isCredentialsNonExpired" name="isCredentialsNonExpired" >
                 </div>
-                <div class="form-check mb-3">
+                <div class="form-check mb-3" sec:authorize="hasAuthority('MEMBER_PROFILE_FLAG_MODIFY')">
                     <span for="isEnabled" class="form-check-label">isEnabled</span>
                     <input th:if="${profileDetailDTO.isEnabled}" type="checkbox" class="form-check-input" id="isEnabled" name="isEnabled" checked>
                     <input th:unless="${profileDetailDTO.isEnabled}" type="checkbox" class="form-check-input" name="isEnabled" id="isEnabled">
@@ -67,8 +68,56 @@
 </section>
 <script layout:fragment="script" th:inline="javascript">
     const nicknameInput = document.querySelector("input[name='nickname']");
-    const profileIdInput = document.querySelector("input[name='id']")
+    const profileIdInput = document.querySelector("input[name='id']");
+
     let nicknameAble = false;
+    const enabledInput = document.querySelector("#isEnabled");
+    const accountNonLockedInput = document.querySelector("#isAccountNonLocked");
+    const accountNonExpiredInput = document.querySelector("#isAccountNonExpired");
+    const credentialsNonExpiredInput = document.querySelector("#isCredentialsNonExpired");
+
+    let changedEnabled = false;
+    let changedAccountNonLocked = false;
+    let changedAccountNonExpired = false;
+    let changedCredentialsNonExpired = false;
+
+    enabledInput.addEventListener("change", function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        changedEnabled = !changedEnabled;
+        console.log(`changed : changedEnabled -> ${changedEnabled}`);
+        return ;
+    }, false);
+
+    accountNonLockedInput.addEventListener("change", function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        changedAccountNonLocked = !changedAccountNonLocked;
+        console.log(`changed : changedAccountNonLocked -> ${changedAccountNonLocked}`);
+        return ;
+    }, false);
+
+    accountNonExpiredInput.addEventListener("change", function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        changedAccountNonExpired = !changedAccountNonExpired;
+        console.log(`changed : changedAccountNonExpired -> ${changedAccountNonExpired}`);
+        return ;
+    }, false);
+
+    credentialsNonExpiredInput.addEventListener("change", function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        changedCredentialsNonExpired = !changedCredentialsNonExpired;
+        console.log(`changed : changedCredentialsNonExpired -> ${changedCredentialsNonExpired}`);
+        return ;
+    }, false);
+
+
     function checkNicknameDuplication() {
 
         axios.get(`/members/profiles/nickname/check`, {
@@ -98,8 +147,45 @@
             return ;
         }
 
-        axios.put(``, data : {
+        axios.put(`/members/profiles/${profileIdInput.value}`, {
+            id : profileIdInput.value
+            , nickname : nicknameInput.value
+        }).then(res=>{
+            if(res.data) {
+                modifyMemberProfileFlags();
+            } else {
+                alert("modify failed");
+            }
+        }).catch(err=>{
+            console.error(err);
         });
+    }
+
+    function modifyMemberProfileFlags() {
+
+        if(changedEnabled || changedAccountNonLocked || changedAccountNonExpired || changedCredentialsNonExpired) {
+
+            axios.patch(`/members/profiles/${profileIdInput.value}`, {
+                id : profileIdInput.value
+                , patchFlagMap : {
+                    "isEnabled" : enabledInput.checked
+                    , "isAccountNonLocked" : accountNonLockedInput.checked
+                    , "isAccountNonExpired" : accountNonExpiredInput.checked
+                    , "isCredentialsNonExpired" : credentialsNonExpiredInput.checked
+                }
+            })
+            .then(res=>{
+                console.log("members flags modified");
+                console.log(changedEnabled);
+                console.log(changedAccountNonLocked);
+                console.log(changedAccountNonExpired);
+                console.log(changedCredentialsNonExpired);
+            }).catch(err=>{
+                console.error("members flags failed");
+                console.error(err);
+            });
+        }
+        return ;
     }
 
 </script>

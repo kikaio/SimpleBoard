@@ -30,8 +30,27 @@ public class MemberProfile extends DateEntity implements Serializable, UserDetai
     @Column
     private String nickname;
 
+    @Column
     @Builder.Default
     private Boolean isDel = false;
+
+    @ColumnDefault("true")
+    @Builder.Default
+    private Boolean isAccountNonExpired = true;
+
+    @ColumnDefault("true")
+    @Builder.Default
+    private Boolean isAccountNonLocked = true;
+
+    @ColumnDefault("true")
+    @Builder.Default
+    private Boolean isCredentialsNonExpired = true;
+
+    @ColumnDefault("true")
+    @Builder.Default
+    private Boolean isEnabled = true;
+
+
 
     @Builder.Default
     @Transient
@@ -42,6 +61,7 @@ public class MemberProfile extends DateEntity implements Serializable, UserDetai
 
     @Transient
     public String password;
+
 
 
     @Override
@@ -78,22 +98,50 @@ public class MemberProfile extends DateEntity implements Serializable, UserDetai
     //todo : 회원 관련 제한 처리 등은 추후 할 예정
     @Override
     public boolean isAccountNonExpired(){
-        return true;
+        return isAccountNonExpired;
     }
 
     @Override
     public boolean isAccountNonLocked(){
-        return true;
+        return isAccountNonLocked;
     }
 
     @Override
     public boolean isCredentialsNonExpired(){
-        return true;
+        return isCredentialsNonExpired;
     }
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return isEnabled;
     }
 
+
+    public void modifyDetail(MemberProfile profile) {
+        if(profile.getNickname() !=null && profile.getNickname() != "") {
+            this.nickname = profile.getNickname();
+        }
+        // 각종 flag 값은 별도 API를 통해 변경하는것으로 한다.
+    }
+
+    public void modifyIsDel(boolean isDel) {
+        this.isDel = isDel;
+    }
+
+    public void modifyIsCredentialsNonExpired(boolean isCredentialsNonExpired) {
+        this.isCredentialsNonExpired = isCredentialsNonExpired;
+    }
+
+    public void modifyIsAccountNonExpired(boolean isAccountNonExpired) {
+        this.isAccountNonExpired = isAccountNonExpired;
+    }
+
+    public void modifyIsAccountNonLocked(boolean isAccountNonLocked) {
+        this.isAccountNonLocked = isAccountNonLocked;
+    }
+
+    public void modifyIsEnabled(boolean isEnabled) {
+        this.isEnabled = isEnabled;
+    }
 }
+
