@@ -2,25 +2,23 @@ API 설계
 
 
 게시판 관련
- - 기본적인 URL RequestMapping : RequestMapping("/board")
- - 게시판 목록 화면
+ - 기본적인 URL RequestMapping : RequestMapping("/boards")
+ - 게시판 목록 화면 : "hasRole('ADMIN') or hasAuthority('BOARD_READ')"
 	-> GET : 
- - 게시판 생성 화면
-	-> GET : /create
- - 게시판 수정 화면
+ - 게시판 생성 화면 : "hasRole('ADMIN') or hasAuthority('BOARD_CREATE')"
+	-> GET : /insert
+ - 게시판 수정 화면 : "hasRole('ADMIN') or hasAuthority('BOARD_MODIFY')"
 	-> GET : /modify/{id}
- - 게시판 상세 화면
+ - 게시판 상세 화면 : "hasRole('ADMIN') or hasAuthority('BOARD_READ')"
 	-> GET : /detail/{id}
- - 게시판 조회 상세 화면
-	-> GET : /{boardId}
- - 게시판 생성
+ - 게시판 생성 : "hasRole('ADMIN') or hasAuthority('BOARD_CREATE')"
 	-> POST : 
- - 게시판 수정
-	-> PUT : 
- - 게시판 삭제
-	-> DELETE : 
- - 게시글 목록 화면
-	-> GET : /baords/{boardId}/posts
+ - 게시판 수정 : "hasRole('ADMIN') or hasAuthority('BOARD_MODIFY')"
+	-> PUT : "/{id}"
+ - 게시판 삭제 : "hasRole('ADMIN') or hasAuthority('BOARD_DELETE')"
+	-> DELETE : /{id}
+ - 게시글 목록 화면 : "hasRole('ADMIN') or hasAuthority('POST_READ')"
+	-> GET : /{boardId}/posts
   
 게시글 관련
  - 기본적인 URL RequestMapping : RequestMapping("/post : ")
