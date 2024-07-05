@@ -36,15 +36,17 @@ API 설계
 	-> DELETE : /{postId}
  
 댓글 관련
- - 기본적인 URL RequestMapping : RequestMapping("/comment")
- - 댓글 목록 조회?
+ - 기본적인 URL RequestMapping : RequestMapping("/replies")
+ - 댓글 목록 조회
 	-> GET : 
- - 댓글 생성
+ - 댓글 단일 조회
+	-> GET : /{id}
+ - 댓글 생성 : "hasAuthority('REPLY_CREATE') or hasRole('ADMIN')"
 	-> POST : 
- - 댓글 수정
-	-> PUT : 
- - 댓글 삭제
-	-> DELETE : 
+ - 댓글 수정 : "hasAuthority('REPLY_MODIFY') or hasRole('ADMIN')"
+	-> PUT : /{id}
+ - 댓글 삭제 : "hasAuthority('REPLY_DELETE') or hasRole('ADMIN')"
+	-> DELETE : /{id}
 
 파일 첨조 관련
  - 기본적인 URL RequestMapping : RequestMApping("/upload")
