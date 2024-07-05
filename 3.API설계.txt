@@ -51,9 +51,9 @@ API 설계
 파일 첨조 관련
  - 기본적인 URL RequestMapping : RequestMApping("/upload")
  - 첨부 파일 등록
-	-> POST : 
+	-> POST : /upload
  - 첨부 파일 삭제
-	-> DELETE : 
+	-> DELETE : /remove/${uuid}_${fileName}
 
 
 회원 등급 관련
