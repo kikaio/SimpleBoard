@@ -22,12 +22,12 @@ public class MemberOwnGrantRestController {
         return memberOwnGrantService.searchMemberOwnGrantDetailDTO(profileId);
     }
 
-    @PostMapping("{profileId}")
+    @PostMapping("/{profileId}")
     public boolean createMemberOwnGrant(@PathVariable Long profileId, @RequestBody MemberGrantDTO memberGrantDTO) {
         return memberOwnGrantService.createMemberOwnGrant(profileId, memberGrantDTO);
     }
 
-    @DeleteMapping("{profileId}")
+    @DeleteMapping("/{profileId}")
     public boolean deleteMemberOwnGrant(@PathVariable Long profileId, @RequestBody MemberGrantDTO memberGrantDTO) {
         return memberOwnGrantService.deleteMemberOwnGrant(profileId, memberGrantDTO);
     }
