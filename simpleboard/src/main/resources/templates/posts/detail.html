@@ -34,13 +34,14 @@
                             <li class="list-group-item">
                                 <div>
                                     <label>Title : </label>
-                                    <label name="title" th:alue="${postDTO.title}">[[${postDTO.title}]]</label>
+                                    <label name="title" th:text="${postDTO.title}"></label>
                                 </div>
                             </li>
                             <li class="list-group-item" >
                                 <div>
                                     <label>Writer : </label>
-                                    <label name="writer" th:value="${postDTO.writer}">[[${postDTO.writer}]]</label>
+                                    <label name="writer" th:text="${postDTO.writer}"></label>
+                                    <input type="hidden" th:value="${postDTO.writerId}" name="writerId">
                                 </div>
                             </li>
                             <li class="list-group-item" >
@@ -53,13 +54,11 @@
                                     <div>
                                         <th:block th:if="${user != null && user.username == postDTO.writer}">
                                             <button type="submit" class="btn btn-outline-dark mt-auto" >Edit</button>
-                                            <!--                                <button type="button" class="btn btn-outline-dark mt-auto" th:href="@{/posts/modify/{id}?{link}&boardId(id=${postDTO.id})}">Edit</button>-->
                                             <button type="button" class="btn btn-primary deleteBtn">Delete</button>
                                         </th:block>
-                                        <th:block th:if="${user != null  && user.username != postDTO.writer}" sec:authorize="hasRole('POST_DELETE')">
-                                            <button type="submit" class="btn btn-outline-dark mt-auto" >Edit</button>
-                                            <!--                                <button type="button" class="btn btn-outline-dark mt-auto" th:href="@{/posts/modify/{id}?{link}&boardId(id=${postDTO.id})}">Edit</button>-->
-                                            <button type="button" class="btn btn-primary deleteBtn">Delete</button>
+                                        <th:block th:if="${user != null  && user.username != postDTO.writer}" >
+                                            <button sec:authorize="hasRole('POST_MODIFY') or hasRole('ADMIN')" type="submit" class="btn btn-outline-dark mt-auto" >Edit</button>
+                                            <button sec:authorize="hasRole('POST_DELETE') or hasRole('ADMIN')" type="button" class="btn btn-primary deleteBtn">Delete</button>
                                         </th:block>
                                         <button type="button" class="btn btn-primary" th:onclick="|location.href='@{/boards/{id}/posts?{link}(id=${boardId}, link=${link})}'|">Go Back</button>
                                     </div>

@@ -28,6 +28,7 @@
                     <input type="hidden" name="id" th:value="${postDTO.id}">
                     <input type="hidden" name="boardId" th:value="${postDTO.boardId}">
                     <input type="hidden" name="link" th:value="${link}">
+                    <input type="hidden" name="writerId" th:value="${postDTO.writerId}">
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item">
                             <div>
@@ -124,6 +125,7 @@
         const title = document.querySelector("input[name='title']").value;
         const content = document.querySelector("input[name='content']").value;
         const writer = document.querySelector("input[name='writer']").value;
+        const writerId = document.querySelector("input[name='writerId']").value;
         const boardId = document.querySelector("input[name='boardId']").value;
         const link = document.querySelector("input[name='link']").value;
         const fileNamesEle = document.querySelectorAll("input[name='fileNames']");
@@ -142,6 +144,7 @@
                 id : id
                 , title : title
                 , writer : writer
+                , writerId : writerId
                 , content : content
                 , boardId : boardId
                 , link : link

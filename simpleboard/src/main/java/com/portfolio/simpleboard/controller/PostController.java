@@ -4,6 +4,7 @@ package com.portfolio.simpleboard.controller;
 import com.portfolio.simpleboard.dto.BoardDTO;
 import com.portfolio.simpleboard.dto.pager.PageRequestDTO;
 import com.portfolio.simpleboard.dto.posts.PostDTO;
+import com.portfolio.simpleboard.entity.MemberProfile;
 import com.portfolio.simpleboard.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +14,7 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -58,10 +60,12 @@ public class PostController {
 
     @PreAuthorize("hasRole('ADMIN') or hasAuthority('POST_CREATE')")
     @GetMapping("/insert")
-    public String getInsertPage(Long boardId, String link, Model model) {
-
+    public String getInsertPage(UsernamePasswordAuthenticationToken token, Long boardId, String link, Model model) {
+        var profile = ((MemberProfile) token.getPrincipal());
         model.addAttribute("boardId", boardId);
         model.addAttribute("link", link);
+        model.addAttribute("writerId", profile.getId());
+
         return "/posts/insert";
     }
 
@@ -105,12 +109,13 @@ public class PostController {
 //            return "redirect:/posts/%d?%s".formatted(postId, link);
 //    }
 
-    @PreAuthorize("(principal.getName().equals((#data.get('writer').toString()) and hasAuthority('POST_MODIFY')) or hasRole('ADMIN')")
+    @PreAuthorize("(principal.getId().toString().equals(#data.get('writerId').toString()) and hasAuthority('POST_MODIFY')) or hasRole('ADMIN')")
     @PutMapping("/{postId}")
     public ModelAndView modifyPost(@PathVariable Long postId, @RequestBody Map<String, Object> data) {
         log.info("data : %s".formatted(data));
         String link = data.get("link").toString();
         Long id = Long.parseLong(data.get("id").toString());
+        Long writerId = Long.parseLong(data.get("writerId").toString());
         Long boardId = Long.parseLong(data.get("boardId").toString());
         String title = data.get("title").toString();
         String writer = data.get("writer").toString();
@@ -121,6 +126,7 @@ public class PostController {
                 .boardId(boardId)
                 .title(title)
                 .writer(writer)
+                .writerId(writerId)
                 .content(content)
                 .fileNames(fileNames)
                 .build()
@@ -131,7 +137,7 @@ public class PostController {
         return modelAndView;
     }
 
-    @PreAuthorize("principal.getName().equals((#data.get('writer').toString())  and hasAuthority('POST_DELETE')) or hasRole('ADMIN')")
+    @PreAuthorize("(principal.getId().toString().equals(#data.get('writerId').toString()) and hasAuthority('POST_DELETE')) or hasRole('ADMIN')")
     @ResponseStatus(HttpStatus.SEE_OTHER)
     @DeleteMapping("/{id}")
     public String deletePostInList(@PathVariable Long id, @RequestBody Map<String, Object> paramMap, RedirectAttributes redirectAttributes){

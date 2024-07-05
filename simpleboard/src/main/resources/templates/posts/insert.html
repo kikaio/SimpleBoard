@@ -35,6 +35,7 @@
                             </div>
                         </li>
                         <li class="list-group-item" >
+                            <input type="hidden" name="writerId" th:value="${writerId}">
                             <div>
                                 <label>Writer : </label>
                                 <input type="text" name="writer" placeholder="writer" readonly th:value="${#authentication.principal.username}">

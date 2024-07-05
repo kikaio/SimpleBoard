@@ -43,8 +43,8 @@
                         <div class="card-body p-5">
                             <div class="text-center ">
                                 <!-- Product name-->
-                                <h5 class="fw-bolder" th:text="${postDTO.title}"></h5>
-                                <h5 class="fw-border" th:text="${postDTO.replyCount}"></h5>
+                                <h5 class="fw-bolder" >[[${postDTO.title}]] - [[${postDTO.replyCount}]]</h5>
+                                <h5 class="fw-border" >writer : [[${postDTO.writer}]]</h5>
                             </div>
                         </div>
                         <!-- Product actions-->
