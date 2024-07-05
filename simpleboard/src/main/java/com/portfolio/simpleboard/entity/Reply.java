@@ -4,6 +4,7 @@ package com.portfolio.simpleboard.entity;
 import com.portfolio.simpleboard.entity.base.DateEntity;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.BatchSize;
 
 import java.io.Serializable;
 
@@ -29,14 +30,21 @@ public class Reply extends DateEntity implements Serializable{
     @Column
     private String content;
 
-    @Column
-    private String writer;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(
+            referencedColumnName = "id"
+            , foreignKey = @ForeignKey(name = "fk_member_profile_for_reply")
+    )
+    @BatchSize(size = 20)
+    @ToString.Exclude
+    private MemberProfile memberProfile;
 
     @ManyToOne
     @JoinColumn(
             referencedColumnName = "id"
             , foreignKey = @ForeignKey(name = "fk_post_for_reply")
     )
+    @BatchSize(size = 20)
     @ToString.Exclude
     private Post post;
 

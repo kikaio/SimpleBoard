@@ -23,6 +23,7 @@ public class ReplyService {
         PageResponseDTO<ReplyDTO> pageResponseDTO = replyRepository.getOnlyReplies(postId, pageRequestDTO, false);
         return pageResponseDTO;
     }
+
     @Transactional
     public ReplyDTO insertReply(ReplyDTO replyDTO) {
         var post = postRepository.findById(replyDTO.getPostId()).orElseThrow();

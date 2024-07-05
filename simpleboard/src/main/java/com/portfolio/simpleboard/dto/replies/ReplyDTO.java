@@ -2,6 +2,7 @@ package com.portfolio.simpleboard.dto.replies;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.portfolio.simpleboard.entity.MemberProfile;
 import com.portfolio.simpleboard.entity.Post;
 import com.portfolio.simpleboard.entity.Reply;
 import jakarta.validation.constraints.NotEmpty;
@@ -23,6 +24,8 @@ public class ReplyDTO {
     @NotNull
     private String writer;
 
+    private Long writerId;
+
     @Builder.Default
     @NotEmpty
     private String content = "";
@@ -43,7 +46,8 @@ public class ReplyDTO {
     public static ReplyDTO fromEntity(Reply reply) {
         return ReplyDTO.builder()
                 .id(reply.getId())
-                .writer(reply.getWriter())
+                .writer(reply.getMemberProfile().getNickname())
+                .writerId(reply.getMemberProfile().getId())
                 .content(reply.getContent())
                 .cDate(reply.getCDate())
                 .mDate(reply.getMDate())
@@ -54,9 +58,14 @@ public class ReplyDTO {
     }
 
     public static Reply toEntity(Post post, ReplyDTO replyDTO) {
+        var memberProfile = MemberProfile.builder()
+                .id(replyDTO.getWriterId())
+                .nickname(replyDTO.getWriter())
+                .build();
+
         return Reply.builder()
                 .id(replyDTO.getId())
-                .writer(replyDTO.getWriter())
+                .memberProfile(memberProfile)
                 .content(replyDTO.getContent())
                 .post(post)
                 .isDeleted(replyDTO.getIsDeleted())

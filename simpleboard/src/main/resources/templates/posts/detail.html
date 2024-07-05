@@ -101,6 +101,7 @@
                     <div class="input-group mb-3">
                         <span class="input-group-text">Writer</span>
                         <input type="text" class="form-control writer" th:value="${#authentication.principal.username}" readonly>
+                        <input type="hidden" class="form-control writerId" th:value="${#authentication.principal.id}">
                     </div>
                     <div class="input-group mb-3">
                         <span class="input-group-text">Reply Text</span>
@@ -127,6 +128,7 @@
                     <div class="input-group mb-3">
                         <span class="input-group-text modalWriter"></span>
                         <input type="text" class="form-control modifyText">
+                        <input type="hidden" class="modalWriterId" >
                     </div>
                 </div> <!--end of modal body-->
                 <div class="modal-footer">
@@ -155,13 +157,14 @@
     const replyList = document.querySelector('.replyList');
     const replyPaging = document.querySelector('.replyPaging');
     let link = [[${link}]];
-    const postId = [[${id}]];
+    const postId = [[${postDTO.id}]];
 
     const registerModal = new bootstrap.Modal(document.querySelector(".registerModal"));
 
     const registerBtn = document.querySelector(".registerBtn");
     const replyText = document.querySelector(".replyText");
     const writer = document.querySelector(".writer");
+    const writerId = document.querySelector(".writerId");
     const closeRegisterBtn = document.querySelector(".closeRegisterBtn");
 
     document.querySelector(".addReplyBtn").addEventListener("click", function(e) {
@@ -177,15 +180,15 @@
             postId: postId
             , content : replyText.value
             , writer : writer.value
+            , writerId : writerId.value
         };
-       console.log(replyObj);
+        console.log(`add reply obj : ${replyObj}`);
         addReply(replyObj)
         .then(data=>{
             alert(`${data.id} is registered`);
             registerModal.hide();
             replyText.value = '';
-            writer.value = '';
-            printReplies(1, 10, true);
+            printReplies(postId, 10, true);
         }).catch(e=>{
             alert("Exception...");
         })
@@ -201,10 +204,11 @@
                     'Content-Type': `application/json`,
                 },
                 data : {
-                    postId : [[${postDTO.id}]]
+                    postId : postId
                     , boardId : [[${boardId}]]
                     , link : [[${link}]]
                     , writer : [[${postDTO.writer}]]
+                    , writerId : [[${postDTO.writerId}]]
                 }
             }).then(res => {
                 console.log(res);
@@ -305,6 +309,7 @@
     const modifyText = document.querySelector(".modifyText");
     const modifyBtn = document.querySelector(".modifyBtn");
     const modalWriter = document.querySelector(".modalWriter");
+    const modalWriterId = document.querySelector(".modalWriterId");
     const removeBtn = document.querySelector(".removeBtn");
     const closeModifyBtn = document.querySelector(".closeModifyBtn");
 
@@ -329,6 +334,7 @@
             replyHeader.innerHTML = reply.id;
             modifyText.value=reply.content;
             modalWriter.value = reply.writer;
+            modalWriterId.value = reply.writerId;
             modifyModal.show();
             hasAuth = currentUser===reply.writer;
         }).catch(e=>{
