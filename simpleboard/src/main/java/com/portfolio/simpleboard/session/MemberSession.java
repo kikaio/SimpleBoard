@@ -8,6 +8,9 @@ import lombok.Setter;
 import lombok.ToString;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.redis.core.RedisHash;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -21,10 +24,12 @@ import java.util.List;
 @ToString
 @Scope(value = WebApplicationContext.SCOPE_SESSION, proxyMode = ScopedProxyMode.TARGET_CLASS)
 @Builder
+@RedisHash(value="session", timeToLive=3600)
 public class MemberSession implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    @Id
     private Long id;
     private String nickname;
 
@@ -48,7 +53,7 @@ public class MemberSession implements Serializable {
     private String password;
 
     @Builder.Default
-    private List<String> authorities = new ArrayList<>();
+    private List<SimpleGrantedAuthority> authorities = new ArrayList<>();
 
     public static MemberSession fromEntity(MemberProfile profile) {
         var memberSession = MemberSession.builder()
@@ -64,9 +69,8 @@ public class MemberSession implements Serializable {
                 .build();
 
         //보유 권한 정보 문자열로 치환해서 저장.
-        for(var ele : profile.getAuthorities()) {
-            memberSession.authorities.add(ele.getAuthority());
-        }
+        memberSession.authorities.clear();
+        memberSession.authorities.addAll(profile.getAuthorities());
         return memberSession;
     }
 }
