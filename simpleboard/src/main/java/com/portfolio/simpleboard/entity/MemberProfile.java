@@ -60,7 +60,7 @@ public class MemberProfile extends DateEntity implements Serializable, UserDetai
     private String email;
 
     @Transient
-    public String password;
+    private String password;
 
 
 
