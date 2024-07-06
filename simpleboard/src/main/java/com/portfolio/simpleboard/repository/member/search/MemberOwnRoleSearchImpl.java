@@ -22,8 +22,10 @@ public class MemberOwnRoleSearchImpl extends QuerydslRepositorySupport implement
     @Transactional
     @Override
     public MemberOwnRoleDetailDTO searchMemberOwnRoleDetail(Long profileId) {
+
         QMemberProfile memberProfile = QMemberProfile.memberProfile;
         JPQLQuery<MemberProfile> memberProfileJPQLQuery = from(memberProfile);
+
         memberProfileJPQLQuery.where(memberProfile.id.eq(profileId));
         var profile = memberProfileJPQLQuery.fetchFirst();
 
@@ -32,18 +34,19 @@ public class MemberOwnRoleSearchImpl extends QuerydslRepositorySupport implement
 
         query.where(memberOwnRole.memberOwnRoleId.memberProfile.eq(profile));
         List<MemberOwnRole>  memberOwnRoles = query.fetch();
-        var dtoLsit = memberOwnRoles.stream().map(ele -> {
+        var dtoList = memberOwnRoles.stream().map(ele -> {
             return MemberOwnRoleDTO.fromEntity(ele);
         }).toList();
 
         QMemberRole memberRole = QMemberRole.memberRole;
         JPQLQuery<MemberRole> memberRoleJPQLQuery = from(memberRole);
+
         var memberRoles = memberRoleJPQLQuery.fetch();
         var roleDTOList = memberRoles.stream().map(role->{
             return MemberRoleDTO.fromEntity(role);
         }).toList();
 
-        return MemberOwnRoleDetailDTO.fromEntities(roleDTOList, dtoLsit);
+        return MemberOwnRoleDetailDTO.fromEntities(roleDTOList, dtoList);
     }
 
     @Override

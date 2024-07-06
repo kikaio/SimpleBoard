@@ -11,6 +11,8 @@ import com.querydsl.jpa.JPQLQuery;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 
+import java.security.InvalidKeyException;
+
 
 @Log4j2
 public class MemberProfileSearchImpl extends QuerydslRepositorySupport implements MemberProfileSearch{
@@ -48,6 +50,9 @@ public class MemberProfileSearchImpl extends QuerydslRepositorySupport implement
                             bb.or(memberProfile.nickname.contains(keyword));
                             break;
                         }
+                        default:
+                            log.error("not implemented case... check please : [%s]".formatted(type));
+                            break;
                     }
                 }
 
