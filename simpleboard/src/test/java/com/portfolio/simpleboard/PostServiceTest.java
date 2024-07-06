@@ -2,8 +2,10 @@ package com.portfolio.simpleboard;
 
 import com.portfolio.simpleboard.dto.pager.PageRequestDTO;
 import com.portfolio.simpleboard.dto.posts.PostDTO;
+import com.portfolio.simpleboard.entity.MemberProfile;
 import com.portfolio.simpleboard.entity.Post;
 import com.portfolio.simpleboard.entity.PostImage;
+import com.portfolio.simpleboard.repository.member.MemberProfileRepository;
 import com.portfolio.simpleboard.repository.post.PostRepository;
 import com.portfolio.simpleboard.repository.reply.ReplyRepository;
 import com.portfolio.simpleboard.service.PostService;
@@ -30,14 +32,19 @@ public class PostServiceTest {
     @Autowired
     private ReplyRepository replyRepository;
 
+    @Autowired
+    private MemberProfileRepository memberProfileRepository;
+
     @Test
     @Disabled
     @DisplayName("insert test for image to post")
     public void testInsertPostImage() {
+        Long profileId = 1L;
+        var profile = memberProfileRepository.findById(profileId).orElseThrow();
         Post post = Post.builder()
                 .title("test for image")
                 .content("blablabla")
-                .writer("admin")
+                .memberProfile(profile)
                 .build();
 
         int testCaseCnt = 3;
@@ -94,6 +101,9 @@ public class PostServiceTest {
     @DisplayName("test for insert image to post")
     @Disabled
     public void testInsertAll() {
+        Long profileId = 1L;
+        var profile = memberProfileRepository.findById(profileId).orElseThrow();
+
         Long postId = 0L;
         int testCnt = 100;
         int testCnt2 = 3;
@@ -101,7 +111,7 @@ public class PostServiceTest {
             Post post = Post.builder()
                     .title("image test")
                     .content("content for image test")
-                    .writer("image tester")
+                    .memberProfile(profile)
                     .build();
 
             for(int k = 0; k < testCnt2; k++) {
