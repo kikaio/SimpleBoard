@@ -30,7 +30,7 @@
             <span class="navbar-toggler-icon">
             </span>
         </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <div class="grid gap-3 collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
                 <li class="nav-item"><a class="nav-link active" href="/about">About</a></li>
                 <li sec:authority="hasRole('ADMIN') or hasAuthority('BOARD_READ')" class="nav-item"><a class="nav-link active" aria-current="page" th:href="@{/boards}">Boards</a></li>
@@ -46,6 +46,13 @@
                     </ul>
                 </li>
             </ul>
+            <div class="container-fluid d-flex flex-row-reverse">
+                <button sec:authorize="isAnonymous()" type="button" class="btn btn-primary" onclick="location.href='member/login'">Sign in</button>
+                <button sec:authorize="isAuthenticated()" type="button" class="btn btn-secondary " onclick="location.href='member/logout'">Sign out</button>
+                <a th:href="|@{/members/profiles/detail(profileId=${#authentication.principal.id})}|" sec:authorize="isAuthenticated()">
+                    <span sec:authentication="name">unknown</span>
+                </a>
+            </div>
         </div>
     </div>
 </nav>

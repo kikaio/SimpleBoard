@@ -67,7 +67,9 @@
                     </form>
                 </div>
             </div> <!--end of card div-->
-            <div class="card" th:if="${postDTO.fileNames != null && postDTO.fileNames.size() > 0}" th:each="fileName: ${postDTO.fileNames}" >
+            <div class="card"
+                 th:if="${postDTO.fileNames != null}"
+                 th:each="fileName: ${postDTO.fileNames}">
                 <img class="card-img-top" th:src="|/view/${fileName}|" >
             </div> <!--end of card for images-->
         </div> <!--end of col-->

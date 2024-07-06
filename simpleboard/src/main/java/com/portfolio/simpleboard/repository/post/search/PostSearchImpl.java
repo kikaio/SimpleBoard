@@ -162,14 +162,20 @@ public class PostSearchImpl extends QuerydslRepositorySupport implements PostSea
                 for(String type : pageRequestDTO.getTypes()) {
                     switch(type) {
                         case "t":
+                        {
                             bb.or(post.title.contains(keyword));
                             break;
+                        }
                         case "w":
+                        {
                             bb.or(post.memberProfile.nickname.contains(keyword));
                             break;
+                        }
                         case "c":
+                        {
                             bb.or(post.content.contains(keyword));
                             break;
+                        }
                     }
                 }
                 postQuery.where(bb);

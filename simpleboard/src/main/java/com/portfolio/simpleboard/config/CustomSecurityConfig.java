@@ -47,6 +47,10 @@ public class CustomSecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
+
+        final String rememberMeStr = "remember-me";
+        final int rememberTokenValidSecond = (60 * 60 * 24 * 30);
+
         String[] publicPath= {
                 "/"
                 , "/favicon.ico"
@@ -79,13 +83,20 @@ public class CustomSecurityConfig {
                     })
             ;
         });
+
+        http.logout(custom->{
+            custom.logoutUrl("/member/logout")
+                    .logoutSuccessUrl("/")
+                    .deleteCookies(rememberMeStr)
+            ;
+        });
         http.rememberMe(custom->{
             custom
                     .key("4312312421")
                     .tokenRepository(persistentTokenRepository())
                     .userDetailsService(simpleBoardUserDetailService)
-                    .tokenValiditySeconds(60 * 60 * 24 * 30)
-                    .rememberMeParameter("remember-me")
+                    .tokenValiditySeconds(rememberTokenValidSecond)
+                    .rememberMeParameter(rememberMeStr)
             ;
         });
         return http.build();
