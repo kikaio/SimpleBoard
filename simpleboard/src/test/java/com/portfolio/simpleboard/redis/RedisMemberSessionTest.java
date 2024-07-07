@@ -3,10 +3,8 @@ package com.portfolio.simpleboard.redis;
 
 import com.portfolio.simpleboard.repository.member.MemberProfileRepository;
 import com.portfolio.simpleboard.repository.redis.RedisMemberSessionRepository;
-import com.portfolio.simpleboard.session.MemberSession;
-import lombok.AllArgsConstructor;
+import com.portfolio.simpleboard.redisEntity.RedisMemberProfile;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
@@ -30,7 +28,7 @@ public class RedisMemberSessionTest {
     public void testMemberSessionCreate() {
         Long targetProfileId =1L;
         var profile = memberProfileRepository.findById(targetProfileId).orElseThrow();
-        var memberSession = MemberSession.fromEntity(profile);
+        var memberSession = RedisMemberProfile.fromEntity(profile);
         redisMemberSessionRepository.save(memberSession);
         return ;
     }
