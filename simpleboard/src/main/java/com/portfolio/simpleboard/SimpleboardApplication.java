@@ -7,7 +7,6 @@ import org.springframework.session.data.redis.config.annotation.web.http.EnableR
 
 @EnableJpaAuditing
 @SpringBootApplication
-@EnableRedisHttpSession
 public class SimpleboardApplication {
 
 	public static void main(String[] args) {

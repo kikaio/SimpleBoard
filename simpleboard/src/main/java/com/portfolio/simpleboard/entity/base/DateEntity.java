@@ -25,13 +25,9 @@ import java.time.LocalDateTime;
 @ToString
 public abstract class DateEntity implements Serializable {
 
-//    @JsonSerialize(using = LocalDateTimeSerializer.class)
-//    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @CreatedDate
     private LocalDateTime cDate;
 
-//    @JsonSerialize(using = LocalDateTimeSerializer.class)
-//    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @LastModifiedDate
     private LocalDateTime mDate;
 }

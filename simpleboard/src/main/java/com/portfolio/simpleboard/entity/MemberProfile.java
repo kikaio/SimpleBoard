@@ -15,7 +15,10 @@ import java.util.*;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MemberProfile extends DateEntity implements Serializable, UserDetails {
+public class MemberProfile extends DateEntity implements UserDetails {
+
+    @Transient
+    private static final long serialVersionUID = 362498820763181265L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

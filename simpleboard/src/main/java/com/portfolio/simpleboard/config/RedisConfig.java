@@ -1,5 +1,7 @@
 package com.portfolio.simpleboard.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,16 +14,19 @@ import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSeriali
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
+import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 
 
 @Configuration
+@RequiredArgsConstructor
 @EnableRedisRepositories(enableKeyspaceEvents = RedisKeyValueAdapter.EnableKeyspaceEvents.ON_STARTUP)
 public class RedisConfig {
 
-    @Value("${spring.redis.host}")
+    private final ObjectMapper om;
+    @Value("${spring.data.redis.host}")
     private String host;
 
-    @Value("${spring.redis.port}")
+    @Value("${spring.data.redis.port}")
     private int port;
 
     @Bean
@@ -49,7 +54,7 @@ public class RedisConfig {
 
     @Bean
     public RedisSerializer<Object> springSessionDefaultRedisSerializer() {
-        return new GenericJackson2JsonRedisSerializer();
+        return new GenericJackson2JsonRedisSerializer(om);
     }
 
 }
