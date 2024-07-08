@@ -4,6 +4,7 @@ import com.portfolio.simpleboard.entity.base.DateEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -15,7 +16,8 @@ import java.util.*;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MemberProfile extends DateEntity implements UserDetails {
+@ToString
+public class MemberProfile extends DateEntity implements Serializable, UserDetails {
 
     @Transient
     private static final long serialVersionUID = 362498820763181265L;
@@ -63,7 +65,7 @@ public class MemberProfile extends DateEntity implements UserDetails {
 
 
     @Override
-    public Collection<SimpleGrantedAuthority> getAuthorities() {
+    public Collection<? extends GrantedAuthority> getAuthorities() {
         return simpleGrantedAuthorities;
     }
 

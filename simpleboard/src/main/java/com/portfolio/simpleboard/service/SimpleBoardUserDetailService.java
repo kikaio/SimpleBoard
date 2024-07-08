@@ -57,10 +57,10 @@ public class SimpleBoardUserDetailService implements UserDetailsService {
         grantSet.addAll(roleOwnGrantSet);
 
         grantSet.forEach(ele->{
-            memberProfile.getAuthorities().add(new SimpleGrantedAuthority(ele.getName()));
+            memberProfile.addAuthority(new SimpleGrantedAuthority(ele.getName()));
         });
         roleSet.forEach(ele->{
-            memberProfile.getAuthorities().add(new SimpleGrantedAuthority(ele.getName()));
+            memberProfile.addAuthority(new SimpleGrantedAuthority(ele.getName()));
         });
         memberProfile.setEmail(email);
         memberProfile.setPassword(ap.getPassword());

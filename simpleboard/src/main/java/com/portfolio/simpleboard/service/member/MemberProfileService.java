@@ -52,10 +52,10 @@ public class MemberProfileService {
         grantSet.addAll(grantFromRole);
 
         grantSet.forEach(ele->{
-            profile.getAuthorities().add(new SimpleGrantedAuthority(ele.getName()));
+            profile.addAuthority(new SimpleGrantedAuthority(ele.getName()));
         });
         roleSet.forEach(ele->{
-            profile.getAuthorities().add(new SimpleGrantedAuthority(ele.getName()));
+            profile.addAuthority(new SimpleGrantedAuthority(ele.getName()));
         });
 
         return MemberProfileDetailDTO.fromEntity(profile);

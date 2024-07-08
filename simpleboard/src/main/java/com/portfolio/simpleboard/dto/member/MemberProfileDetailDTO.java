@@ -62,7 +62,9 @@ public class MemberProfileDetailDTO {
                 .isEnabled(profile.isEnabled())
                 .build();
         dto.authorities.clear();
-        dto.authorities.addAll(profile.getAuthorities());
+        profile.getAuthorities().forEach(ele->{
+            dto.authorities.add(new SimpleGrantedAuthority(ele.getAuthority()));
+        });
         return dto;
     }
 }

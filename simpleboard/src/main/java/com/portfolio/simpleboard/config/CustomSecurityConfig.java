@@ -1,6 +1,7 @@
 package com.portfolio.simpleboard.config;
 
 
+import com.portfolio.simpleboard.entity.MemberProfile;
 import com.portfolio.simpleboard.security.Custom403Handler;
 import com.portfolio.simpleboard.service.SimpleBoardUserDetailService;
 import jakarta.servlet.DispatcherType;
@@ -75,10 +76,13 @@ public class CustomSecurityConfig {
             custom.loginPage("/member/login")
                     .usernameParameter("email")
                     .successHandler((request, response, authentication) -> {
+
+                        var principal = authentication.getPrincipal();
+                        var memberProfile = (MemberProfile)authentication.getPrincipal();
                         var referer = request.getHeader("Referer");
+
                         log.info("referer : %s".formatted(referer));
                         response.sendRedirect("/");
-                        var principal = authentication.getPrincipal();
                         log.info("login success : %s".formatted(principal));
                     })
             ;
