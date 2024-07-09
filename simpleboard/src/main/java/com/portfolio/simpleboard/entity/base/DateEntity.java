@@ -1,6 +1,7 @@
 package com.portfolio.simpleboard.entity.base;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
@@ -20,14 +21,27 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @MappedSuperclass
-@Getter
 @EntityListeners(AuditingEntityListener.class)
 @ToString
 public abstract class DateEntity implements Serializable {
 
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @CreatedDate
     private LocalDateTime cDate;
 
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @LastModifiedDate
     private LocalDateTime mDate;
+
+    @JsonIgnore
+    public LocalDateTime getCDate() {
+        return cDate;
+    }
+
+    @JsonIgnore
+    public LocalDateTime getMDate() {
+        return mDate;
+    }
 }

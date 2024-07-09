@@ -81,9 +81,6 @@ public class CustomSecurityConfig {
                         var memberProfile = (MemberProfile)authentication.getPrincipal();
                         var referer = request.getHeader("Referer");
                         var session = request.getSession();
-                        if(session != null) {
-                            session.setAttribute("memberProfile", memberProfile);
-                        }
 
                         log.info("referer : %s".formatted(referer));
                         response.sendRedirect("/");

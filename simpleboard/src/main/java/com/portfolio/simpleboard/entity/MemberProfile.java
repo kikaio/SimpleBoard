@@ -1,5 +1,6 @@
 package com.portfolio.simpleboard.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.portfolio.simpleboard.entity.base.DateEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -10,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.Serializable;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Entity
 @Builder
@@ -54,7 +56,7 @@ public class MemberProfile extends DateEntity implements Serializable, UserDetai
 
     @Builder.Default
     @Transient
-    private List<SimpleGrantedAuthority> simpleGrantedAuthorities = new ArrayList<>();
+    private List<String> simpleGrantedAuthorities = new ArrayList<>();
 
     @Transient
     private String email;
@@ -63,14 +65,17 @@ public class MemberProfile extends DateEntity implements Serializable, UserDetai
     private String password;
 
 
-
+    @JsonIgnore
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return simpleGrantedAuthorities;
+
+        return simpleGrantedAuthorities.stream().map(ele->{
+            return new SimpleGrantedAuthority(ele);
+        }).collect(Collectors.toList());
     }
 
     public void addAuthority(SimpleGrantedAuthority simpleGrantedAuthority) {
-        simpleGrantedAuthorities.add(simpleGrantedAuthority);
+        simpleGrantedAuthorities.add(simpleGrantedAuthority.getAuthority());
     }
 
     @Override
@@ -78,6 +83,7 @@ public class MemberProfile extends DateEntity implements Serializable, UserDetai
         return password;
     }
 
+    @JsonIgnore
     @Override
     public String getUsername(){
         return this.nickname;
@@ -96,21 +102,25 @@ public class MemberProfile extends DateEntity implements Serializable, UserDetai
     }
 
     //todo : 회원 관련 제한 처리 등은 추후 할 예정
+    @JsonIgnore
     @Override
     public boolean isAccountNonExpired(){
         return isAccountNonExpired;
     }
 
+    @JsonIgnore
     @Override
     public boolean isAccountNonLocked(){
         return isAccountNonLocked;
     }
 
+    @JsonIgnore
     @Override
     public boolean isCredentialsNonExpired(){
         return isCredentialsNonExpired;
     }
 
+    @JsonIgnore
     @Override
     public boolean isEnabled() {
         return isEnabled;
