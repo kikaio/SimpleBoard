@@ -1,7 +1,9 @@
 package com.portfolio.simpleboard.config;
 
 
+import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.portfolio.simpleboard.enums.EMemberRedisDB;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -15,8 +17,12 @@ import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.*;
-import org.springframework.session.data.redis.RedisSessionMapper;
-import org.springframework.session.data.redis.RedisSessionRepository;
+import org.springframework.security.jackson2.CoreJackson2Module;
+import org.springframework.security.jackson2.SecurityJackson2Modules;
+import org.springframework.security.oauth2.client.jackson2.OAuth2ClientJackson2Module;
+import org.springframework.security.web.jackson2.WebJackson2Module;
+import org.springframework.security.web.jackson2.WebServletJackson2Module;
+import org.springframework.security.web.server.jackson2.WebServerJackson2Module;
 import org.springframework.session.data.redis.config.annotation.SpringSessionRedisConnectionFactory;
 import org.springframework.session.data.redis.config.annotation.SpringSessionRedisOperations;
 import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
@@ -26,8 +32,6 @@ import org.springframework.session.data.redis.config.annotation.web.http.EnableR
 @Log4j2
 @RequiredArgsConstructor
 public class RedisConfig {
-
-    private final ObjectMapper om;
 
     @Value("${simpleboard.redis.session.host}")
     private String host;
@@ -93,13 +97,13 @@ public class RedisConfig {
     public RedisTemplate<String, Object> sessionRedisOperations() {
         var template = new RedisTemplate<String, Object>();
 
-        template.setKeySerializer(createKeySerializer());
-        template.setValueSerializer(createKeySerializer());
+        template.setKeySerializer(new StringRedisSerializer());
+        template.setValueSerializer(new StringRedisSerializer());
 
-        template.setValueSerializer(createValueSerializer());
-        template.setHashValueSerializer(createValueSerializer());
+        template.setValueSerializer(new GenericJackson2JsonRedisSerializer());
+        template.setHashValueSerializer(new GenericJackson2JsonRedisSerializer());
 
-        template.setDefaultSerializer(createDefaultSerializer());
+        template.setDefaultSerializer(new GenericJackson2JsonRedisSerializer());
 
         template.setConnectionFactory(redisConnectionFactoryForSession());
 
@@ -129,30 +133,31 @@ public class RedisConfig {
     }
 
     private RedisSerializer<Object> createValueSerializer() {
-        return new Jackson2JsonRedisSerializer<>(Object.class);
-//        return new GenericJackson2JsonRedisSerializer();
-//        return new StringRedisSerializer();
+        return new GenericJackson2JsonRedisSerializer();
     }
 
 
     private RedisSerializer<Object> createDefaultSerializer() {
-        return new Jackson2JsonRedisSerializer<>(Object.class);
-//        return new GenericJackson2JsonRedisSerializer();
+        return new GenericJackson2JsonRedisSerializer();
+    }
+
+
+    private ObjectMapper objectMapper() {
+        var om = new ObjectMapper();
+        om.registerModule(new CoreJackson2Module());
+        om.registerModule(new WebJackson2Module());
+        om.registerModule(new WebServletJackson2Module());
+        om.registerModule(new WebServerJackson2Module());
+        om.registerModule(new OAuth2ClientJackson2Module());
+//        om.registerModule(new CasJackson2Module());
+  //      om.registerModules(SecurityJackson2Modules.getModules(SecurityJackson2Modules.class.getClassLoader()));
+        return om;
     }
 
     @Bean
     public RedisSerializer<Object> springSessionDefaultRedisSerializer() {
-        return new Jackson2JsonRedisSerializer<>(Object.class);
-//        return new GenericJackson2JsonRedisSerializer();
+//        return new Jackson2JsonRedisSerializer<>(Object.class);
+        return new GenericJackson2JsonRedisSerializer(objectMapper());
     }
 
-    RedisSessionMapper
-
-    @Bean
-    @Primary
-    public RedisSessionRepository redisSessionRepository() {
-        RedisSessionRepository repo = new RedisSessionRepository(sessionRedisOperations());
-        repo.setRedisSessionMapper();
-        return repo;
-    }
 }

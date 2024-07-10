@@ -1,6 +1,7 @@
 package com.portfolio.simpleboard.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.portfolio.simpleboard.entity.base.DateEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
+@JsonDeserialize
 public class MemberProfile extends DateEntity implements Serializable, UserDetails {
 
     @Transient
